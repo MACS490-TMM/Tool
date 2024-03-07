@@ -2,6 +2,7 @@ import './App.css';
 import React, { Suspense } from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Home from "./Pages/Home/Home";
+import ProjectSummary from "./Pages/ProjectSummary/ProjectSummary";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Suspense fallback={<p>Loading... </p>}>
                     <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path={"/projectSummary"} element={<ProjectSummary />} />
                     </Routes>
                 </Suspense>
             </main>
