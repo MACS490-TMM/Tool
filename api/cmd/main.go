@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
+	"time"
 )
 
 type Item struct {
@@ -17,9 +17,9 @@ type File struct {
 	// Add other fields as needed
 }
 
-func itemHandler(w http.ResponseWriter, r *http.Request) {
+func itemHandler(w http.ResponseWriter, req *http.Request) {
 	enableCORS(w)
-	id := strings.TrimPrefix(r.URL.Path, "/items/")
+	id := req.PathValue("id")
 
 	// Simulating data retrieval
 	item := Item{ID: id, Name: "Item Name"} // Replace with actual data retrieval logic
@@ -39,11 +39,12 @@ func itemHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
+	println(time.Now().Format("2006-01-02 15:04:05"), " Successfully sent response!")
 }
 
-func filesHandler(w http.ResponseWriter, r *http.Request) {
+func filesHandler(w http.ResponseWriter, req *http.Request) {
 	enableCORS(w)
-	path := strings.TrimPrefix(r.URL.Path, "/files/")
+	path := req.PathValue("path")
 
 	// Simulating data retrieval
 	file := File{Path: path} // Replace with actual data retrieval logic
@@ -59,7 +60,11 @@ func filesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	// Write JSON response
-	w.Write(jsonBytes)
+	_, err = w.Write(jsonBytes)
+	if err != nil {
+		return
+	}
+	println(time.Now().Format("2006-01-02 15:04:05"), " Successfully sent response!")
 }
 
 func enableCORS(w http.ResponseWriter) {
@@ -71,8 +76,8 @@ func enableCORS(w http.ResponseWriter) {
 func main() {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/items/", itemHandler)
-	mux.HandleFunc("/files/", filesHandler)
+	mux.HandleFunc("/items/{id}", itemHandler)
+	mux.HandleFunc("/files/{path}", filesHandler)
 
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
