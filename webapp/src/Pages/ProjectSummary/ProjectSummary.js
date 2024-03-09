@@ -1,6 +1,7 @@
 import React from 'react';
 import LineChartCustom from "../../Components/LineChartCustom/LineChartCustom";
 import "./ProjectSummary.css";
+import Grid from "../../Components/DetailedSelectionCriteria/Grid/Grid";
 
 function ProjectSummary() {
     const data = [
@@ -87,9 +88,12 @@ function ProjectSummary() {
     ];
 
     return (
-        <div>
+        <div className={"project-summary__outer-container"}>
             <h1>Project Summary</h1>
+
             <LineChartCustom data={data}/>
+
+            <Grid data={data} />
         </div>
     );
 }
