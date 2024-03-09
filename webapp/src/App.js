@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Home from "./Pages/Home/Home";
 import ProjectSummary from "./Pages/ProjectSummary/ProjectSummary";
 import NavBar from "./Components/NavBar/NavBar";
+import ProjectSetup from "./Pages/ProjectSetup/ProjectSetup";
 
 function App() {
     return (
@@ -18,7 +19,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path={"/project/summary"} element={<ProjectSummary />} />
-                        <Route path={"/project/setup"} element={<div>Setup</div>} />
+                        <Route path={"/project/setup"} element={<ProjectSetup />} />
                         <Route path={"/project/decision making"} element={<div>Decision Making</div>}/>
                     </Routes>
                 </Suspense>
