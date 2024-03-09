@@ -3,6 +3,14 @@ import { LineChart, Line, CartesianGrid, XAxis, Tooltip, Legend, YAxis, Responsi
 import './LineChartCustom.css';
 
 function LineChartCustom({ data }) {
+
+    /**
+     * Generate an object with keys as the vendor names and values as true if the line should be visible.
+     * Initialize all lines to be visible by default.
+     *
+     * @param data - the data to generate the visible lines from
+     * @returns {{}} - the object with vendor names as keys and true as values
+     */
     const generateVisibleLines = (data) => {
         const visibleLines = {};
         data.forEach(item => {
@@ -15,8 +23,13 @@ function LineChartCustom({ data }) {
 
     const [visibleLines, setVisibleLines] = useState(generateVisibleLines(data));
 
+    // Track the last toggled line and its visibility - used for controlling animation
     const [lastToggled, setLastToggled] = useState({ vendor: null, isVisible: false });
 
+    /**
+     * Toggles the visibility of a line.
+     * @param vendor - the vendor name
+     */
     const toggleLineVisibility = (vendor) => {
         const isVisible = !visibleLines[vendor];
         setVisibleLines(prevState => ({
@@ -27,6 +40,7 @@ function LineChartCustom({ data }) {
         setLastToggled({ vendor, isVisible });
     };
 
+    // Define colors for each vendor/line
     const colors = {
         Vendor_1: '#A4D4B4',
         Vendor_2: '#463F3A',
@@ -60,16 +74,15 @@ function LineChartCustom({ data }) {
                                     strokeWidth={2}
                                     stroke={colors[vendor]}
                                     activeDot={{ r: 8 }}
-                                    isAnimationActive={lastToggled.vendor === vendor} // Ensure this line remains for controlling animation
+                                    isAnimationActive={lastToggled.vendor === vendor} // Control animation
                                 />
                             )
                         ))}
-
                     </LineChart>
                 </ResponsiveContainer>
 
                 <div className="container-chart-buttons">
-                    {Object.keys(visibleLines).map(vendor => (
+                    {Object.keys(visibleLines).map(vendor => ( // Render a button for each vendor
                         <div key={vendor} className="vendor-option">
                             <button
                                 className={`button ${visibleLines[vendor] ? 'button-active' : ''}`}
