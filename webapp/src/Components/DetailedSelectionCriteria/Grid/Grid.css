@@ -1,0 +1,36 @@
+.grid__outer-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid {
+    display: grid;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Default to 2 columns for small screens */
+.grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* Medium screens - 3 or 4 columns */
+@media (min-width: 600px) {
+    .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Large screens - 5 columns */
+@media (min-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* Extra large screens - 6 columns */
+@media (min-width: 1200px) {
+    .grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
