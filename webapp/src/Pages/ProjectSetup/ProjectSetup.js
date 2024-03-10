@@ -2,12 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./ProjectSetup.css";
 
 function ProjectSetup() { // TODO: Move criteria list to be passed in for the project
-    const [criteriaList] = useState([
-        { id: 1, name: 'Security', explanation: 'Explanation for Security' },
-        { id: 2, name: 'Usability', explanation: 'Explanation for Usability' },
-        { id: 3, name: 'Reliability', explanation: 'Explanation for Reliability' },
-        // add other criteria
-    ]);
+    const [criteriaList, setCriteriaList] = useState([]);
 
     // A list of all the criteria that is to be selected for the project, initialized with empty values
     const [selections, setSelections] = useState([]);
@@ -107,14 +102,45 @@ function ProjectSetup() { // TODO: Move criteria list to be passed in for the pr
         return selections.some(selection => selection.name === optionName);
     };
 
-    // Allow for fetching criteria from the API
+    /**
+     * Fetches the criteria list from the API
+     * @param isMounted A ref to track the mounted status of the component
+     * @param url The URL to fetch the data from
+     * @param setData The state setter function to update the criteria list
+     * @returns {Promise<void>} A promise that resolves when the data is fetched
+     */
+    const fetchData = async (isMounted, url, setData) => {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+            const jsonData = await response.json();
+
+            if (isMounted.current) { // Using ref to check if component is still mounted
+                setData(jsonData);
+                console.log('Data fetched:', jsonData);
+            }
+        } catch (error) {
+            if (isMounted.current) { // Only log errors if the component is still mounted
+                console.error('Error fetching data:', error);
+            }
+        }
+    };
+
     useEffect(() => {
-        // Simulate fetching data and setting initial state
-        // fetchCriteria().then(data => {
-        //   setCriteriaList(data);
-        //   setEditExplanations(data.map(c => c.explanation));
-        // });
-    }, []);
+        // Use a ref to track the mounted status of the component
+        const isMounted = { current: true };
+
+        fetchData(isMounted, 'http://localhost:8080/api/criteria', setCriteriaList)
+            .then(r => console.log('Data fetched:', r));
+
+        // Cleanup function to set isMounted to false when the component unmounts
+        return () => {
+            isMounted.current = false;
+        };
+    }, []); // Empty dependency array means this effect runs once on mount
 
     /**
      * Handles submitting the criteria selection to the API

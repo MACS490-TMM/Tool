@@ -47,3 +47,31 @@ func CriteriaHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func GetCriteriaHandler(w http.ResponseWriter, r *http.Request) {
+	EnableCORS(w)
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	if r.Method != "GET" {
+		http.Error(w, "Method is not supported.", http.StatusMethodNotAllowed)
+		return
+	}
+
+	criteriaList := []Criterion{
+		{ID: 1, Name: "Security", Explanation: "Explanation for Security"},
+		{ID: 2, Name: "Usability", Explanation: "Explanation for Usability"},
+		{ID: 3, Name: "Reliability", Explanation: "Explanation for Reliability"},
+		{ID: 4, Name: "Portability", Explanation: "Explanation for Portability"},
+		// Add other criteria as needed
+	}
+
+	// Respond with the criteria list
+	w.Header().Set("Content-Type", "application/json")
+	err := json.NewEncoder(w).Encode(criteriaList)
+	if err != nil {
+		http.Error(w, "Failed to encode criteria list", http.StatusInternalServerError)
+	}
+}
