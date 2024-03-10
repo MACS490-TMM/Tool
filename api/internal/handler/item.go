@@ -1,23 +1,18 @@
 package handler
 
 import (
+	"api/internal/domain"
 	"encoding/json"
 	"net/http"
 	"time"
 )
-
-type Item struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	// Add other fields as needed
-}
 
 func ItemHandler(w http.ResponseWriter, req *http.Request) {
 	EnableCORS(w)
 	id := req.PathValue("id")
 
 	// Simulating data retrieval
-	item := Item{ID: id, Name: "Item Name"} // Replace with actual data retrieval logic
+	item := domain.Item{ID: id, Name: "Item Name"} // Replace with actual data retrieval logic
 
 	// Convert data to JSON
 	jsonBytes, err := json.Marshal(item)

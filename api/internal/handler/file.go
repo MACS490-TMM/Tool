@@ -1,22 +1,18 @@
 package handler
 
 import (
+	"api/internal/domain"
 	"encoding/json"
 	"net/http"
 	"time"
 )
-
-type File struct {
-	Path string `json:"path"`
-	// Add other fields as needed
-}
 
 func FilesHandler(w http.ResponseWriter, req *http.Request) {
 	EnableCORS(w)
 	path := req.PathValue("path")
 
 	// Simulating data retrieval
-	file := File{Path: path} // Replace with actual data retrieval logic
+	file := domain.File{Path: path} // Replace with actual data retrieval logic
 
 	// Convert data to JSON
 	jsonBytes, err := json.Marshal(file)

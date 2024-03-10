@@ -1,21 +1,12 @@
 package handler
 
 import (
+	"api/internal/domain"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 )
-
-type Criterion struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Explanation string `json:"explanation"`
-}
-
-type Submission struct {
-	Criteria []Criterion `json:"criteria"`
-}
 
 func CriteriaHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCORS(w)
@@ -30,7 +21,7 @@ func CriteriaHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println(r.Method)
 
-	var submission Submission
+	var submission domain.Submission
 	err := json.NewDecoder(r.Body).Decode(&submission)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -60,7 +51,7 @@ func GetCriteriaHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	criteriaList := []Criterion{
+	criteriaList := []domain.Criterion{
 		{ID: 1, Name: "Security", Explanation: "Explanation for Security"},
 		{ID: 2, Name: "Usability", Explanation: "Explanation for Usability"},
 		{ID: 3, Name: "Reliability", Explanation: "Explanation for Reliability"},
