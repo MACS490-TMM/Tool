@@ -3,9 +3,9 @@ import {useEffect, useState} from "react";
 function useFetchCriteria(fetchUrl) {
     const [criteriaList, setCriteriaList] = useState([]);
 
-    const fetchData = async (isMounted, url, setData) => {
+    const fetchData = async (isMounted, fetchUrl, setData) => {
         try {
-            const response = await fetch(url);
+            const response = await fetch(fetchUrl);
             if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }
@@ -34,7 +34,7 @@ function useFetchCriteria(fetchUrl) {
         return () => {
             isMounted.current = false;
         };
-    }, []); // Empty dependency array means this effect runs once on mount
+    }, [fetchUrl]);
 
     return criteriaList;
 }
