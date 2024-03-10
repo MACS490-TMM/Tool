@@ -1,0 +1,22 @@
+.criteria-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.criteria-container {
+    display: flex;
+    width: 100%;
+}
+
+.criteria-selection, .criteria-explanations {
+    flex: 1;
+}
+
+.criteria-group, .explanation-group {
+    margin-bottom: 20px;
+}
+
+.add-button {
+    margin-top: 20px;
+}

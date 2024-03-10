@@ -2,9 +2,21 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
+
+type Criterion struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Explanation string `json:"explanation"`
+}
+
+type Submission struct {
+	Criteria []Criterion `json:"criteria"`
+}
 
 type Item struct {
 	ID   string `json:"id"`
@@ -67,10 +79,41 @@ func filesHandler(w http.ResponseWriter, req *http.Request) {
 	println(time.Now().Format("2006-01-02 15:04:05"), " Successfully sent response!")
 }
 
+func criteriaHandler(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	if r.Method != "POST" {
+		http.Error(w, "Method is not supported.", http.StatusMethodNotAllowed)
+		return
+	}
+	fmt.Println(r.Method)
+
+	var submission Submission
+	err := json.NewDecoder(r.Body).Decode(&submission)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Log the received criteria, or process them as needed
+	log.Printf("Received criteria: %+v", submission)
+
+	// Respond to the client
+	w.WriteHeader(http.StatusOK)
+	err2 := json.NewEncoder(w).Encode(struct{ Message string }{"Submission successful"})
+	if err2 != nil {
+		return
+	}
+}
+
 func enableCORS(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 }
 
 func main() {
@@ -78,6 +121,7 @@ func main() {
 
 	mux.HandleFunc("/items/{id}", itemHandler)
 	mux.HandleFunc("/files/{path}", filesHandler)
+	mux.HandleFunc("/criteria", criteriaHandler) // Set the path to match your React app's request
 
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
