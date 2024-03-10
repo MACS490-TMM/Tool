@@ -5,8 +5,16 @@ import ExplanationEditor from "../ProjectSummary/ExplanationEditor/ExplanationEd
 import useFetchCriteria from "../ProjectSummary/apiConnection/useFetchCriteria";
 import submitCriteria from "../ProjectSummary/apiConnection/submitCriteria";
 import AddCriteriaButton from "../../Components/Buttons/AddCriteriaButton/AddCriteriaButton";
+import SaveIcon from "../../SVGs/save.svg";
+import EditIcon from "../../SVGs/edit_pen.svg";
+import DeleteIcon from "../../SVGs/delete_trashcan.svg";
+import SendPlane from "../../SVGs/send_plane.svg";
 
 function ProjectSetup() {
+
+    // State to track the index of the criteria being edited
+    const [editingIndex, setEditingIndex] = useState(null);
+
     // Fetch the list of criteria from the API
     const criteriaList = useFetchCriteria('http://localhost:8080/api/criteria');
 
@@ -15,21 +23,6 @@ function ProjectSetup() {
 
     // A list of explanations that is currently being edited (temporary storage), initialized with the default explanations
     const [editExplanations, setEditExplanations] = useState(criteriaList.map(c => c.explanation));
-
-    /**
-     * Handles the saving of the explanation for a specific criteria
-     * @param index The index of the criteria to save the explanation for
-     * @param newExplanation The new explanation to save
-     */
-    const handleSaveExplanation = (index, newExplanation) => {
-        const updatedSelections = selections.map((selection, i) => {
-            if (i === index) {
-                return { ...selection, explanation: newExplanation };
-            }
-            return selection;
-        });
-        setSelections(updatedSelections);
-    };
 
     /**
      * Handles the change of the selected criteria for the project in the dropdown
@@ -70,6 +63,33 @@ function ProjectSetup() {
     };
 
     /**
+     * Handles the change of the explanation for a selected criteria
+     * @param index The index of the criteria to change the explanation for
+     * @param newText The new explanation text
+     */
+    const handleExplanationChange = (index, newText) => {
+        const newEditExplanations = [...editExplanations];
+        newEditExplanations[index] = newText;
+        setEditExplanations(newEditExplanations);
+    };
+
+    /**
+     * Handles the saving of the explanation for a selected criteria
+     * @param index The index of the criteria to save the explanation for
+     * @param newExplanation The new explanation text
+     */
+    const handleSaveExplanation = (index, newExplanation) => {
+        const updatedSelections = selections.map((selection, i) => {
+            if (i === index) {
+                return { ...selection, explanation: newExplanation };
+            }
+            return selection;
+        });
+        setSelections(updatedSelections);
+        setEditingIndex(null); // Exit edit mode
+    };
+
+    /**
      * Checks if a specific criteria is already selected for the project
      * @param optionName The name of the criteria to check
      * @returns {boolean} True if the criteria is already selected, false otherwise
@@ -99,26 +119,43 @@ function ProjectSetup() {
             <h1>Project name - Selection Criteria definition</h1>
             <div className="criteria-selection">
                 {selections.map((selection, index) => (
-                    <div key={index}>
+                    <div className={"criteria-container"} key={index}>
                         <CriteriaDropdown
                             index={index}
                             criteriaList={criteriaList}
                             selection={selection}
                             handleCriteriaChange={handleCriteriaChange}
-                            handleRemoveCriteria={() => handleRemoveCriteria(index)}
                             isOptionDisabled={isOptionDisabled}
                         />
                         <ExplanationEditor
-                            key={index}
-                            index={index}
-                            initialExplanation={selection.explanation || criteriaList.find(c => c.name === selection.name)?.explanation || ''}
-                            onSave={handleSaveExplanation}
+                            initialExplanation={editExplanations[index] || ''}
+                            isEditing={editingIndex === index}
+                            onChange={(newText) => handleExplanationChange(index, newText)}
                         />
+                        {editingIndex === index ? (
+                            <button className={"button-save"}
+                                    onClick={() => handleSaveExplanation(index, editExplanations[index])}>
+                                <img src={SaveIcon} alt="Save"/>
+                            </button>
+                        ) : (
+                            <button className={"button-edit"} onClick={() => setEditingIndex(index)}>
+                                <img src={EditIcon} alt="Save"/>
+                            </button>
+                        )}
+                        <button className={"button-delete"} onClick={() => handleRemoveCriteria(index)}>
+                            <img src={DeleteIcon} alt="Delete"/>
+                        </button>
                     </div>
                 ))}
-                <AddCriteriaButton onAdd={handleAddCriteria} />
+                <AddCriteriaButton onAdd={handleAddCriteria}/>
             </div>
-            <button onClick={handleSubmit}>Submit Criteria</button>
+            <button
+                className={"button-send"}
+                onClick={handleSubmit}
+                disabled={selections.length === 0} // This disables the button if selections is empty
+            >
+                Submit <img src={SendPlane} alt="Submit"/>
+            </button>
         </div>
     );
 }

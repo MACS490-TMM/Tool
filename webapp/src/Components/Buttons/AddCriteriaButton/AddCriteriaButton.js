@@ -1,10 +1,11 @@
 import React from "react";
 import "./AddCriteriaButton.css";
+import AddIcon from "../../../SVGs/add_plus_nocircle.svg";
 
 function AddCriteriaButton({ onAdd }) {
     return (
-        <button className="add-button" onClick={onAdd}>
-            Add Criteria
+        <button className={"button-add"} onClick={onAdd}>
+            Add Criteria <img src={AddIcon} alt="Delete"/>
         </button>
     );
 }

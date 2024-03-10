@@ -1,37 +1,28 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import "./ExplanationEditor.css";
 
-function ExplanationEditor({ index, initialExplanation, onSave }) {
-    const [isEditing, setIsEditing] = useState(false);
-    const [explanation, setExplanation] = useState('');
-
-    useEffect(() => {
-        setExplanation(initialExplanation);
-    }, [initialExplanation]);
-
-    const handleEdit = () => setIsEditing(true);
-
-    const handleChange = (event) => {
-        setExplanation(event.target.value);
-    };
-
-    const handleSave = () => {
-        onSave(index, explanation); // Invoke the passed onSave function with the new explanation
-        setIsEditing(false);
-    };
-
+function ExplanationEditor({ initialExplanation, isEditing, onChange }) {
     return (
         <div className="explanation-group">
+            <label className="criteria-label">Explanation</label>
             {isEditing ? (
-                <div>
-                    <input type="text" value={explanation} onChange={handleChange} />
-                    <button onClick={handleSave}>Save</button>
-                </div>
+                <input
+                    type="text"
+                    value={initialExplanation}
+                    onChange={(event) => onChange(event.target.value)}
+                />
+            ) : initialExplanation && initialExplanation.trim().length > 0 ? (
+                <input
+                    type="text"
+                    value={initialExplanation}
+                    disabled={true}
+                />
             ) : (
-                <div>
-                    <span>{explanation}</span>
-                    <button onClick={handleEdit}>Edit</button>
-                </div>
+                <input
+                    type="text"
+                    value={"N/A"}
+                    disabled={true}
+                />
             )}
         </div>
     );
