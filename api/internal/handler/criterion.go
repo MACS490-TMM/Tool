@@ -51,6 +51,7 @@ func GetCriteriaHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO - Change to fetch data from database
 	criteriaList := []domain.Criterion{
 		{ID: 1, Name: "Security", Explanation: "Explanation for Security"},
 		{ID: 2, Name: "Usability", Explanation: "Explanation for Usability"},
