@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "name": "Carlie",
+    "role": "Investor Accounts Planner"
+  },
+  {
+    "id": 2,
+    "name": "Lelah",
+    "role": "Lead Infrastructure Planner"
+  },
+  {
+    "id": 3,
+    "name": "Fae",
+    "role": "Dynamic Quality Director"
+  },
+  {
+    "id": 4,
+    "name": "Hortense",
+    "role": "Internal Web Director"
+  },
+  {
+    "id": 5,
+    "name": "Elinore",
+    "role": "Senior Creative Planner"
+  }
+]

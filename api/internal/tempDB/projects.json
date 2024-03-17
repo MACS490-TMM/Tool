@@ -1,0 +1,25 @@
+[
+  {
+    "id":1,
+    "name":"test",
+    "criteria":[],
+    "stakeholders":
+      [
+        {
+          "id":1,
+          "name":"Stakeholder 1",
+          "role":"Some Role"
+        },
+        {"id":2,"name":"Stakeholder 2","role":"Some Role"}],
+    "decisionMakers":
+      [
+        {
+          "id":1,
+          "name":"Decision Maker 1",
+          "role":"Some Role"},
+        {
+          "id":2,
+          "name":"Decision Maker 2",
+          "role":"Some Role"
+        }
+      ],"vendors":[]},{"id":2,"name":"test","criteria":[],"stakeholders":[{"id":1,"name":"Stakeholder 1","role":"Some Role"},{"id":2,"name":"Stakeholder 2","role":"Some Role"}],"decisionMakers":[{"id":1,"name":"Decision Maker 1","role":"Some Role"}],"vendors":[]}]
