@@ -1,29 +1,22 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import './ProjectSetup.css';
 import submitProject from '../ProjectSummary/apiConnection/Project/submitProject';
+import useFetchDecisionMakers from '../ProjectSummary/apiConnection/decisionMakers/useFetchDecisionMakers';
+import useFetchStakeholders from '../ProjectSummary/apiConnection/stakeholders/useFetchStakeholders';
 
 const animatedComponents = makeAnimated();
-
-// Example data
-const stakeholderOptions = [
-    { value: 1, label: 'Stakeholder 1' },
-    { value: 2, label: 'Stakeholder 2' },
-    // Add more stakeholders
-];
-
-const decisionMakerOptions = [
-    { value: 1, label: 'Decision Maker 1' },
-    { value: 2, label: 'Decision Maker 2' },
-    // Add more decision makers
-];
-
-
 const ProjectSetup = () => {
     const [projectName, setProjectName] = useState('');
     const [selectedStakeholders, setSelectedStakeholders] = useState([]);
     const [selectedDecisionMakers, setSelectedDecisionMakers] = useState([]);
+
+    const stakeholders = useFetchStakeholders('http://127.0.0.1:8080/stakeholders');
+    const decisionMakers = useFetchDecisionMakers('http://127.0.0.1:8080/decisionMakers');
+
+    const stakeholderOptions = stakeholders.map(s => ({ value: s.id, label: s.name }));
+    const decisionMakerOptions = decisionMakers.map(dm => ({ value: dm.id, label: dm.name }));
 
     const handleProjectNameChange = (event) => {
         setProjectName(event.target.value);
