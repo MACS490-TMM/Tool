@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./CriteriaDefinition.css";
 import CriteriaDropdown from "../../ProjectSummary/CriteriaDropdown/CriteriaDropdown";
 import ExplanationEditor from "../../ProjectSummary/ExplanationEditor/ExplanationEditor";
@@ -9,8 +9,11 @@ import SaveIcon from "../../../SVGs/save.svg";
 import EditIcon from "../../../SVGs/edit_pen.svg";
 import DeleteIcon from "../../../SVGs/delete_trashcan.svg";
 import SendPlane from "../../../SVGs/send_plane.svg";
+import useFetchProject from "../../ProjectSummary/apiConnection/Project/useFetchProject";
 
-function CriteriaDefinition() {
+function CriteriaDefinition(projectId) {
+
+    const project = useFetchProject(1); // TODO: Replace with the actual project ID
 
     // State to track the index of the criteria being edited
     const [editingIndex, setEditingIndex] = useState(null);
@@ -23,6 +26,22 @@ function CriteriaDefinition() {
 
     // A list of explanations that is currently being edited (temporary storage), initialized with the default explanations
     const [editExplanations, setEditExplanations] = useState(criteriaList.map(c => c.explanation));
+
+    // When project data is fetched and available, populate the selections state
+    useEffect(() => {
+        if (project && project.criteria) {
+            const newSelections = project.criteria.map(criterion => ({
+                id: criterion.id,
+                name: criterion.name,
+                explanation: criterion.explanation,
+                selected: true,
+            }));
+            setSelections(newSelections);
+
+            const newEditExplanations = project.criteria.map(criterion => criterion.explanation);
+            setEditExplanations(newEditExplanations);
+        }
+    }, [project]);
 
     /**
      * Handles the change of the selected criteria for the project in the dropdown
@@ -104,7 +123,7 @@ function CriteriaDefinition() {
      */
     const handleSubmit = async () => {
         try {
-            await submitCriteria(selections)
+            await submitCriteria(project, selections)
                 .then(() => {
                 alert('Criteria submitted successfully');
             });

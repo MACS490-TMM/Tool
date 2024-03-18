@@ -105,36 +105,13 @@ func (h *ProjectHandler) DeleteProject(w http.ResponseWriter, req *http.Request)
 	}
 }
 
-/*func (h *ProjectHandler) UpdateProject(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
-	if req.Method != http.MethodPut {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var project domain.Project
-	if err := json.NewDecoder(req.Body).Decode(&project); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	project, err := h.Service.UpdateProject(project)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-
-	encodeErr := json.NewEncoder(w).Encode(project)
-	if encodeErr != nil {
-		return
-	}
-}*/
-
 func (h *ProjectHandler) UpdateProject(w http.ResponseWriter, req *http.Request) {
 	EnableCORS(w)
+
+	if req.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 
 	if req.Method != http.MethodPut {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

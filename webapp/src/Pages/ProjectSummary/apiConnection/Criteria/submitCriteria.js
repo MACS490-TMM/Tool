@@ -1,12 +1,15 @@
 /**
  * Submits selected criteria to the specified URL.
+ * @param project
  * @param {Array} selections The selected criteria to submit.
  * @param {String} url The URL to submit the data to.
  * @returns {Promise<void>} A promise that resolves when the submission is complete.
  */
-async function submitCriteria(selections, url = 'http://127.0.0.1:8080/criteria') {
+async function submitCriteria(project, selections, url = 'http://127.0.0.1:8080/projects/update') {
     // Filter selections to only include those that are selected
     const filteredSelections = selections.filter(selection => selection.selected);
+
+    url = url + '/' + project.id;
 
     // Validate that there is at least one selected criterion
     if (filteredSelections.length === 0) {
@@ -23,7 +26,7 @@ async function submitCriteria(selections, url = 'http://127.0.0.1:8080/criteria'
 
     try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },

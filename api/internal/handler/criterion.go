@@ -3,23 +3,21 @@ package handler
 import (
 	"api/internal/domain"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
 
 func CriteriaHandler(w http.ResponseWriter, r *http.Request) {
 	EnableCORS(w)
-	if r.Method == "OPTIONS" {
+	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
 
-	if r.Method != "POST" {
+	if r.Method != http.MethodPut {
 		http.Error(w, "Method is not supported.", http.StatusMethodNotAllowed)
 		return
 	}
-	fmt.Println(r.Method)
 
 	var submission domain.Submission
 	err := json.NewDecoder(r.Body).Decode(&submission)
