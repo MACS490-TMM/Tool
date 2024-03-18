@@ -5,6 +5,7 @@ import './ProjectSetup.css';
 import submitProject from '../ProjectSummary/apiConnection/Project/submitProject';
 import useFetchDecisionMakers from '../ProjectSummary/apiConnection/decisionMakers/useFetchDecisionMakers';
 import useFetchStakeholders from '../ProjectSummary/apiConnection/stakeholders/useFetchStakeholders';
+import SendPlane from "../../SVGs/send_plane.svg";
 
 const animatedComponents = makeAnimated();
 const ProjectSetup = () => {
@@ -56,42 +57,56 @@ const ProjectSetup = () => {
 
     return (
         <div className={"project__setup-outer__container"}>
-            <h2>Project Setup</h2>
-            <p>
-                Project Name
-            </p>
-            <div className={"explanation-group"}>
-                <input
-                    type="text"
-                    value={projectName}
-                    onChange={handleProjectNameChange}
-                    placeholder="Project Name"
-                />
+            <div className={"project__setup-inner__container"}>
+                <h2>Project Setup</h2>
+                <p>
+                    Project Name
+                </p>
+                <div className={"project-name__group"}>
+                    <input
+                        type="text"
+                        value={projectName}
+                        onChange={handleProjectNameChange}
+                        placeholder="Project Name"
+                    />
+                </div>
+                <p>
+                    Select Stakeholders
+                </p>
+                <div className={"project-stakeholder__group"}>
+                    <Select
+                        className={"select__stakeholders"}
+                        closeMenuOnSelect={false}
+                        components={animatedComponents}
+                        isMulti
+                        options={stakeholderOptions}
+                        onChange={setSelectedStakeholders}
+                        placeholder="Select Stakeholders"
+                    />
+                </div>
+                <p>
+                    Select Decision Makers
+                </p>
+                <div className={"project-decision-maker__group"}>
+                    <Select
+                        className={"select__decision-makers"}
+                        closeMenuOnSelect={false}
+                        components={animatedComponents}
+                        isMulti
+                        options={decisionMakerOptions}
+                        onChange={setSelectedDecisionMakers}
+                        placeholder="Select Decision Makers"
+                    />
+                </div>
+
+                <button
+                    className={"button-send"}
+                    onClick={handleSubmit}
+                    disabled={projectName === '' || selectedStakeholders.length === 0 || selectedDecisionMakers.length === 0}
+                >
+                    Submit <img src={SendPlane} alt="Submit"/>
+                </button>
             </div>
-            <p>
-                Select Stakeholders
-            </p>
-            <Select
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                isMulti
-                options={stakeholderOptions}
-                onChange={setSelectedStakeholders}
-                placeholder="Select Stakeholders"
-            />
-            <p>
-                Select Decision Makers
-            </p>
-            <Select
-                className={"select__decision__makers"}
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                isMulti
-                options={decisionMakerOptions}
-                onChange={setSelectedDecisionMakers}
-                placeholder="Select Decision Makers"
-            />
-            <button onClick={handleSubmit}>Submit Project</button>
         </div>
     );
 };
