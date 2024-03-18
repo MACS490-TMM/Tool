@@ -79,6 +79,9 @@ function CriteriaDefinition(projectId) {
     const handleRemoveCriteria = (index) => {
         const newSelections = selections.filter((_, i) => i !== index);
         setSelections(newSelections);
+
+        const newEditExplanations = editExplanations.filter((_, i) => i !== index);
+        setEditExplanations(newEditExplanations);
     };
 
     /**
