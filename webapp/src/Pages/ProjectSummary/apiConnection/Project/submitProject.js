@@ -17,6 +17,7 @@ const submitProject = async (projectData, url = 'http://127.0.0.1:8080/projects'
         const result = await response.json();
         console.log('Submission successful', result);
         // Handle success response, possibly navigating to a different page or showing a success message
+        return result;
     } catch (error) {
         console.error('Error submitting the project:', error);
         // Handle error response, possibly showing an error message to the user

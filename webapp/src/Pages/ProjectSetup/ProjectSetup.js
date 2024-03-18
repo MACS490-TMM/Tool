@@ -9,6 +9,7 @@ import SendPlane from "../../SVGs/send_plane.svg";
 
 const animatedComponents = makeAnimated();
 const ProjectSetup = () => {
+    const [createdProject, setCreatedProject] = useState({});
     const [projectName, setProjectName] = useState('');
     const [selectedStakeholders, setSelectedStakeholders] = useState([]);
     const [selectedDecisionMakers, setSelectedDecisionMakers] = useState([]);
@@ -45,10 +46,9 @@ const ProjectSetup = () => {
         };
 
         try {
-            await submitProject(projectData)
-                .then(() => {
-                    alert('Project submitted successfully');
-                });
+            const response = await submitProject(projectData);
+            setCreatedProject(response);
+            alert('Project submitted successfully');
         } catch (error) {
             // Error handling if submitProject throws an error
             alert('Failed to submit project \n' + error.message);
@@ -106,6 +106,11 @@ const ProjectSetup = () => {
                 >
                     Submit <img src={SendPlane} alt="Submit"/>
                 </button>
+
+                <div className={"project__response"}>
+                    <p>Response from the API</p>
+                    {createdProject && createdProject.name ? <p>{createdProject.name}</p> : null}
+                </div>
             </div>
         </div>
     );
