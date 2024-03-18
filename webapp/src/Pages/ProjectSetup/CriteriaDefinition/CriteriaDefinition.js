@@ -127,24 +127,26 @@ function CriteriaDefinition() {
                             handleCriteriaChange={handleCriteriaChange}
                             isOptionDisabled={isOptionDisabled}
                         />
-                        <ExplanationEditor
-                            initialExplanation={editExplanations[index] || ''}
-                            isEditing={editingIndex === index}
-                            onChange={(newText) => handleExplanationChange(index, newText)}
-                        />
-                        {editingIndex === index ? (
-                            <button className={"button-save"}
-                                    onClick={() => handleSaveExplanation(index, editExplanations[index])}>
-                                <img src={SaveIcon} alt="Save"/>
+                        <div className={"explanation-container"}>
+                            <ExplanationEditor
+                                initialExplanation={editExplanations[index] || ''}
+                                isEditing={editingIndex === index}
+                                onChange={(newText) => handleExplanationChange(index, newText)}
+                            />
+                            {editingIndex === index ? (
+                                <button className={"button-save"}
+                                        onClick={() => handleSaveExplanation(index, editExplanations[index])}>
+                                    <img src={SaveIcon} alt="Save"/>
+                                </button>
+                            ) : (
+                                <button className={"button-edit"} onClick={() => setEditingIndex(index)}>
+                                    <img src={EditIcon} alt="Save"/>
+                                </button>
+                            )}
+                            <button className={"button-delete"} onClick={() => handleRemoveCriteria(index)}>
+                                <img src={DeleteIcon} alt="Delete"/>
                             </button>
-                        ) : (
-                            <button className={"button-edit"} onClick={() => setEditingIndex(index)}>
-                                <img src={EditIcon} alt="Save"/>
-                            </button>
-                        )}
-                        <button className={"button-delete"} onClick={() => handleRemoveCriteria(index)}>
-                            <img src={DeleteIcon} alt="Delete"/>
-                        </button>
+                        </div>
                     </div>
                 ))}
                 <AddCriteriaButton onAdd={handleAddCriteria}/>
