@@ -23,7 +23,7 @@ func (h *StakeholderHandler) GetStakeholders(w http.ResponseWriter, req *http.Re
 
 	if getStakeholdersErr != nil {
 		// Log the error for server-side observability
-		log.Printf("Error getting decision makers: %v", getStakeholdersErr)
+		log.Printf("Error getting stakeholders: %v", getStakeholdersErr)
 
 		http.Error(w, getStakeholdersErr.Error(), http.StatusInternalServerError)
 		return
