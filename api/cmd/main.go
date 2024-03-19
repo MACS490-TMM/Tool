@@ -1,83 +1,42 @@
 package main
 
 import (
-	"encoding/json"
+	"api/internal/handler"
+	"api/internal/service"
 	"net/http"
-	"time"
 )
-
-type Item struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	// Add other fields as needed
-}
-
-type File struct {
-	Path string `json:"path"`
-	// Add other fields as needed
-}
-
-func itemHandler(w http.ResponseWriter, req *http.Request) {
-	enableCORS(w)
-	id := req.PathValue("id")
-
-	// Simulating data retrieval
-	item := Item{ID: id, Name: "Item Name"} // Replace with actual data retrieval logic
-
-	// Convert data to JSON
-	jsonBytes, err := json.Marshal(item)
-	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	// Set content type header
-	w.Header().Set("Content-Type", "application/json")
-
-	// Write JSON response
-	_, err = w.Write(jsonBytes)
-	if err != nil {
-		return
-	}
-	println(time.Now().Format("2006-01-02 15:04:05"), " Successfully sent response!")
-}
-
-func filesHandler(w http.ResponseWriter, req *http.Request) {
-	enableCORS(w)
-	path := req.PathValue("path")
-
-	// Simulating data retrieval
-	file := File{Path: path} // Replace with actual data retrieval logic
-
-	// Convert data to JSON
-	jsonBytes, err := json.Marshal(file)
-	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	// Set content type header
-	w.Header().Set("Content-Type", "application/json")
-
-	// Write JSON response
-	_, err = w.Write(jsonBytes)
-	if err != nil {
-		return
-	}
-	println(time.Now().Format("2006-01-02 15:04:05"), " Successfully sent response!")
-}
-
-func enableCORS(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-}
 
 func main() {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/items/{id}", itemHandler)
-	mux.HandleFunc("/files/{path}", filesHandler)
+	projectService := service.NewFileProjectService("internal/tempDB/projects.json")
+	projectHandler := &handler.ProjectHandler{Service: projectService}
+
+	decisionMakerService := service.NewFileDecisionMakerService("internal/tempDB/decisionMakers.json")
+	decisionMakerHandler := &handler.DecisionMakerHandler{Service: decisionMakerService}
+
+	stakeholderService := service.NewFileStakeholderService("internal/tempDB/stakeholders.json")
+	stakeholderHandler := &handler.StakeholderHandler{Service: stakeholderService}
+
+	vendorService := service.NewFileVendorService("internal/tempDB/vendors.json")
+	vendorHandler := &handler.VendorHandler{Service: vendorService}
+
+	// TODO: update endpoints to have version number etc
+	mux.HandleFunc("/items/{id}", handler.ItemHandler)
+	mux.HandleFunc("/files/{path}", handler.FilesHandler)
+	mux.HandleFunc("/criteria", handler.CriteriaHandler)
+	mux.HandleFunc("/api/criteria", handler.GetCriteriaHandler)
+	mux.HandleFunc("/projects", projectHandler.CreateProject)
+	mux.HandleFunc("/projects/{id}", projectHandler.GetProject)
+	mux.HandleFunc("/projects/delete/{id}", projectHandler.DeleteProject)
+	mux.HandleFunc("/projects/update/{id}", projectHandler.UpdateProject)
+	mux.HandleFunc("/decisionMakers", decisionMakerHandler.GetDecisionMakers)
+	mux.HandleFunc("/stakeholders", stakeholderHandler.GetStakeholders)
+	mux.HandleFunc("/vendors", vendorHandler.GetVendors)
+	mux.HandleFunc("/newVendor", vendorHandler.CreateVendor)
+	//mux.HandleFunc("/vendors/{id}", vendorHandler.GetVendor)
+	//mux.HandleFunc("/vendors/delete/{id}", vendorHandler.DeleteVendor)
+	//mux.HandleFunc("/vendors/update/{id}", vendorHandler.UpdateVendor)
 
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
