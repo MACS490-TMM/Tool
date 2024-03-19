@@ -21,7 +21,7 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path={"/project/summary"} element={<ProjectSummary />} />
                         <Route path={"/project/setup"} element={<ProjectSetup />} />
-                        <Route path={"/project/setup/criteriaDefinition"} element={<CriteriaDefinition />} />
+                        <Route path={"/project/setup/criteriaDefinition/:projectId"} element={<CriteriaDefinition />} />
                         <Route path={"/project/decision making"} element={<div>Decision Making</div>}/>
                     </Routes>
                 </Suspense>

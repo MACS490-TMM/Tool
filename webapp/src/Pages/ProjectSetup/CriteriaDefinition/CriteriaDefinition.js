@@ -10,10 +10,13 @@ import EditIcon from "../../../SVGs/edit_pen.svg";
 import DeleteIcon from "../../../SVGs/delete_trashcan.svg";
 import SendPlane from "../../../SVGs/send_plane.svg";
 import useFetchProject from "../../ProjectSummary/apiConnection/Project/useFetchProject";
+import {useParams} from "react-router-dom";
 
-function CriteriaDefinition(projectId) {
+function CriteriaDefinition() {
 
-    const project = useFetchProject(1); // TODO: Replace with the actual project ID
+    let { projectId } = useParams();
+
+    const project = useFetchProject(projectId);
 
     // State to track the index of the criteria being edited
     const [editingIndex, setEditingIndex] = useState(null);
