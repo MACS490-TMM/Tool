@@ -6,6 +6,7 @@ import ProjectSummary from "./Pages/ProjectSummary/ProjectSummary";
 import NavBar from "./Components/NavBar/NavBar";
 import CriteriaDefinition from "./Pages/ProjectSetup/CriteriaDefinition/CriteriaDefinition";
 import ProjectSetup from "./Pages/ProjectSetup/ProjectSetup";
+import CriteriaScoring from "./Pages/CriteriaScoring/CriteriaScoring";
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                         <Route path={"/project/setup"} element={<ProjectSetup />} />
                         <Route path={"/project/setup/criteriaDefinition/:projectId"} element={<CriteriaDefinition />} />
                         <Route path={"/project/decision making"} element={<div>Decision Making</div>}/>
+                        <Route path={"/project/:projectId/criteriaRanking"} element={<CriteriaScoring />}/>
                     </Routes>
                 </Suspense>
             </main>
