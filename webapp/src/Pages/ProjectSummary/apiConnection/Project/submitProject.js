@@ -1,3 +1,9 @@
+/**
+ * Submits the project data to the server
+ * @param projectData The project data to submit
+ * @param url The URL to submit the data to
+ * @returns {Promise<any>} A promise that resolves when the submission is complete
+ */
 const submitProject = async (projectData, url = 'http://127.0.0.1:8080/projects') => {
     try {
         const response = await fetch(url, { // Use your actual API endpoint

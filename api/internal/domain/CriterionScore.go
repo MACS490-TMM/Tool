@@ -1,0 +1,8 @@
+package domain
+
+type CriterionScore struct {
+	ProjectID       int `json:"projectId"`
+	CriterionID     int `json:"criterionId"`
+	DecisionMakerID int `json:"decisionMakerId"`
+	Score           int `json:"score"`
+}

@@ -21,6 +21,9 @@ func main() {
 	vendorService := service.NewFileVendorService("internal/tempDB/vendors.json")
 	vendorHandler := &handler.VendorHandler{Service: vendorService}
 
+	criteriaScoringService := service.NewFileCriteriaScoringService("internal/tempDB/criteriaScores.json")
+	criteriaScoringHandler := &handler.CriteriaScoringHandler{Service: criteriaScoringService}
+
 	// TODO: update endpoints to have version number etc
 	mux.HandleFunc("/items/{id}", handler.ItemHandler)
 	mux.HandleFunc("/files/{path}", handler.FilesHandler)
@@ -37,6 +40,8 @@ func main() {
 	//mux.HandleFunc("/vendors/{id}", vendorHandler.GetVendor)
 	//mux.HandleFunc("/vendors/delete/{id}", vendorHandler.DeleteVendor)
 	//mux.HandleFunc("/vendors/update/{id}", vendorHandler.UpdateVendor)
+	mux.HandleFunc("/projects/{projectId}/criteria/{criterionId}/scores", criteriaScoringHandler.GetCriteriaScores)
+	mux.HandleFunc("/projects/{projectId}/decisionMaker/{decisionMakerId}/scores", criteriaScoringHandler.AddCriteriaScores)
 
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
