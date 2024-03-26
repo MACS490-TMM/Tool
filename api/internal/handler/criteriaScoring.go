@@ -94,10 +94,14 @@ func (h *CriteriaScoringHandler) AddCriteriaScores(w http.ResponseWriter, req *h
 		return
 	}
 
-	var criteriaScores []domain.CriterionScore
+	var criteriaScores []domain.CriterionScore // ProjectID, CriterionID, DecisionMakerID, Score, TextExtracted, Comments
 	if err := json.NewDecoder(req.Body).Decode(&criteriaScores); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	}
+
+	for i := range criteriaScores {
+		criteriaScores[i].ProjectID = projectID
 	}
 
 	err := h.Service.AddOrUpdateCriteriaScores(projectID, decisionMakerID, criteriaScores)

@@ -13,10 +13,12 @@ async function submitCriteriaScoring(projectId, decisionMakerId, criteria, url =
         throw new Error('At least one criterion must be included before submitting.');
     }
 
-    const data = criteria.map(({ id, score }) => ({
+    const data = criteria.map(({ id, score, textExtracted, comments }) => ({
         criterionId: id,
         decisionMakerId,
         score,
+        textExtracted,
+        comments
     }));
 
     try {

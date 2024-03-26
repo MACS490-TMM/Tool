@@ -105,11 +105,15 @@ func (s *FileCriteriaScoringService) AddOrUpdateCriteriaScores(projectID int, de
 		if existingScore, found := scoreMap[newScore.CriterionID]; found {
 			// Update existing score
 			existingScore.Score = newScore.Score
+			existingScore.TextExtracted = newScore.TextExtracted
+			existingScore.Comments = newScore.Comments
 		} else {
 			// Add new score (make sure to set ProjectID and DecisionMakerID)
 			newScore.ProjectID = projectID
 			newScore.DecisionMakerID = decisionMakerID
 			existingScores = append(existingScores, newScore)
+			existingScore.TextExtracted = newScore.TextExtracted
+			existingScore.Comments = newScore.Comments
 		}
 	}
 
