@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import useFetchProject from "../ProjectSummary/apiConnection/Project/useFetchProject";
 import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScoreInput";
 import submitCriteriaScoring from "../ProjectSummary/apiConnection/Criteria/submitCriteriaScoring";
+import "./CriteriaScoring.css";
 
 function CriteriaScoring() {
     let { projectId } = useParams();
@@ -49,19 +50,30 @@ function CriteriaScoring() {
     };
 
     return (
-        <div>
-            {criteria.map(criterion => (
-                <div key={criterion.id}>
-                    <h3>{criterion.name}</h3>
-                    <p>{criterion.explanation}</p>
-                    <CriteriaScoreInput
-                        criterionId={criterion.id}
-                        currentScore={criterion.score}
-                        onScoreChange={handleScoreChange}
-                    />
-                </div>
-            ))}
-            <button onClick={handleSubmitScores}>Submit Scores</button>
+        <div className={"criteria-scoring__outer-container"}>
+            <div className={"criteria-scoring__container"}>
+                {criteria.map(criterion => (
+                    <div key={criterion.id}>
+                        <h3>{criterion.name}</h3>
+                        <p>{criterion.explanation}</p>
+                        <CriteriaScoreInput
+                            criterionId={criterion.id}
+                            currentScore={criterion.score}
+                            onScoreChange={handleScoreChange}
+                        />
+                        <div className={"text-extraction__container"}>
+                            <textarea placeholder={"Enter text extraction here"}/>
+                        </div>
+                        <div className={"criteria-comments__container"}>
+                            <textarea placeholder={"Enter comments here"}/>
+                        </div>
+                    </div>
+                ))}
+                <button onClick={handleSubmitScores}>Submit Scores</button>
+            </div>
+            <div className={"documents__container"}>
+                Preview of text
+            </div>
         </div>
     );
 }

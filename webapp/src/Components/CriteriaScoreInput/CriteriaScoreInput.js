@@ -1,10 +1,11 @@
 import React from "react";
+import "./CriteriaScoreInput.css";
 
 function CriteriaScoreInput({ criterionId, currentScore, onScoreChange }) {
     return (
-        <div>
+        <div className={"criteria-score__input__container"}>
             {Array.from({ length: 9 }, (_, index) => index + 1).map(score => (
-                <label key={score}>
+                <label className={"radio-button__container"} key={score}>
                     <input
                         type="radio"
                         name={`score-${criterionId}`}
@@ -12,6 +13,7 @@ function CriteriaScoreInput({ criterionId, currentScore, onScoreChange }) {
                         checked={currentScore === score}
                         onChange={(e) => onScoreChange(criterionId, parseInt(e.target.value, 10))}
                     />
+                    <span className="checkmark"></span>
                     {score}
                 </label>
             ))}
