@@ -12,6 +12,8 @@ type PDFHandler struct {
 }
 
 func (h *PDFHandler) ServePDF(w http.ResponseWriter, req *http.Request) {
+	EnableCORS(w)
+
 	projectId := req.PathValue("projectId")
 	pdfId := req.PathValue("pdfId")
 
