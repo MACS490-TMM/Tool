@@ -7,7 +7,7 @@
  * @returns {Promise<void>} A promise that resolves when the submission is complete.
  */
 async function submitCriteriaScoring(projectId, decisionMakerId, criteria, url = 'http://127.0.0.1:8080/projects') {
-    url = url + '/' + projectId + "/decisionMaker/" + decisionMakerId + "/scores";
+    url = url + `/${projectId}/decisionMaker/${decisionMakerId}/scores`;
 
     if (criteria.length === 0) {
         throw new Error('At least one criterion must be included before submitting.');
@@ -34,12 +34,12 @@ async function submitCriteriaScoring(projectId, decisionMakerId, criteria, url =
             throw new Error('Failed to submit criteria scores');
         }
 
-        // Handle success
+        // TODO: Handle success
         console.log('Scores submitted successfully');
         // Possibly navigate to another route or display a success message
     } catch (error) {
         console.error('Error submitting criteria scores:', error);
-        // Handle error, possibly by showing an error message to the user
+        alert('Failed to submit criteria scores, please try again.');
     }
 }
 

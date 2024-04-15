@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import useFetchProject from "../ProjectSummary/apiConnection/Project/useFetchProject";
 import useProjectCriteria from "../ProjectSummary/apiConnection/criteriaScoring/useProjectCriteria";  // Import the custom hook
 import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScoreInput";
-import submitCriteriaScoring from "../ProjectSummary/apiConnection/Criteria/submitCriteriaScoring";
+import submitCriteriaScoring from "../ProjectSummary/apiConnection/criteriaScoring/submitCriteriaScoring";
 import "./CriteriaScoring.css";
+import PDFViewer from "../../Components/PDFPreview/PDFPreview";
 
 function CriteriaScoring() {
     let { projectId } = useParams();
     const [criteria, setCriteria] = useState([]);
     const project = useFetchProject(projectId);
     const decisionMakerId = 1; // TODO: Get the decision maker ID from the user
+    const [activePDF, setActivePDF] = useState('RFP'); // Added state for active PDF
 
     // Custom hook to manage project criteria
     useProjectCriteria(project, setCriteria);
+
+    const handleChangeActivePDF = (pdfType) => {
+        setActivePDF(pdfType);
+    };
 
     /**
      * Handles the change of a criterion's score.
@@ -79,7 +85,15 @@ function CriteriaScoring() {
                 <button onClick={handleSubmitScores}>Submit Scores</button>
             </div>
             <div className={"documents__container"}>
-                Preview of text
+                <div>
+                    <button onClick={() => handleChangeActivePDF('RFP')}>RFP</button>
+                    <button onClick={() => handleChangeActivePDF('VP')}>VP</button>
+                </div>
+                {activePDF === 'RFP' ? (
+                    <PDFViewer url={`http://localhost:8080/projects/${projectId}/pdf/test`} />
+                ) : (
+                    <PDFViewer url={`http://localhost:8080/projects/${projectId}/pdf/test2`} />
+                )}
             </div>
         </div>
     );
