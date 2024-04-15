@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import {useNavigate} from "react-router-dom";
 
 function Home() {
     // Define state to store API response
     const [data, setData] = useState(null);
+
+    const navigate = useNavigate();
+
+    const handleButtonClick = (projectId) => {
+        navigate(`/project/${projectId}/criteriaRanking`);
+    };
 
     // Function to fetch data from API
     const fetchData = async (isMounted, url) => {
@@ -24,22 +31,9 @@ function Home() {
         }
     };
 
-    /*
-    useEffect(() => {
-        fetch('http://127.0.0.1:8080/items/1')
-            .then(response => response.json())
-            .then(jsonData => {
-                setData(jsonData);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-    }, []);
-    */
-
     // Fetch data when component mounts
     useEffect(() => {
-        let url = 'http://127.0.0.1:8080/items/1';
+        let url = 'http://127.0.0.1:8080/projects';
         let isMounted = true;
         fetchData(isMounted, url).then(r => console.log('Data fetched:', r));
         return () => {
@@ -50,11 +44,14 @@ function Home() {
     return (
         <div>
             <h1>Home</h1>
-            {data && (
-                <div>
-                    <h2>{data.name}</h2>
+            {data && data.map((project) => (
+                <div key={project.id}>
+                    <h1>{`Project ${project.id}:`}</h1>
+                    <button onClick={() => handleButtonClick(project.id)}>
+                        {`Go to Criteria Ranking for Project ${project.id}`}
+                    </button>
                 </div>
-            )}
+            ))}
         </div>
     );
 }

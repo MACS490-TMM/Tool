@@ -13,6 +13,7 @@ import (
 type ProjectService interface {
 	CreateProject(project domain.Project) (domain.Project, error)
 	GetProject(id int) (domain.Project, error)
+	GetProjects() ([]domain.Project, error)
 	DeleteProject(id int) error
 	UpdateProject(id int, update domain.ProjectUpdate) (domain.Project, error)
 	// Other methods as needed (UpdateProject, DeleteProject, ListProjects, etc.)
@@ -111,6 +112,18 @@ func (s *FileProjectService) GetProject(id int) (domain.Project, error) {
 	}
 
 	return domain.Project{}, errors.New("project not found")
+}
+
+func (s *FileProjectService) GetProjects() ([]domain.Project, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	projects, err := s.readProjects()
+	if err != nil {
+		return nil, err
+	}
+
+	return projects, nil
 }
 
 // DeleteProject TODO: Change the implementation to use a database instead of a file

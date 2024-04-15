@@ -75,6 +75,27 @@ func (h *ProjectHandler) GetProject(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func (h *ProjectHandler) GetProjects(w http.ResponseWriter, req *http.Request) {
+	EnableCORS(w)
+
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	projects, err := h.Service.GetProjects()
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	encodeErr := json.NewEncoder(w).Encode(projects)
+	if encodeErr != nil {
+		return
+	}
+}
+
 func (h *ProjectHandler) DeleteProject(w http.ResponseWriter, req *http.Request) {
 	EnableCORS(w)
 
