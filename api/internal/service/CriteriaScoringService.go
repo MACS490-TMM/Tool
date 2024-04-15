@@ -80,23 +80,22 @@ func (s *FileCriteriaScoringService) GetSpecificCriteriaScores(projectID int, cr
 	return specificScores, nil
 }
 
-// AddOrUpdateCriteriaScores TODO: Change the implementation to use a database instead of a file
 func (s *FileCriteriaScoringService) AddOrUpdateCriteriaScores(projectID int, decisionMakerID int, newScores []domain.CriterionScore) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	// Read the existing scores from the file
-	existingScores, err := s.readCriteriaScoring()
+	criteriaScores, err := s.readCriteriaScoring()
 	if err != nil {
 		return err
 	}
 
 	// Create a map for easier lookup of existing scores by criterionId
 	scoreMap := make(map[int]*domain.CriterionScore)
-	for i := range existingScores {
+	for i := range criteriaScores {
 		// Only consider scores for the specific project and decision maker
-		if existingScores[i].ProjectID == projectID && existingScores[i].DecisionMakerID == decisionMakerID {
-			scoreMap[existingScores[i].CriterionID] = &existingScores[i]
+		if criteriaScores[i].ProjectID == projectID && criteriaScores[i].DecisionMakerID == decisionMakerID {
+			scoreMap[criteriaScores[i].CriterionID] = &criteriaScores[i]
 		}
 	}
 
@@ -108,15 +107,19 @@ func (s *FileCriteriaScoringService) AddOrUpdateCriteriaScores(projectID int, de
 			existingScore.TextExtracted = newScore.TextExtracted
 			existingScore.Comments = newScore.Comments
 		} else {
-			// Add new score (make sure to set ProjectID and DecisionMakerID)
-			newScore.ProjectID = projectID
-			newScore.DecisionMakerID = decisionMakerID
-			existingScores = append(existingScores, newScore)
-			existingScore.TextExtracted = newScore.TextExtracted
-			existingScore.Comments = newScore.Comments
+			score := domain.CriterionScore{
+				// Add new score
+				ProjectID:       projectID,
+				CriterionID:     newScore.CriterionID,
+				DecisionMakerID: decisionMakerID,
+				Score:           newScore.Score,
+				TextExtracted:   newScore.TextExtracted,
+				Comments:        newScore.Comments,
+			}
+			criteriaScores = append(criteriaScores, score)
 		}
 	}
 
 	// Write the updated scores back to the file
-	return s.writeCriteriaScoring(existingScores)
+	return s.writeCriteriaScoring(criteriaScores)
 }
