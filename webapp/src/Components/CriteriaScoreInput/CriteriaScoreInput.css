@@ -1,0 +1,56 @@
+/* Radio button styling is motivated from: https://www.w3schools.com/howto/howto_css_custom_checkbox.asp */
+
+.criteria-score__input__container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.radio-button__container {
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    display: inline-flex;
+    align-items: center;
+}
+
+.radio-button__container input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: relative;
+    height: 18px;
+    width: 18px;
+    background-color: #eee;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.radio-button__container .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2684FF;
+}
+
+.radio-button__container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.radio-button__container:hover input ~ .checkmark:after {
+    display: block;
+    background-color: #5fa4ff;
+}

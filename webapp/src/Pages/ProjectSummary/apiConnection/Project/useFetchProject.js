@@ -15,7 +15,6 @@ function useFetchProject(projectId, fetchUrl = 'http://localhost:8080/projects')
 
             if (isMounted.current) { // Using ref to check if component is still mounted
                 setData(jsonData);
-                console.log('Data fetched:', jsonData);
             }
         } catch (error) {
             if (isMounted.current) { // Only log errors if the component is still mounted
@@ -29,7 +28,7 @@ function useFetchProject(projectId, fetchUrl = 'http://localhost:8080/projects')
         const isMounted = { current: true };
 
         fetchData(isMounted, url, setProject)
-            .then(r => console.log('Data fetched:', r));
+            .then(r => console.log('Project fetched successfully', r));
 
         // Cleanup function to set isMounted to false when the component unmounts
         return () => {
