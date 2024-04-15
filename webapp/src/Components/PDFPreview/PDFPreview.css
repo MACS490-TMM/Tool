@@ -1,0 +1,16 @@
+.pdf-viewer__outer-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    min-height: 500px;
+}
+
+.pdf-iframe {
+    width: 100%;
+    height: auto;
+    border: none;
+    padding: 0;
+    border-radius: 5px;
+    margin: 20px auto;
+    overflow-y: auto;
+}
