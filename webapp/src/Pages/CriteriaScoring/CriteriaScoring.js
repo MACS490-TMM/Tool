@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useFetchProject from "../ProjectSummary/apiConnection/Project/useFetchProject";
+import useProjectCriteria from "../ProjectSummary/apiConnection/criteriaScoring/useProjectCriteria";  // Import the custom hook
 import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScoreInput";
 import submitCriteriaScoring from "../ProjectSummary/apiConnection/Criteria/submitCriteriaScoring";
 import "./CriteriaScoring.css";
@@ -11,19 +12,8 @@ function CriteriaScoring() {
     const project = useFetchProject(projectId);
     const decisionMakerId = 1; // TODO: Get the decision maker ID from the user
 
-    // When project data is fetched and available, populate the criteria state
-    useEffect(() => {
-        if (project && project.criteria) {
-            const updatedCriteria = project.criteria.map(criterion => ({
-                ...criterion,
-                score: criterion.score ? criterion.score : null,
-                textExtracted: criterion.textExtracted ? criterion.textExtracted : "",
-                comments: criterion.comments ? criterion.comments : ""
-            }));
-            console.log(updatedCriteria);
-            setCriteria(updatedCriteria);
-        }
-    }, [project]);
+    // Custom hook to manage project criteria
+    useProjectCriteria(project, setCriteria);
 
     /**
      * Handles the change of a criterion's score.
