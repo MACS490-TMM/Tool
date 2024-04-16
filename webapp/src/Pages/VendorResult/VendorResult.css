@@ -1,0 +1,81 @@
+.vendor-result {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.vendor-list {
+    list-style: none;
+    padding: 0;
+}
+
+.vendor-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.rank {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.details {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+}
+
+.details-button {
+    margin-left: 10px;
+    /* Add additional button styles */
+}
+
+.contact-button img {
+    width: 24px;
+    height: 24px;
+    margin-left: 8px;
+    filter: invert(100%);
+}
+
+.details-button img {
+    width: 24px;
+    height: 24px;
+    margin-left: 8px;
+    filter: invert(100%);
+}
+
+.contact-button, .details-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 8px 16px 8px 24px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.contact-button:hover {
+    background-color: #0056b3;
+}
+
+.contact-button:disabled img {
+    opacity: 0.5;
+}
+
+.contact-button:disabled {
+    background-color: #ccc;
+    color: #777777;
+    cursor: not-allowed;
+}

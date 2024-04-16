@@ -27,6 +27,9 @@ func main() {
 	pdfService := service.NewFilePDFService("internal/tempDB/fileStorage/")
 	pdfHandler := &handler.PDFHandler{Service: pdfService}
 
+	vendorRankingService := service.NewFileVendorRankingService("internal/tempDB/vendorRanking.json")
+	vendorRankingHandler := &handler.VendorRankingHandler{Service: vendorRankingService}
+
 	// TODO: update endpoints to have version number etc
 	mux.HandleFunc("/items/{id}", handler.ItemHandler)
 	mux.HandleFunc("/files/{path}", handler.FilesHandler)
@@ -35,8 +38,8 @@ func main() {
 	mux.HandleFunc("/newProject", projectHandler.CreateProject)
 	mux.HandleFunc("/projects", projectHandler.GetProjects)
 	mux.HandleFunc("/projects/{id}", projectHandler.GetProject)
-	mux.HandleFunc("/projects/delete/{id}", projectHandler.DeleteProject)
-	mux.HandleFunc("/projects/update/{id}", projectHandler.UpdateProject)
+	mux.HandleFunc("/projects/{id}/delete", projectHandler.DeleteProject)
+	mux.HandleFunc("/projects/{id}/update", projectHandler.UpdateProject)
 	mux.HandleFunc("/decisionMakers", decisionMakerHandler.GetDecisionMakers)
 	mux.HandleFunc("/stakeholders", stakeholderHandler.GetStakeholders)
 	mux.HandleFunc("/vendors", vendorHandler.GetVendors)
@@ -47,6 +50,7 @@ func main() {
 	mux.HandleFunc("/projects/{projectId}/criteria/{criterionId}/scores", criteriaScoringHandler.GetCriteriaScores)
 	mux.HandleFunc("/projects/{projectId}/decisionMaker/{decisionMakerId}/scores", criteriaScoringHandler.AddCriteriaScores)
 	mux.HandleFunc("/projects/{projectId}/pdf/{pdfId}", pdfHandler.ServePDF)
+	mux.HandleFunc("/projects/{projectId}/vendorRanking", vendorRankingHandler.GetVendorRankings)
 
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
