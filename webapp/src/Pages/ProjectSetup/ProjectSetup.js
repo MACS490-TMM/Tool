@@ -14,8 +14,8 @@ const ProjectSetup = () => {
     const [selectedStakeholders, setSelectedStakeholders] = useState([]);
     const [selectedDecisionMakers, setSelectedDecisionMakers] = useState([]);
 
-    const stakeholders = useFetchStakeholders('http://127.0.0.1:8080/stakeholders');
-    const decisionMakers = useFetchDecisionMakers('http://127.0.0.1:8080/decisionMakers');
+    const stakeholders = useFetchStakeholders('http://localhost:8080/stakeholders');
+    const decisionMakers = useFetchDecisionMakers('http://localhost:8080/decisionMakers');
 
     const stakeholderOptions = stakeholders.map(s => ({ value: s.id, label: s.name }));
     const decisionMakerOptions = decisionMakers.map(dm => ({ value: dm.id, label: dm.name }));

@@ -4,13 +4,14 @@
  * @param url The URL to submit the data to
  * @returns {Promise<any>} A promise that resolves when the submission is complete
  */
-const submitProject = async (projectData, url = 'http://127.0.0.1:8080/newProject') => {
+const submitProject = async (projectData, url = 'http://localhost:8080/newProject') => {
     try {
         const response = await fetch(url, { // Use your actual API endpoint
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',  // Ensures cookies are sent with the request
             body: JSON.stringify(projectData),
         });
 

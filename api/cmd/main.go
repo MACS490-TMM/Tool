@@ -9,6 +9,14 @@ import (
 func main() {
 	mux := http.NewServeMux()
 
+	// Set up CORS middleware with allowed origins
+	allowedOrigins := []string{"http://localhost:3000"}
+	corsMiddleware := handler.EnableCORS(allowedOrigins)
+
+	// Set up authentication middleware
+	authMiddleware := handler.AuthenticateToken
+
+	// Service and Handler initializations
 	projectService := service.NewFileProjectService("internal/tempDB/projects.json")
 	projectHandler := &handler.ProjectHandler{Service: projectService}
 
@@ -30,30 +38,33 @@ func main() {
 	vendorRankingService := service.NewFileVendorRankingService("internal/tempDB/vendorRanking.json")
 	vendorRankingHandler := &handler.VendorRankingHandler{Service: vendorRankingService}
 
-	// TODO: update endpoints to have version number etc
-	mux.HandleFunc("/items/{id}", handler.ItemHandler)
-	mux.HandleFunc("/files/{path}", handler.FilesHandler)
-	mux.HandleFunc("/criteria", handler.CriteriaHandler)
-	mux.HandleFunc("/api/criteria", handler.GetCriteriaHandler)
-	mux.HandleFunc("/newProject", projectHandler.CreateProject)
-	mux.HandleFunc("/projects", projectHandler.GetProjects)
-	mux.HandleFunc("/projects/{id}", projectHandler.GetProject)
-	mux.HandleFunc("/projects/{id}/delete", projectHandler.DeleteProject)
-	mux.HandleFunc("/projects/{id}/update", projectHandler.UpdateProject)
-	mux.HandleFunc("/decisionMakers", decisionMakerHandler.GetDecisionMakers)
-	mux.HandleFunc("/stakeholders", stakeholderHandler.GetStakeholders)
-	mux.HandleFunc("/vendors", vendorHandler.GetVendors)
-	mux.HandleFunc("/newVendor", vendorHandler.CreateVendor)
-	//mux.HandleFunc("/vendors/{id}", vendorHandler.GetVendor)
-	//mux.HandleFunc("/vendors/delete/{id}", vendorHandler.DeleteVendor)
-	//mux.HandleFunc("/vendors/update/{id}", vendorHandler.UpdateVendor)
-	mux.HandleFunc("/projects/{projectId}/criteria/{criterionId}/scores", criteriaScoringHandler.GetCriteriaScores)
-	mux.HandleFunc("/projects/{projectId}/decisionMaker/{decisionMakerId}/scores", criteriaScoringHandler.AddCriteriaScores)
-	mux.HandleFunc("/projects/{projectId}/pdf/{pdfId}", pdfHandler.ServePDF)
-	mux.HandleFunc("/projects/{projectId}/vendorRanking", vendorRankingHandler.GetVendorRankings)
+	authenticationService := service.NewFileAuthenticationService("internal/tempDB/users.json")
+	authenticationHandler := &handler.LoginHandler{AuthService: authenticationService}
 
-	err := http.ListenAndServe(":8080", mux)
-	if err != nil {
+	// Routing setup with CORS and authentication middleware
+	// TODO: Add different authentication middleware for different user roles
+	mux.Handle("/items/{id}", corsMiddleware(authMiddleware(http.HandlerFunc(handler.ItemHandler))))
+	mux.Handle("/files/{path}", corsMiddleware(authMiddleware(http.HandlerFunc(handler.FilesHandler))))
+	mux.Handle("/criteria", corsMiddleware(authMiddleware(http.HandlerFunc(handler.CriteriaHandler))))
+	mux.Handle("/api/criteria", corsMiddleware(authMiddleware(http.HandlerFunc(handler.GetCriteriaHandler))))
+
+	mux.Handle("/newProject", corsMiddleware(authMiddleware(http.HandlerFunc(projectHandler.CreateProject))))
+	mux.Handle("/projects", corsMiddleware(authMiddleware(http.HandlerFunc(projectHandler.GetProjects))))
+	mux.Handle("/projects/{id}", corsMiddleware(authMiddleware(http.HandlerFunc(projectHandler.GetProject))))
+	mux.Handle("/projects/{id}/delete", corsMiddleware(authMiddleware(http.HandlerFunc(projectHandler.DeleteProject))))
+	mux.Handle("/projects/{id}/update", corsMiddleware(authMiddleware(http.HandlerFunc(projectHandler.UpdateProject))))
+	mux.Handle("/decisionMakers", corsMiddleware(authMiddleware(http.HandlerFunc(decisionMakerHandler.GetDecisionMakers))))
+	mux.Handle("/stakeholders", corsMiddleware(authMiddleware(http.HandlerFunc(stakeholderHandler.GetStakeholders))))
+	mux.Handle("/vendors", corsMiddleware(authMiddleware(http.HandlerFunc(vendorHandler.GetVendors))))
+	mux.Handle("/newVendor", corsMiddleware(authMiddleware(http.HandlerFunc(vendorHandler.CreateVendor))))
+	mux.Handle("/projects/{projectId}/criteria/{criterionId}/scores", corsMiddleware(authMiddleware(http.HandlerFunc(criteriaScoringHandler.GetCriteriaScores))))
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/scores", corsMiddleware(authMiddleware(http.HandlerFunc(criteriaScoringHandler.AddCriteriaScores))))
+	mux.Handle("/projects/{projectId}/pdf/{pdfId}", corsMiddleware(authMiddleware(http.HandlerFunc(pdfHandler.ServePDF))))
+	mux.Handle("/projects/{projectId}/vendorRanking", corsMiddleware(authMiddleware(http.HandlerFunc(vendorRankingHandler.GetVendorRankings))))
+	mux.Handle("/login", corsMiddleware(http.HandlerFunc(authenticationHandler.ServeHTTP)))
+
+	listenAndServeErr := http.ListenAndServe(":8080", mux)
+	if listenAndServeErr != nil {
 		return
 	}
 }

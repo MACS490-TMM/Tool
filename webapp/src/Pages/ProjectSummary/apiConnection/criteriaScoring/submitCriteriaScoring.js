@@ -6,7 +6,7 @@
  * @param {String} url The URL to submit the data to.
  * @returns {Promise<void>} A promise that resolves when the submission is complete.
  */
-async function submitCriteriaScoring(projectId, decisionMakerId, criteria, url = 'http://127.0.0.1:8080/projects') {
+async function submitCriteriaScoring(projectId, decisionMakerId, criteria, url = 'http://localhost:8080/projects') {
     url = url + `/${projectId}/decisionMaker/${decisionMakerId}/scores`;
 
     if (criteria.length === 0) {
@@ -27,6 +27,7 @@ async function submitCriteriaScoring(projectId, decisionMakerId, criteria, url =
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',  // Ensures cookies are sent with the request
             body: JSON.stringify(data),
         });
 

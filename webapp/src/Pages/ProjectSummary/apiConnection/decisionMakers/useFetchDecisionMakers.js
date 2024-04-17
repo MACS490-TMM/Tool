@@ -4,7 +4,13 @@ function useFetchDecisionMakers(fetchUrl) {
     const [decisionMakers, setDecisionMakers] = useState([]);
     const fetchData = async (isMounted, fetchUrl, setData) => {
         try {
-            const response = await fetch(fetchUrl);
+            const response = await fetch(fetchUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',  // Ensures cookies are sent with the request
+            });
             if (!response.ok) {
                 throw new Error('Failed to fetch decision makers');
             }

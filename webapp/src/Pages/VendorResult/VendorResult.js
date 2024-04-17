@@ -11,10 +11,20 @@ function VendorResult() {
 
     // Fetch data when component mounts
     useEffect(() => {
-        let url = `http://127.0.0.1:8080/projects/${projectId}/vendorRanking`;
+        let url = `http://localhost:8080/projects/${projectId}/vendorRanking`;
         let isMounted = true;
+
         fetchData(isMounted, url)
-            .then(r => setData(r));
+            .then(r => {
+                console.log("Response: ", r); // Log the response
+                return r; // Return the response to pass it down the promise chain
+            })
+            .then(data => {
+                setData(data); // Set the data
+            })
+            .catch(error => { console.log("Error here: " + error) });
+
+
         return () => {
             isMounted = false; // Set isMounted to false when component unmounts
         };

@@ -14,7 +14,13 @@ function Home() {
     // Function to fetch data from API
     const fetchData = async (isMounted, url) => {
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',  // Ensures cookies are sent with the request
+            });
             if (!response.ok) {
                 new Error('Failed to fetch data');
             }
@@ -33,7 +39,7 @@ function Home() {
 
     // Fetch data when component mounts
     useEffect(() => {
-        let url = 'http://127.0.0.1:8080/projects';
+        let url = 'http://localhost:8080/projects';
         let isMounted = true;
         fetchData(isMounted, url).then(r => console.log('Data fetched:', r));
         return () => {
