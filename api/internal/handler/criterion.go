@@ -8,7 +8,6 @@ import (
 )
 
 func CriteriaHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCORS(w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return
@@ -38,7 +37,6 @@ func CriteriaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetCriteriaHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCORS(w)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return

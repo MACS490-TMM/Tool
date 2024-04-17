@@ -12,8 +12,6 @@ type DecisionMakerHandler struct {
 }
 
 func (h *DecisionMakerHandler) GetDecisionMakers(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

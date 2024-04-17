@@ -13,8 +13,6 @@ type VendorHandler struct {
 }
 
 func (h *VendorHandler) GetVendors(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -49,8 +47,6 @@ func (h *VendorHandler) GetVendors(w http.ResponseWriter, req *http.Request) {
 }
 
 func (h *VendorHandler) CreateVendor(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	// Check if it's an OPTIONS request (CORS preflight)
 	if req.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)

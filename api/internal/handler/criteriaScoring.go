@@ -15,8 +15,6 @@ type CriteriaScoringHandler struct {
 
 // GetCriteriaScores is an HTTP handler that returns a list of criteria scores.
 func (h *CriteriaScoringHandler) GetCriteriaScores(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	projectIDString := req.PathValue("projectId")
 
 	criterionIDString := req.PathValue("criterionId")
@@ -66,8 +64,6 @@ func (h *CriteriaScoringHandler) GetCriteriaScores(w http.ResponseWriter, req *h
 }
 
 func (h *CriteriaScoringHandler) AddCriteriaScores(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	projectIDString := req.PathValue("projectId")
 
 	decisionMakerIDString := req.PathValue("decisionMakerId")
@@ -111,7 +107,6 @@ func (h *CriteriaScoringHandler) AddCriteriaScores(w http.ResponseWriter, req *h
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	// It might be more appropriate to return the updated list of scores, but that depends on your service logic.
 	if encodeErr := json.NewEncoder(w).Encode(criteriaScores); encodeErr != nil {
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 	}

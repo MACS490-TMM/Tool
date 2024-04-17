@@ -8,7 +8,6 @@ import (
 )
 
 func ItemHandler(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
 	id := req.PathValue("id")
 
 	// Simulating data retrieval
