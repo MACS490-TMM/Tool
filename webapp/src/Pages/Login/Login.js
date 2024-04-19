@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from 'react-router-dom';
+import './Login.css';
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -10,7 +11,6 @@ function Login() {
     const navigate = useNavigate();
 
     async function loginUser(credentials) {
-        console.log("Credentials to be sent: ", credentials);  // More readable object logging
         return fetch('http://localhost:8080/login', {
             method: 'POST',
             headers: {
@@ -24,8 +24,8 @@ function Login() {
             }
             return response.json();
         }).then(async data => {
-            console.log("Response data:", data);
-            return data; // Continue passing data
+            console.log('Success:', data);
+            return data;
         }).catch(error => {
             console.error('Error:', error);
             throw error; // Re-throw to handle in calling function
@@ -37,8 +37,6 @@ function Login() {
         try {
             const credentials = { username, password }; // Cleaner object construction
             const data = await loginUser(credentials);
-            console.log("Data received 1: ", data)
-            console.log("Data received 2: ", data.token)
             if (data && data.token) {
                 login(data.token);
                 navigate('/');
@@ -52,26 +50,30 @@ function Login() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Username:
-                <input
-                    type="text"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                />
-            </label>
-            <label>
-                Password:
-                <input
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                />
-            </label>
-            {error && <p>{error}</p>}
-            <input type="submit" value="Submit" />
-        </form>
+        <div className="login__outer-container">
+            <div className="login__inner-container">
+                <form onSubmit={handleSubmit}>
+                    <label>
+                        Username:
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
+                        />
+                    </label>
+                    <label>
+                        Password:
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                        />
+                    </label>
+                    {error && <p className="error-message">{error}</p>}
+                    <input type="submit" value="Submit" />
+                </form>
+            </div>
+        </div>
     );
 }
 

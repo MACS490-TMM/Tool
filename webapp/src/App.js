@@ -1,7 +1,6 @@
-// src/App.js
-import React, { Suspense } from "react";
+import React, {Suspense, useEffect, useState} from "react";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import { AuthProvider } from './contexts/AuthContext';
+import {AuthProvider, useAuth} from './contexts/AuthContext';
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute';
 import Home from "./Pages/Home/Home";
 import ProjectSummary from "./Pages/ProjectSummary/ProjectSummary";
@@ -11,6 +10,8 @@ import ProjectSetup from "./Pages/ProjectSetup/ProjectSetup";
 import CriteriaScoring from "./Pages/CriteriaScoring/CriteriaScoring";
 import VendorResult from "./Pages/VendorResult/VendorResult";
 import Login from "./Pages/Login/Login";
+import AdminHome from "./Pages/Home/AdminHome/AdminHome";
+import UserPage from "./Pages/UserPage/UserPage";
 
 function App() {
     return (
@@ -25,16 +26,21 @@ function App() {
                     <Suspense fallback={<p>Loading...</p>}>
                         <Routes>
                             <Route path="/login" element={<Login />} />
+                            <Route path="/" element={
+                                <ProtectedRoute>
+                                    <HomeWithRole />
+                                </ProtectedRoute>
+                            } />
                             <Route path="*" element={
                                 <ProtectedRoute>
                                     <Routes>
-                                        <Route path="/" element={<Home />} />
                                         <Route path="/project/summary" element={<ProjectSummary />} />
                                         <Route path="/project/setup" element={<ProjectSetup />} />
                                         <Route path="/project/setup/criteriaDefinition/:projectId" element={<CriteriaDefinition />} />
                                         <Route path="/project/decision making" element={<div>Decision Making</div>} />
                                         <Route path="/project/:projectId/criteriaRanking" element={<CriteriaScoring />} />
                                         <Route path="/project/:projectId/vendorRanking" element={<VendorResult />} />
+                                        <Route path="/user/:userName" element={<UserPage />} />
                                     </Routes>
                                 </ProtectedRoute>
                             } />
@@ -44,6 +50,29 @@ function App() {
             </BrowserRouter>
         </AuthProvider>
     );
+}
+
+// Custom hook to get the user's role
+export function useRole() {
+    const { getUserRole } = useAuth();
+    const [role, setRole] = useState(null);
+
+    useEffect(() => {
+        setRole(getUserRole());
+    }, [getUserRole]);
+
+    return role;
+}
+
+// Component to determine which home page to render
+function HomeWithRole() {
+    const role = useRole();
+
+    if (role === null) {
+        return <div>Loading...</div>;
+    }
+
+    return role === 'admin' ? <AdminHome /> : <Home />;
 }
 
 export default App;

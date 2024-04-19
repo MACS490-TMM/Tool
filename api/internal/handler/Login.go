@@ -46,6 +46,7 @@ type Credentials struct {
 // Claims structure to map username and standard claims from JSON
 type Claims struct {
 	Username string `json:"username"`
+	UserRole string `json:"userRole"`
 	jwt.StandardClaims
 }
 
@@ -104,7 +105,8 @@ func (handler *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Cookie 'x-jwt-token' not found:", err)
 	}
 
-	if authSuccess, err := handler.AuthService.Authenticate(credentials.Username, credentials.Password); err != nil || !authSuccess {
+	authSuccess, userRole, err := handler.AuthService.Authenticate(credentials.Username, credentials.Password)
+	if err != nil || !authSuccess {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
@@ -113,6 +115,7 @@ func (handler *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	expirationTime := time.Now().Add(1 * time.Hour) // Token is valid for 1 hour
 	claims := &Claims{
 		Username: credentials.Username,
+		UserRole: userRole,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -131,7 +134,8 @@ func (handler *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Expires:  expirationTime,
 		HttpOnly: true,
 		Path:     "/",
-		// Secure and SameSite should be set appropriately based on the deployment (e.g., Secure: true in production over HTTPS)
+		SameSite: http.SameSiteStrictMode,
+		// Secure should be set appropriately based on the deployment (e.g., Secure: true in production over HTTPS)
 	})
 
 	// Ensure the token is only written once, and no other writes occur after this
@@ -140,4 +144,20 @@ func (handler *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if encodeErr != nil {
 		return
 	}
+}
+
+func (handler *LoginHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	// Clear the JWT cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:     "x-jwt-token",
+		Value:    "",
+		Expires:  time.Now(),
+		MaxAge:   -1, // Ensure cookie is deleted immediately
+		HttpOnly: true,
+		Path:     "/",
+	})
+
+	// Send a JSON response for confirmation
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "Logged out successfully"})
 }

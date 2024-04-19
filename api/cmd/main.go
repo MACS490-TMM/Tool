@@ -62,6 +62,8 @@ func main() {
 	mux.Handle("/projects/{projectId}/pdf/{pdfId}", corsMiddleware(authMiddleware(http.HandlerFunc(pdfHandler.ServePDF))))
 	mux.Handle("/projects/{projectId}/vendorRanking", corsMiddleware(authMiddleware(http.HandlerFunc(vendorRankingHandler.GetVendorRankings))))
 	mux.Handle("/login", corsMiddleware(http.HandlerFunc(authenticationHandler.ServeHTTP)))
+	mux.Handle("/logout", corsMiddleware(http.HandlerFunc(authenticationHandler.Logout)))
+	//mux.Handle("/register", corsMiddleware(http.HandlerFunc(authenticationHandler.Register)))
 
 	listenAndServeErr := http.ListenAndServe(":8080", mux)
 	if listenAndServeErr != nil {
