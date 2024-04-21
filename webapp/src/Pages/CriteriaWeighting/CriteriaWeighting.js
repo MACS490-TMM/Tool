@@ -14,13 +14,43 @@ function CriteriaWeighting() {
     const [criteria, setCriteria] = useState([]);
     const [weights, setWeights] = useState({});
     const [comments, setComments] = useState({}); // TODO: Implement comments for each comparison
+    const [inverted, setInverted] = useState({}); // State to track inversion of weights
 
     useProjectCriteria(project, setCriteria);
 
-    const handleWeightChange = (criterionId, newWeight) => {
+    // Helper function to adjust weight based on inversion state
+    const adjustWeight = (weight, isInverted) => {
+        // Ensure there's a valid score to invert from
+        const validWeight = weight || 1;
+        return isInverted ? -Math.abs(validWeight) : Math.abs(validWeight);
+    };
+
+
+    // Handles the change of a criterion's weight
+    const handleWeightChange = (key, newWeight) => {
         setWeights(prevWeights => ({
             ...prevWeights,
-            [criterionId]: newWeight
+            [key]: adjustWeight(newWeight, inverted[key])
+        }));
+    };
+
+
+    // Handles the inversion and change of a criterion's weight
+    const handleInvertWeight = (baseId, comparedId) => {
+        const key = `${baseId}-${comparedId}`;
+        const currentWeight = weights[key];
+        const isInverted = !inverted[key];
+
+        // Toggle inversion state
+        setInverted(prevInverted => ({
+            ...prevInverted,
+            [key]: isInverted
+        }));
+
+        // Adjust weight based on new inversion state
+        setWeights(prevWeights => ({
+            ...prevWeights,
+            [key]: adjustWeight(currentWeight, isInverted)
         }));
     };
 
@@ -65,13 +95,13 @@ function CriteriaWeighting() {
                             <h2>{baseCriterion.name}</h2>
                             {criteria.filter(c => c.id !== baseCriterion.id).map(comparedCriterion => (
                                 <div key={comparedCriterion.id}>
-                                    How much more important is {baseCriterion.name} in relation
-                                    to {comparedCriterion.name}
+                                    How much more important is {baseCriterion.name} in relation to {comparedCriterion.name}
                                     <CriteriaScoreInput
                                         criterionId={`${baseCriterion.id}-${comparedCriterion.id}`}
-                                        currentScore={weights[`${baseCriterion.id}-${comparedCriterion.id}`] || 0} // TODO: Set the default score to 1?
+                                        currentScore={weights[`${baseCriterion.id}-${comparedCriterion.id}`] || 0}
                                         onScoreChange={handleWeightChange}
-                                    />
+                                        onInvertScore={() => handleInvertWeight(baseCriterion.id, comparedCriterion.id)}
+                                        isInverted={!!inverted[`${baseCriterion.id}-${comparedCriterion.id}`]}                                    />
                                 </div>
                             ))}
                         </div>
