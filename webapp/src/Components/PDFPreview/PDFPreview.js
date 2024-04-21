@@ -7,7 +7,13 @@ const PDFViewer = ({ url }) => {
     useEffect(() => {
         const fetchPDF = async () => {
             try {
-                const response = await fetch(url);
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',  // Ensures cookies are sent with the request
+                });
                 const blob = await response.blob();
                 const objectURL = URL.createObjectURL(blob);
                 setFile(objectURL);
