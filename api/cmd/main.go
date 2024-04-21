@@ -6,8 +6,23 @@ import (
 	"net/http"
 )
 
+type AuthenticatedHandler func(next http.Handler) http.Handler
+
+type Router struct {
+	//mux         *http.ServeMux
+	authHandler AuthenticatedHandler
+	//cors *handler.EnableCORS
+}
+
+func NewRouter(handlerToWrap AuthenticatedHandler) *Router {
+	return &Router{
+		handlerToWrap,
+	}
+}
+
 func main() {
 	mux := http.NewServeMux()
+	//TODO: Add wrapper to mux (HandleContext)
 
 	// Set up CORS middleware with allowed origins
 	allowedOrigins := []string{"http://localhost:3000"}
@@ -41,6 +56,9 @@ func main() {
 	authenticationService := service.NewFileAuthenticationService("internal/tempDB/users.json")
 	authenticationHandler := &handler.LoginHandler{AuthService: authenticationService}
 
+	userService := service.NewFileUserService("internal/tempDB/users.json")
+	userHandler := &handler.UserHandler{Service: userService}
+
 	// Routing setup with CORS and authentication middleware
 	// TODO: Add different authentication middleware for different user roles
 	mux.Handle("/items/{id}", corsMiddleware(authMiddleware(http.HandlerFunc(handler.ItemHandler))))
@@ -63,7 +81,9 @@ func main() {
 	mux.Handle("/projects/{projectId}/vendorRanking", corsMiddleware(authMiddleware(http.HandlerFunc(vendorRankingHandler.GetVendorRankings))))
 	mux.Handle("/login", corsMiddleware(http.HandlerFunc(authenticationHandler.ServeHTTP)))
 	mux.Handle("/logout", corsMiddleware(http.HandlerFunc(authenticationHandler.Logout)))
-	//mux.Handle("/register", corsMiddleware(http.HandlerFunc(authenticationHandler.Register)))
+	mux.Handle("/register", corsMiddleware(http.HandlerFunc(userHandler.RegisterUser)))
+	mux.Handle("/user/delete/{id}", corsMiddleware(http.HandlerFunc(userHandler.DeleteUser))) // TODD: Secure so that only admin can delete users
+	mux.Handle("/user/update/password/{id}", corsMiddleware(http.HandlerFunc(userHandler.UpdateUserPassword)))
 
 	listenAndServeErr := http.ListenAndServe(":8080", mux)
 	if listenAndServeErr != nil {

@@ -1,66 +1,61 @@
 package service
 
 import (
+	"api/internal/domain"
+	"api/internal/service/argon2id"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
+	"sync"
 )
-
-type User struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	UserRole string `json:"userRole"`
-}
 
 type AuthenticationService interface {
 	Authenticate(username, password string) (bool, string, error)
 }
 
 type FileAuthenticationService struct {
-	BasePath string
+	filename string
+	mu       sync.Mutex
 }
 
-func NewFileAuthenticationService(basePath string) *FileAuthenticationService {
-	return &FileAuthenticationService{BasePath: basePath}
+func NewFileAuthenticationService(filename string) *FileAuthenticationService {
+	return &FileAuthenticationService{filename: filename}
 }
 
 func (s *FileAuthenticationService) Authenticate(username, password string) (bool, string, error) {
-	users := make([]User, 0)
-	data, err := ioutil.ReadFile(s.BasePath)
+	users := make([]domain.User, 0)
+	data, err := ioutil.ReadFile(s.filename)
 	if err != nil {
 		return false, "", err
 	}
 	if err := json.Unmarshal(data, &users); err != nil {
 		return false, "", err
 	}
+
+	passwordBytes := []byte(password)
+	argon2IDHash := argon2id.NewHash(1, 32, 64*1024, 4, 32)
+
 	for _, user := range users {
-		if user.Username == username && user.Password == password {
-			return true, user.UserRole, nil
+		if user.Username == username {
+			salt, err := base64.StdEncoding.DecodeString(user.Salt)
+			if err != nil {
+				return false, "", err
+			}
+			storedHash, err := base64.StdEncoding.DecodeString(user.Password)
+			if err != nil {
+				return false, "", err
+			}
+
+			if err := argon2IDHash.Compare(storedHash, salt, passwordBytes); err == nil {
+				fmt.Println("Password matches.")
+				return true, user.UserRole, nil
+			} else {
+				fmt.Println("Password does not match.")
+			}
 		}
 	}
+
 	return false, "", errors.New("invalid credentials")
-}
-
-func (s *FileAuthenticationService) Register(username, password string) error {
-	// Here, you would add logic to store the username and password
-	// For now, let's simulate with hardcoded values for demonstration purposes.
-
-	// Simulate storing to a file
-	return nil
-}
-
-func (s *FileAuthenticationService) UpdatePassword(username, password string) error {
-	// Here, you would add logic to update the password for a given username
-	// For now, let's simulate with hardcoded values for demonstration purposes.
-
-	// Simulate updating the password in a file
-	return nil
-}
-
-func (s *FileAuthenticationService) DeleteUser(username string) error {
-	// Here, you would add logic to delete a user by username
-	// For now, let's simulate with hardcoded values for demonstration purposes.
-
-	// Simulate deleting the user from a file
-	return nil
 }
