@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, {useState} from "react";
+import {useParams} from "react-router-dom";
 import useFetchProject from "../ProjectSummary/apiConnection/Project/useFetchProject";
 import useProjectCriteria from "../ProjectSummary/apiConnection/criteriaWeighting/useProjectCriteria";
 import "./CriteriaWeighting.css";
@@ -24,7 +24,7 @@ function CriteriaWeighting() {
     };
 
     const prepareDataForSubmission = () => {
-        const submissions = Object.entries(weights).map(([key, importanceScore]) => {
+        return Object.entries(weights).map(([key, importanceScore]) => {
             const [baseCriterionId, comparedCriterionId] = key.split('-');
             const comment = comments[key] || '';
             return {
@@ -36,8 +36,6 @@ function CriteriaWeighting() {
                 comments: comment
             };
         });
-        console.log("Prepared data for submission:", submissions);
-        return submissions;
     };
     const handleSubmitWeights = async () => {
         try {

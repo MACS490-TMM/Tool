@@ -22,10 +22,7 @@ const submitCriteriaWeights = async (criteriaData, projectId, decisionMakerId, u
             throw new Error('Network response was not ok');
         }
 
-        const result = await response.json();
-        console.log('Submission successful', result);
-
-        return result;
+        return await response.json();
     } catch (error) {
         throw new Error('Failed to submit comparisons: ' + error.message);
     }
