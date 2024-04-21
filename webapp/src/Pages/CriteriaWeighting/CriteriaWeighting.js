@@ -5,6 +5,7 @@ import useProjectCriteria from "../ProjectSummary/apiConnection/criteriaWeightin
 import "./CriteriaWeighting.css";
 import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScoreInput";
 import submitCriteriaWeights from "../ProjectSummary/apiConnection/criteriaWeighting/submitCriteriaWeights";
+import PDFViewer from "../../Components/PDFPreview/PDFPreview";
 
 function CriteriaWeighting() {
     let { projectId } = useParams();
@@ -55,25 +56,31 @@ function CriteriaWeighting() {
     };
 
     return (
-        <div className="criteria-weighting">
-            <h1>Criteria Weighting</h1>
-            {criteria.length > 0 ? (
-                criteria.map((baseCriterion) => (
-                    <div key={baseCriterion.id}>
-                        <h2>{baseCriterion.name}</h2>
-                        {criteria.filter(c => c.id !== baseCriterion.id).map(comparedCriterion => (
-                            <div key={comparedCriterion.id}>
-                                How much more important is {baseCriterion.name} in relation to {comparedCriterion.name}
-                                <CriteriaScoreInput
-                                    criterionId={`${baseCriterion.id}-${comparedCriterion.id}`}
-                                    currentScore={weights[`${baseCriterion.id}-${comparedCriterion.id}`] || 0} // TODO: Set the default score to 1?
-                                    onScoreChange={handleWeightChange}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                ))) : <p>Loading criteria...</p>}
-            <button className={"button-send"} onClick={handleSubmitWeights}>Submit Comparisons</button>
+        <div className={"criteria-scoring__outer-container"}>
+            <div className={"criteria-scoring__container"}>
+                <h1>Criteria Weighting</h1>
+                {criteria.length > 0 ? (
+                    criteria.map((baseCriterion) => (
+                        <div key={baseCriterion.id}>
+                            <h2>{baseCriterion.name}</h2>
+                            {criteria.filter(c => c.id !== baseCriterion.id).map(comparedCriterion => (
+                                <div key={comparedCriterion.id}>
+                                    How much more important is {baseCriterion.name} in relation
+                                    to {comparedCriterion.name}
+                                    <CriteriaScoreInput
+                                        criterionId={`${baseCriterion.id}-${comparedCriterion.id}`}
+                                        currentScore={weights[`${baseCriterion.id}-${comparedCriterion.id}`] || 0} // TODO: Set the default score to 1?
+                                        onScoreChange={handleWeightChange}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    ))) : <p>Loading criteria...</p>}
+                <button className={"button-send"} onClick={handleSubmitWeights}>Submit Comparisons</button>
+            </div>
+            <div className={"documents__container"}>
+                <PDFViewer url={`http://localhost:8080/projects/${projectId}/pdf/test`}/>
+            </div>
         </div>
     );
 }
