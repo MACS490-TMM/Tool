@@ -69,7 +69,6 @@ func AuthenticateToken(next http.Handler) http.Handler {
 			return
 		}
 
-		fmt.Println("Cookie: ", cookie.Value)
 		tokenString := cookie.Value
 		claims := &Claims{}
 
@@ -98,8 +97,6 @@ func (handler *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Received credentials: %+v\n", credentials)
 
 	fmt.Println(r.Cookie("x-jwt-token"))
-
-	println("Cookie: " + r.Header.Get("Cookie"))
 
 	if _, err := r.Cookie("x-jwt-token"); err != nil {
 		fmt.Println("Cookie 'x-jwt-token' not found:", err)
