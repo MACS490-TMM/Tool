@@ -34,6 +34,7 @@ func SetupServer() *http.ServeMux {
 	vendorRankingService := service.NewFileVendorRankingService("internal/tempDB/vendorRanking.json")
 	authenticationService := service.NewFileAuthenticationService("internal/tempDB/users.json")
 	userService := service.NewFileUserService("internal/tempDB/users.json")
+	criteriaWeightingService := service.NewFileCriteriaWeightsService("internal/tempDB/criteriaWeights.json")
 
 	// Initialize handlers
 	projectHandler := &handler.ProjectHandler{Service: projectService}
@@ -45,6 +46,7 @@ func SetupServer() *http.ServeMux {
 	vendorRankingHandler := &handler.VendorRankingHandler{Service: vendorRankingService}
 	authenticationHandler := &handler.LoginHandler{AuthService: authenticationService}
 	userHandler := &handler.UserHandler{Service: userService}
+	criteriaWeightingHandler := &handler.CriteriaWeightHandler{Service: criteriaWeightingService}
 
 	// Routing setup with middleware wrappers
 	// TODO: Add different authentication middleware for different user roles
@@ -70,6 +72,9 @@ func SetupServer() *http.ServeMux {
 	mux.Handle("/register", corsOnlyMiddleware(http.HandlerFunc(userHandler.RegisterUser)))
 	mux.Handle("/user/delete/{id}", wrapMiddleware(http.HandlerFunc(userHandler.DeleteUser))) // TODD: Secure so that only admin can delete users
 	mux.Handle("/user/update/password/{id}", wrapMiddleware(http.HandlerFunc(userHandler.UpdateUserPassword)))
+
+	mux.Handle("/projects/{projectId}/criteria/{criterionId}/weights", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.GetCriteriaWeights)))
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/weights", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.AddCriteriaWeights)))
 
 	return mux
 }

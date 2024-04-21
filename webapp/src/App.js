@@ -12,6 +12,7 @@ import VendorResult from "./Pages/VendorResult/VendorResult";
 import Login from "./Pages/Login/Login";
 import AdminHome from "./Pages/Home/AdminHome/AdminHome";
 import UserPage from "./Pages/UserPage/UserPage";
+import CriteriaWeighting from "./Pages/CriteriaWeighting/CriteriaWeighting";
 
 function App() {
     return (
@@ -41,6 +42,7 @@ function App() {
                                         <Route path="/project/:projectId/criteriaRanking" element={<CriteriaScoring />} />
                                         <Route path="/project/:projectId/vendorRanking" element={<VendorResult />} />
                                         <Route path="/user/:userName" element={<UserPage />} />
+                                        <Route path={"/project/:projectId/criteriaWeighting"} element={<CriteriaWeighting />} />
                                     </Routes>
                                 </ProtectedRoute>
                             } />
