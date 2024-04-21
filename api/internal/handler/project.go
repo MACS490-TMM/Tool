@@ -13,13 +13,11 @@ type ProjectHandler struct {
 }
 
 func (h *ProjectHandler) CreateProject(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	// Check if it's an OPTIONS request (CORS preflight)
-	if req.Method == http.MethodOptions {
+	/*if req.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return // Stop here. After the preflight check, the actual request will be made.
-	}
+	}*/
 
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -47,8 +45,6 @@ func (h *ProjectHandler) CreateProject(w http.ResponseWriter, req *http.Request)
 }
 
 func (h *ProjectHandler) GetProject(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -76,8 +72,6 @@ func (h *ProjectHandler) GetProject(w http.ResponseWriter, req *http.Request) {
 }
 
 func (h *ProjectHandler) GetProjects(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -97,8 +91,6 @@ func (h *ProjectHandler) GetProjects(w http.ResponseWriter, req *http.Request) {
 }
 
 func (h *ProjectHandler) DeleteProject(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	if req.Method != http.MethodDelete {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -127,8 +119,6 @@ func (h *ProjectHandler) DeleteProject(w http.ResponseWriter, req *http.Request)
 }
 
 func (h *ProjectHandler) UpdateProject(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	if req.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return

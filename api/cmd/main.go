@@ -6,54 +6,79 @@ import (
 	"net/http"
 )
 
-func main() {
+// wrapMiddleware takes a http.Handler and wraps it with the necessary middlewares
+func wrapMiddleware(next http.Handler) http.Handler {
+	allowedOrigins := []string{"http://localhost:3000"}
+	corsMiddleware := handler.EnableCORS(allowedOrigins)
+	authMiddleware := handler.AuthenticateToken
+
+	// Wrap with CORS first, then with Auth
+	return corsMiddleware(authMiddleware(next))
+}
+
+func corsOnlyMiddleware(next http.Handler) http.Handler {
+	allowedOrigins := []string{"http://localhost:3000"}
+	return handler.EnableCORS(allowedOrigins)(next)
+}
+
+func SetupServer() *http.ServeMux {
 	mux := http.NewServeMux()
 
+	// Initialize services
 	projectService := service.NewFileProjectService("internal/tempDB/projects.json")
-	projectHandler := &handler.ProjectHandler{Service: projectService}
-
 	decisionMakerService := service.NewFileDecisionMakerService("internal/tempDB/decisionMakers.json")
-	decisionMakerHandler := &handler.DecisionMakerHandler{Service: decisionMakerService}
-
 	stakeholderService := service.NewFileStakeholderService("internal/tempDB/stakeholders.json")
-	stakeholderHandler := &handler.StakeholderHandler{Service: stakeholderService}
-
 	vendorService := service.NewFileVendorService("internal/tempDB/vendors.json")
-	vendorHandler := &handler.VendorHandler{Service: vendorService}
-
 	criteriaScoringService := service.NewFileCriteriaScoringService("internal/tempDB/criteriaScores.json")
-	criteriaScoringHandler := &handler.CriteriaScoringHandler{Service: criteriaScoringService}
-
 	pdfService := service.NewFilePDFService("internal/tempDB/fileStorage/")
-	pdfHandler := &handler.PDFHandler{Service: pdfService}
-
 	vendorRankingService := service.NewFileVendorRankingService("internal/tempDB/vendorRanking.json")
+	authenticationService := service.NewFileAuthenticationService("internal/tempDB/users.json")
+	userService := service.NewFileUserService("internal/tempDB/users.json")
+
+	// Initialize handlers
+	projectHandler := &handler.ProjectHandler{Service: projectService}
+	decisionMakerHandler := &handler.DecisionMakerHandler{Service: decisionMakerService}
+	stakeholderHandler := &handler.StakeholderHandler{Service: stakeholderService}
+	vendorHandler := &handler.VendorHandler{Service: vendorService}
+	criteriaScoringHandler := &handler.CriteriaScoringHandler{Service: criteriaScoringService}
+	pdfHandler := &handler.PDFHandler{Service: pdfService}
 	vendorRankingHandler := &handler.VendorRankingHandler{Service: vendorRankingService}
+	authenticationHandler := &handler.LoginHandler{AuthService: authenticationService}
+	userHandler := &handler.UserHandler{Service: userService}
 
-	// TODO: update endpoints to have version number etc
-	mux.HandleFunc("/items/{id}", handler.ItemHandler)
-	mux.HandleFunc("/files/{path}", handler.FilesHandler)
-	mux.HandleFunc("/criteria", handler.CriteriaHandler)
-	mux.HandleFunc("/api/criteria", handler.GetCriteriaHandler)
-	mux.HandleFunc("/newProject", projectHandler.CreateProject)
-	mux.HandleFunc("/projects", projectHandler.GetProjects)
-	mux.HandleFunc("/projects/{id}", projectHandler.GetProject)
-	mux.HandleFunc("/projects/{id}/delete", projectHandler.DeleteProject)
-	mux.HandleFunc("/projects/{id}/update", projectHandler.UpdateProject)
-	mux.HandleFunc("/decisionMakers", decisionMakerHandler.GetDecisionMakers)
-	mux.HandleFunc("/stakeholders", stakeholderHandler.GetStakeholders)
-	mux.HandleFunc("/vendors", vendorHandler.GetVendors)
-	mux.HandleFunc("/newVendor", vendorHandler.CreateVendor)
-	//mux.HandleFunc("/vendors/{id}", vendorHandler.GetVendor)
-	//mux.HandleFunc("/vendors/delete/{id}", vendorHandler.DeleteVendor)
-	//mux.HandleFunc("/vendors/update/{id}", vendorHandler.UpdateVendor)
-	mux.HandleFunc("/projects/{projectId}/criteria/{criterionId}/scores", criteriaScoringHandler.GetCriteriaScores)
-	mux.HandleFunc("/projects/{projectId}/decisionMaker/{decisionMakerId}/scores", criteriaScoringHandler.AddCriteriaScores)
-	mux.HandleFunc("/projects/{projectId}/pdf/{pdfId}", pdfHandler.ServePDF)
-	mux.HandleFunc("/projects/{projectId}/vendorRanking", vendorRankingHandler.GetVendorRankings)
+	// Routing setup with middleware wrappers
+	// TODO: Add different authentication middleware for different user roles
+	mux.Handle("/items/{id}", wrapMiddleware(http.HandlerFunc(handler.ItemHandler)))
+	mux.Handle("/files/{path}", wrapMiddleware(http.HandlerFunc(handler.FilesHandler)))
+	mux.Handle("/criteria", wrapMiddleware(http.HandlerFunc(handler.CriteriaHandler)))
+	mux.Handle("/api/criteria", wrapMiddleware(http.HandlerFunc(handler.GetCriteriaHandler)))
+	mux.Handle("/newProject", wrapMiddleware(http.HandlerFunc(projectHandler.CreateProject)))
+	mux.Handle("/projects", wrapMiddleware(http.HandlerFunc(projectHandler.GetProjects)))
+	mux.Handle("/projects/{id}", wrapMiddleware(http.HandlerFunc(projectHandler.GetProject)))
+	mux.Handle("/projects/{id}/delete", wrapMiddleware(http.HandlerFunc(projectHandler.DeleteProject)))
+	mux.Handle("/projects/{id}/update", wrapMiddleware(http.HandlerFunc(projectHandler.UpdateProject)))
+	mux.Handle("/decisionMakers", wrapMiddleware(http.HandlerFunc(decisionMakerHandler.GetDecisionMakers)))
+	mux.Handle("/stakeholders", wrapMiddleware(http.HandlerFunc(stakeholderHandler.GetStakeholders)))
+	mux.Handle("/vendors", wrapMiddleware(http.HandlerFunc(vendorHandler.GetVendors)))
+	mux.Handle("/newVendor", wrapMiddleware(http.HandlerFunc(vendorHandler.CreateVendor)))
+	mux.Handle("/projects/{projectId}/criteria/{criterionId}/scores", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.GetCriteriaScores)))
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/scores", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.AddCriteriaScores)))
+	mux.Handle("/projects/{projectId}/pdf/{pdfId}", wrapMiddleware(http.HandlerFunc(pdfHandler.ServePDF)))
+	mux.Handle("/projects/{projectId}/vendorRanking", wrapMiddleware(http.HandlerFunc(vendorRankingHandler.GetVendorRankings)))
+	mux.Handle("/login", corsOnlyMiddleware(http.HandlerFunc(authenticationHandler.ServeHTTP)))
+	mux.Handle("/logout", corsOnlyMiddleware(http.HandlerFunc(authenticationHandler.Logout)))
+	mux.Handle("/register", corsOnlyMiddleware(http.HandlerFunc(userHandler.RegisterUser)))
+	mux.Handle("/user/delete/{id}", wrapMiddleware(http.HandlerFunc(userHandler.DeleteUser))) // TODD: Secure so that only admin can delete users
+	mux.Handle("/user/update/password/{id}", wrapMiddleware(http.HandlerFunc(userHandler.UpdateUserPassword)))
 
-	err := http.ListenAndServe(":8080", mux)
-	if err != nil {
+	return mux
+}
+
+func main() {
+	mux := SetupServer()
+
+	listenAndServeErr := http.ListenAndServe(":8080", mux)
+	if listenAndServeErr != nil {
 		return
 	}
 }

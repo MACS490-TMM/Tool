@@ -8,11 +8,10 @@ import (
 )
 
 func CriteriaHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCORS(w)
-	if r.Method == http.MethodOptions {
+	/*if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return
-	}
+	}*/
 
 	if r.Method != http.MethodPut {
 		http.Error(w, "Method is not supported.", http.StatusMethodNotAllowed)
@@ -38,7 +37,6 @@ func CriteriaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetCriteriaHandler(w http.ResponseWriter, r *http.Request) {
-	EnableCORS(w)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return

@@ -5,7 +5,7 @@
  * @param {String} url The URL to submit the data to.
  * @returns {Promise<void>} A promise that resolves when the submission is complete.
  */
-async function submitCriteria(project, selections, url = 'http://127.0.0.1:8080/projects/update') {
+async function submitCriteria(project, selections, url = 'http://localhost:8080/projects/update') {
     // Filter selections to only include those that are selected
     const filteredSelections = selections.filter(selection => selection.selected);
 
@@ -30,6 +30,7 @@ async function submitCriteria(project, selections, url = 'http://127.0.0.1:8080/
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',  // Ensures cookies are sent with the request
             body: JSON.stringify(data),
         });
 

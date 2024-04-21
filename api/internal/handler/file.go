@@ -8,7 +8,6 @@ import (
 )
 
 func FilesHandler(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
 	path := req.PathValue("path")
 
 	// Simulating data retrieval

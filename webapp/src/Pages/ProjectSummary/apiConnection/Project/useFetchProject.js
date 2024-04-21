@@ -6,7 +6,13 @@ function useFetchProject(projectId, fetchUrl = 'http://localhost:8080/projects')
     const url = fetchUrl + '/' + projectId;
     const fetchData = async (isMounted, url, setData) => {
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',  // Ensures cookies are sent with the request
+            });
             if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }

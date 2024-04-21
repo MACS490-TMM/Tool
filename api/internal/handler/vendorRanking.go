@@ -12,8 +12,6 @@ type VendorRankingHandler struct {
 }
 
 func (h *VendorRankingHandler) GetVendorRankings(w http.ResponseWriter, req *http.Request) {
-	EnableCORS(w)
-
 	projectIDString := req.PathValue("projectId")
 
 	projectID, projectIDErr := strconv.Atoi(projectIDString)
