@@ -13,7 +13,7 @@ function CriteriaWeighting() {
     const project = useFetchProject(projectId);
     const [criteria, setCriteria] = useState([]);
     const [weights, setWeights] = useState({});
-    const [comments, setComments] = useState({}); // TODO: Implement comments for each comparison
+    const [comments, setComments] = useState({});
     const [inverted, setInverted] = useState({}); // State to track inversion of weights
 
     useProjectCriteria(project, setCriteria);
@@ -53,6 +53,13 @@ function CriteriaWeighting() {
             [key]: adjustWeight(currentWeight, isInverted)
         }));
     };
+
+    const handleCommentsChanged = (criterionId, newComments) => {
+        setComments(prevComments => ({
+            ...prevComments,
+            [criterionId]: newComments
+        }));
+    }
 
     const prepareDataForSubmission = () => {
         return Object.entries(weights).map(([key, importanceScore]) => {
@@ -95,13 +102,18 @@ function CriteriaWeighting() {
                             <h2>{baseCriterion.name}</h2>
                             {criteria.filter(c => c.id !== baseCriterion.id).map(comparedCriterion => (
                                 <div key={comparedCriterion.id}>
-                                    How much more important is {baseCriterion.name} in relation to {comparedCriterion.name}
+                                    How much more important is {baseCriterion.name} in relation
+                                    to {comparedCriterion.name}
                                     <CriteriaScoreInput
                                         criterionId={`${baseCriterion.id}-${comparedCriterion.id}`}
                                         currentScore={weights[`${baseCriterion.id}-${comparedCriterion.id}`] || 0}
                                         onScoreChange={handleWeightChange}
                                         onInvertScore={() => handleInvertWeight(baseCriterion.id, comparedCriterion.id)}
-                                        isInverted={!!inverted[`${baseCriterion.id}-${comparedCriterion.id}`]}                                    />
+                                        isInverted={!!inverted[`${baseCriterion.id}-${comparedCriterion.id}`]}
+                                    />
+                                    <div className={"criteria-comments__container"}>
+                                        <textarea onChange={(e) => handleCommentsChanged(`${baseCriterion.id}-${comparedCriterion.id}`, e.target.value)} placeholder={"Enter comments here"}/>
+                                    </div>
                                 </div>
                             ))}
                         </div>
