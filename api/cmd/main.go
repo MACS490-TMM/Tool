@@ -76,6 +76,9 @@ func SetupServer() *http.ServeMux {
 	mux.Handle("/projects/{projectId}/criteria/{criterionId}/weights", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.GetCriteriaWeights)))
 	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/weights", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.AddCriteriaWeights)))
 
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/conflicts", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.CheckForConflicts)))
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/inconsistencies", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.CheckForInconsistencies)))
+
 	return mux
 }
 

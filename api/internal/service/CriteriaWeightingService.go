@@ -12,6 +12,8 @@ import (
 type CriteriaWeightingService interface {
 	GetSpecificCriteriaWeights(projectID int, criterionId int) ([]domain.CriterionComparison, error)
 	AddOrUpdateCriteriaWeights(projectID int, decisionMakerID int, weights []domain.CriterionComparison) error
+	CheckForConflicts(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error)
+	CheckForInconsistencies(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error)
 }
 
 type FileCriteriaWeightsService struct {
@@ -108,4 +110,38 @@ func (s *FileCriteriaWeightsService) AddOrUpdateCriteriaWeights(projectID, decis
 	}
 
 	return s.writeCriteriaWeights(existingWeights)
+}
+
+func (s *FileCriteriaWeightsService) CheckForConflicts(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error) {
+	criteriaWeights, err := s.readCriteriaWeights()
+	if err != nil {
+		return nil, err
+	}
+
+	var conflicts []domain.CriterionComparison
+	for _, criterion := range criteriaWeights {
+		if criterion.ProjectID == projectID && criterion.DecisionMakerID == decisionMakerID {
+			if criterion.Conflict {
+				conflicts = append(conflicts, criterion)
+			}
+		}
+	}
+	return conflicts, nil
+}
+
+func (s *FileCriteriaWeightsService) CheckForInconsistencies(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error) {
+	criteriaWeights, err := s.readCriteriaWeights()
+	if err != nil {
+		return nil, err
+	}
+
+	var inconsistencies []domain.CriterionComparison
+	for _, criterion := range criteriaWeights {
+		if criterion.ProjectID == projectID && criterion.DecisionMakerID == decisionMakerID {
+			if criterion.Inconsistency {
+				inconsistencies = append(inconsistencies, criterion)
+			}
+		}
+	}
+	return inconsistencies, nil
 }

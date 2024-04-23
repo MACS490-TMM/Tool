@@ -8,4 +8,6 @@ type CriterionComparison struct {
 	ComparedCriterionID int    `json:"comparedCriterionId"`
 	ImportanceScore     int    `json:"importanceScore"` // Representing the importance of BaseCriterion over ComparedCriterion
 	Comments            string `json:"comments"`
+	Inconsistency       bool   `json:"inconsistency"`
+	Conflict            bool   `json:"conflict"`
 }
