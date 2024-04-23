@@ -5,11 +5,11 @@
  * @param {String} url The URL to submit the data to.
  * @returns {Promise<void>} A promise that resolves when the submission is complete.
  */
-async function submitCriteria(project, selections, url = 'http://localhost:8080/projects/update') {
+async function submitCriteria(project, selections, url = 'http://localhost:8080/projects') {
     // Filter selections to only include those that are selected
     const filteredSelections = selections.filter(selection => selection.selected);
 
-    url = url + '/' + project.id;
+    url = url + '/' + project.id + '/update';
 
     // Validate that there is at least one selected criterion
     if (filteredSelections.length === 0) {
