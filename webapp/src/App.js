@@ -12,6 +12,9 @@ import VendorResult from "./Pages/VendorResult/VendorResult";
 import Login from "./Pages/Login/Login";
 import AdminHome from "./Pages/Home/AdminHome/AdminHome";
 import UserPage from "./Pages/UserPage/UserPage";
+import CriteriaWeighting from "./Pages/CriteriaWeighting/CriteriaWeighting";
+import CriteriaWeightingInconsistency from "./Pages/CriteriaWeighting/CriteriaWeightingInconsistency/CriteriaWeightingInconsistency";
+import CriteriaWeightingConflicts from "./Pages/CriteriaWeighting/CriteriaWeightingConflicts/CriteriaWeightingConflicts";
 
 function App() {
     return (
@@ -41,6 +44,11 @@ function App() {
                                         <Route path="/project/:projectId/criteriaRanking" element={<CriteriaScoring />} />
                                         <Route path="/project/:projectId/vendorRanking" element={<VendorResult />} />
                                         <Route path="/user/:userName" element={<UserPage />} />
+                                        <Route path={"/project/:projectId/criteriaWeighting"} element={<CriteriaWeighting />} />
+                                        <Route path={"/project/:projectId/criteriaInconsistency"} element={<CriteriaWeightingInconsistency />} />
+                                        <Route path={"/project/:projectId/criteriaConflict"} element={<CriteriaWeightingConflicts />} />
+
+                                        <Route path="*" element={<NotFoundPage />} />
                                     </Routes>
                                 </ProtectedRoute>
                             } />
@@ -73,6 +81,15 @@ function HomeWithRole() {
     }
 
     return role === 'admin' ? <AdminHome /> : <Home />;
+}
+
+function NotFoundPage() {
+    return (
+        <div>
+            <h1>404 Not Found</h1>
+            <p>The page you are looking for does not exist.</p>
+        </div>
+    );
 }
 
 export default App;
