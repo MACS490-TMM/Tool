@@ -1,13 +1,13 @@
 import React from "react";
+import "./CriteriaWeightingInconsistency.css";
 import {useParams} from "react-router-dom";
-import "./CriteriaWeighting.css";
-import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScoreInput";
-import PDFViewer from "../../Components/PDFPreview/PDFPreview";
-import useCriteriaWeightingLogic from "./useCriteriaWeightingLogic";
+import CriteriaScoreInput from "../../../Components/CriteriaScoreInput/CriteriaScoreInput";
+import useCriteriaWeightingLogic from "../useCriteriaWeightingLogic";
 
-function CriteriaWeighting() {
+function CriteriaWeightingInconsistency() {
     let { projectId } = useParams();
     let decisionMakerId = 1; // TODO: Get the decision maker ID from the user
+
     const {
         criteria,
         weights,
@@ -16,6 +16,7 @@ function CriteriaWeighting() {
         handleInvertWeight,
         handleCommentsChanged,
         handleSubmitWeights,
+        isInconsistencyDetected
     } = useCriteriaWeightingLogic(projectId, decisionMakerId);
 
     return (
@@ -42,17 +43,24 @@ function CriteriaWeighting() {
                                             onChange={(e) => handleCommentsChanged(`${baseCriterion.id}-${comparedCriterion.id}`, e.target.value)}
                                             placeholder={"Enter comments here"}/>
                                     </div>
+                                    {isInconsistencyDetected(baseCriterion.id, comparedCriterion.id) ? (
+                                        <div className="inconsistency-indicator">
+                                            Inconsistency detected.
+                                        </div>
+                                    ) : (
+                                        <div></div>
+                                    )}
                                 </div>
                             ))}
                         </div>
                     ))) : <p>Loading criteria...</p>}
                 <button className={"button-send"} onClick={handleSubmitWeights}>Submit Comparisons</button>
-            </div>
+        </div>
             <div className={"documents__container"}>
-                <PDFViewer url={`http://localhost:8080/projects/${projectId}/pdf/test`}/>
+                test
             </div>
         </div>
     );
 }
 
-export default CriteriaWeighting;
+export default CriteriaWeightingInconsistency;

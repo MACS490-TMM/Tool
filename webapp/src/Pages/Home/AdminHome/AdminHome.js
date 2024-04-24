@@ -23,6 +23,10 @@ function AdminHome() {
         navigate(`/project/${projectId}/criteriaInconsistency`);
     }
 
+    const handleConflictsButtonClick = (projectId) => {
+        navigate(`/project/${projectId}/criteriaConflict`);
+    }
+
     // Function to fetch data from API
     const fetchData = async (isMounted, url) => {
         try {
@@ -70,6 +74,9 @@ function AdminHome() {
                     </button>
                     <button onClick={() => handleInconsistencyButtonClick(project.id)}>
                         {`Go to Criteria Inconsistency for Project ${project.id}`}
+                    </button>
+                    <button onClick={() => handleConflictsButtonClick(project.id)}>
+                        {`Go to Criteria Conflict for Project ${project.id}`}
                     </button>
                 </div>
             ))}

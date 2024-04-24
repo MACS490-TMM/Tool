@@ -13,7 +13,8 @@ import Login from "./Pages/Login/Login";
 import AdminHome from "./Pages/Home/AdminHome/AdminHome";
 import UserPage from "./Pages/UserPage/UserPage";
 import CriteriaWeighting from "./Pages/CriteriaWeighting/CriteriaWeighting";
-import CriteriaWeightingInconsistency from "./Pages/CriteriaWeightingInconsistency/CriteriaWeightingInconsistency";
+import CriteriaWeightingInconsistency from "./Pages/CriteriaWeighting/CriteriaWeightingInconsistency/CriteriaWeightingInconsistency";
+import CriteriaWeightingConflicts from "./Pages/CriteriaWeighting/CriteriaWeightingConflicts/CriteriaWeightingConflicts";
 
 function App() {
     return (
@@ -45,6 +46,8 @@ function App() {
                                         <Route path="/user/:userName" element={<UserPage />} />
                                         <Route path={"/project/:projectId/criteriaWeighting"} element={<CriteriaWeighting />} />
                                         <Route path={"/project/:projectId/criteriaInconsistency"} element={<CriteriaWeightingInconsistency />} />
+                                        <Route path={"/project/:projectId/criteriaConflict"} element={<CriteriaWeightingConflicts />} />
+
                                     </Routes>
                                 </ProtectedRoute>
                             } />

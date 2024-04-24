@@ -4,6 +4,7 @@ import useProjectCriteria from "../ProjectSummary/apiConnection/criteriaWeightin
 import submitCriteriaWeights from "../ProjectSummary/apiConnection/criteriaWeighting/submitCriteriaWeights";
 import useFetchCriteriaWeights from "./apiConnections/useFetchCriteriaWeights";
 import useFetchInconsistencies from "./apiConnections/useFetchInconsistencies";
+import useFetchConflictingCriteria from "./apiConnections/useFetchConflictingCriteria";
 
 const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
     const project = useFetchProject(projectId); // Fetch the project
@@ -15,6 +16,7 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
 
     const criteriaComparisons = useFetchCriteriaWeights(projectId, decisionMakerId); // Fetch criteria weights for every criteria-criteria pair from the API
     const inconsistencies = useFetchInconsistencies(projectId, decisionMakerId); // Fetch all inconsistencies from the API
+    const conflictingCriteria = useFetchConflictingCriteria(projectId, decisionMakerId); // Fetch conflicting criteria from the API
 
     useProjectCriteria(project, setProjectBaseCriteria); // Custom hook to manage project criteria
 
@@ -99,7 +101,8 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
         handleInvertWeight,
         handleCommentsChanged,
         handleSubmitWeights,
-        isInconsistencyDetected: (baseId, comparedId) => inconsistencies.some(inconsistency => inconsistency.baseCriterionId === baseId && inconsistency.comparedCriterionId === comparedId)
+        isInconsistencyDetected: (baseId, comparedId) => inconsistencies.some(inconsistency => inconsistency.baseCriterionId === baseId && inconsistency.comparedCriterionId === comparedId),
+        isConflictDetected: (baseId, comparedId) => conflictingCriteria.some(conflict => conflict.baseCriterionId === baseId && conflict.comparedCriterionId === comparedId)
     };
 };
 

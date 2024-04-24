@@ -1,10 +1,10 @@
 import React from "react";
-import "./CriteriaWeightingInconsistency.css";
+import "./CriteriaWeightingConflicts.css";
 import {useParams} from "react-router-dom";
-import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScoreInput";
-import useCriteriaWeightingLogic from "./useCriteriaWeightingLogic";
+import CriteriaScoreInput from "../../../Components/CriteriaScoreInput/CriteriaScoreInput";
+import useCriteriaWeightingLogic from "../useCriteriaWeightingLogic";
 
-function CriteriaWeightingInconsistency() {
+function CriteriaWeightingConflicts() {
     let { projectId } = useParams();
     let decisionMakerId = 1; // TODO: Get the decision maker ID from the user
 
@@ -16,7 +16,7 @@ function CriteriaWeightingInconsistency() {
         handleInvertWeight,
         handleCommentsChanged,
         handleSubmitWeights,
-        isInconsistencyDetected
+        isConflictDetected
     } = useCriteriaWeightingLogic(projectId, decisionMakerId);
 
     return (
@@ -43,9 +43,9 @@ function CriteriaWeightingInconsistency() {
                                             onChange={(e) => handleCommentsChanged(`${baseCriterion.id}-${comparedCriterion.id}`, e.target.value)}
                                             placeholder={"Enter comments here"}/>
                                     </div>
-                                    {isInconsistencyDetected(baseCriterion.id, comparedCriterion.id) ? (
-                                        <div className="inconsistency-indicator">
-                                            Inconsistency detected.
+                                    {isConflictDetected(baseCriterion.id, comparedCriterion.id) ? (
+                                        <div className="conflict-indicator">
+                                            Conflict detected.
                                         </div>
                                     ) : (
                                         <div></div>
@@ -55,7 +55,7 @@ function CriteriaWeightingInconsistency() {
                         </div>
                     ))) : <p>Loading criteria...</p>}
                 <button className={"button-send"} onClick={handleSubmitWeights}>Submit Comparisons</button>
-        </div>
+            </div>
             <div className={"documents__container"}>
                 test
             </div>
@@ -63,4 +63,4 @@ function CriteriaWeightingInconsistency() {
     );
 }
 
-export default CriteriaWeightingInconsistency;
+export default CriteriaWeightingConflicts;
