@@ -29,8 +29,9 @@ function CriteriaWeightingConflicts() {
                             <h2>{baseCriterion.name}</h2>
                             {criteria.filter(c => c.id !== baseCriterion.id).map(comparedCriterion => (
                                 <div key={comparedCriterion.id}>
-                                    How much more important is {baseCriterion.name} in relation
-                                    to {comparedCriterion.name}
+                                    <p>
+                                        How much more important is <b>{baseCriterion.name}</b> in relation to <b>{comparedCriterion.name}</b>
+                                    </p>
                                     <CriteriaScoreInput
                                         criterionId={`${baseCriterion.id}-${comparedCriterion.id}`}
                                         currentScore={weights[`${baseCriterion.id}-${comparedCriterion.id}`] || 0}
