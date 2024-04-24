@@ -2,81 +2,26 @@ import {useEffect, useState} from 'react';
 import useFetchProject from "../ProjectSummary/apiConnection/Project/useFetchProject";
 import useProjectCriteria from "../ProjectSummary/apiConnection/criteriaWeighting/useProjectCriteria";
 import submitCriteriaWeights from "../ProjectSummary/apiConnection/criteriaWeighting/submitCriteriaWeights";
+import useFetchCriteriaWeights from "./apiConnections/useFetchCriteriaWeights";
+import useFetchInconsistencies from "./apiConnections/useFetchInconsistencies";
 
 const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
-    const project = useFetchProject(projectId);
-    const [projectBaseCriteria, setProjectBaseCriteria] = useState([]);
-    const [criteriaComparisons, setCriteriaComparisons] = useState([]);
+    const project = useFetchProject(projectId); // Fetch the project
+    const [projectBaseCriteria, setProjectBaseCriteria] = useState([]); // Base criteria
+
     const [weights, setWeights] = useState({});
     const [comments, setComments] = useState({});
     const [inverted, setInverted] = useState({});
-    const [inconsistencies, setInconsistencies] = useState([]);
 
-    useProjectCriteria(project, setProjectBaseCriteria);
+    const criteriaComparisons = useFetchCriteriaWeights(projectId, decisionMakerId); // Fetch criteria weights for every criteria-criteria pair from the API
+    const inconsistencies = useFetchInconsistencies(projectId, decisionMakerId); // Fetch all inconsistencies from the API
 
-    useEffect(() => {
-        const fetchCriteriaWeights = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/projects/${projectId}/decisionMaker/${decisionMakerId}/criteria/weights`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch criteria weights');
-                }
-                const data = await response.json();
-                if (Array.isArray(data)) {
-                    setCriteriaComparisons(data);
-                } else {
-                    setCriteriaComparisons([]);
-                }
-            } catch (error) {
-                console.error('Error fetching criteria weights:', error);
-                setCriteriaComparisons([]);
-            }
-        };
+    useProjectCriteria(project, setProjectBaseCriteria); // Custom hook to manage project criteria
 
-        if (projectId && decisionMakerId) {
-            fetchCriteriaWeights().then(r => console.log('Criteria weights fetched:', r));
-        }
-    }, [projectId, decisionMakerId]);
-
-    useEffect(() => {
-        const fetchInconsistencies = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/projects/${projectId}/decisionMaker/${decisionMakerId}/inconsistencies`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch inconsistencies');
-                }
-                const data = await response.json();
-                if (Array.isArray(data)) {
-                    setInconsistencies(data);
-                } else {
-                    setInconsistencies([]);
-                }
-                return data;
-            } catch (error) {
-                console.error('Error fetching inconsistencies:', error);
-                setInconsistencies([]);
-            }
-        };
-
-        if (projectId && decisionMakerId) {
-            fetchInconsistencies().then(r => console.log('Inconsistencies fetched:', r));
-        }
-    }, [projectId, decisionMakerId]);
-
+    // Adjust weight based on whether it is inverted
     const adjustWeight = (weight, isInverted) => isInverted ? -Math.abs(weight || 1) : Math.abs(weight || 1);
 
+    // Handle weight change for a criteria-criteria pair
     const handleWeightChange = (key, newWeight) => {
         setWeights(prevWeights => ({
             ...prevWeights,
@@ -84,6 +29,8 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
         }));
     };
 
+    // Handle weight inversion for a criteria-criteria pair
+    // If inverted, the weight (X) is stored as negative, but displayed as 1/X
     const handleInvertWeight = (baseId, comparedId) => {
         const key = `${baseId}-${comparedId}`;
         setInverted(prevInverted => ({
@@ -98,6 +45,8 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
             [key]: newComments
         }));
     };
+
+    // Parse and prepare the data for submission
     const prepareDataForSubmission = () => Object.entries(weights).map(([key, importanceScore]) => {
         const [baseCriterionId, comparedCriterionId] = key.split('-');
         const comment = comments[key] || '';
@@ -111,6 +60,7 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
         };
     });
 
+    // Submit the criteria weights to the backend
     const handleSubmitWeights = async () => {
         const data = prepareDataForSubmission();
         if (data.length) {
@@ -125,8 +75,8 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
         }
     };
 
+    // Set initial weights when criteria are loaded/changed
     useEffect(() => {
-        // Set initial weights when criteria are loaded/changed
         if (projectBaseCriteria.length > 0 && criteriaComparisons.length > 0) {
             const newWeights = {};
             const newInverted = {};
