@@ -82,14 +82,17 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
         if (projectBaseCriteria.length > 0 && criteriaComparisons.length > 0) {
             const newWeights = {};
             const newInverted = {};
-            criteriaComparisons.forEach(weight => {
-                const key = `${weight.baseCriterionId}-${weight.comparedCriterionId}`;
+            const newComments = {};
+            criteriaComparisons.forEach(comp => {
+                const key = `${comp.baseCriterionId}-${comp.comparedCriterionId}`;
                 // Initialize weight from the fetched importanceScore or default to 0 if none
-                newWeights[key] = weight.importanceScore || 0;
-                newInverted[key] = weight.importanceScore < 0;
+                newWeights[key] = comp.importanceScore || 0;
+                newInverted[key] = comp.importanceScore < 0;
+                newComments[key] = comp.comments || '';
             });
             setWeights(newWeights);
             setInverted(newInverted)
+            setComments(newComments);
         }
     }, [projectBaseCriteria, criteriaComparisons]);
 
@@ -97,6 +100,7 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
         criteria: projectBaseCriteria,
         weights,
         inverted,
+        comments,
         handleWeightChange,
         handleInvertWeight,
         handleCommentsChanged,

@@ -12,6 +12,7 @@ function CriteriaWeighting() {
         criteria,
         weights,
         inverted,
+        comments,
         handleWeightChange,
         handleInvertWeight,
         handleCommentsChanged,
@@ -38,6 +39,7 @@ function CriteriaWeighting() {
                                     />
                                     <div className={"criteria-comments__container"}>
                                         <textarea
+                                            value={comments[`${baseCriterion.id}-${comparedCriterion.id}`] || ""}
                                             onChange={(e) => handleCommentsChanged(`${baseCriterion.id}-${comparedCriterion.id}`, e.target.value)}
                                             placeholder={"Enter comments here"}/>
                                     </div>

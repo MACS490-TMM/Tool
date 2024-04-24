@@ -3,6 +3,7 @@ import "./CriteriaWeightingConflicts.css";
 import {useParams} from "react-router-dom";
 import CriteriaScoreInput from "../../../Components/CriteriaScoreInput/CriteriaScoreInput";
 import useCriteriaWeightingLogic from "../useCriteriaWeightingLogic";
+import PDFViewer from "../../../Components/PDFPreview/PDFPreview";
 
 function CriteriaWeightingConflicts() {
     let { projectId } = useParams();
@@ -12,6 +13,7 @@ function CriteriaWeightingConflicts() {
         criteria,
         weights,
         inverted,
+        comments,
         handleWeightChange,
         handleInvertWeight,
         handleCommentsChanged,
@@ -41,6 +43,7 @@ function CriteriaWeightingConflicts() {
                                     />
                                     <div className={"criteria-comments__container"}>
                                         <textarea
+                                            value={comments[`${baseCriterion.id}-${comparedCriterion.id}`] || ""}
                                             onChange={(e) => handleCommentsChanged(`${baseCriterion.id}-${comparedCriterion.id}`, e.target.value)}
                                             placeholder={"Enter comments here"}/>
                                     </div>
@@ -58,7 +61,7 @@ function CriteriaWeightingConflicts() {
                 <button className={"button-send"} onClick={handleSubmitWeights}>Submit Comparisons</button>
             </div>
             <div className={"documents__container"}>
-                test
+                <PDFViewer url={`http://localhost:8080/projects/${projectId}/pdf/test`}/>
             </div>
         </div>
     );

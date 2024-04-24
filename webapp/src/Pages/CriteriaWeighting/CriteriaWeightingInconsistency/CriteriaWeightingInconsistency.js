@@ -3,6 +3,7 @@ import "./CriteriaWeightingInconsistency.css";
 import {useParams} from "react-router-dom";
 import CriteriaScoreInput from "../../../Components/CriteriaScoreInput/CriteriaScoreInput";
 import useCriteriaWeightingLogic from "../useCriteriaWeightingLogic";
+import PDFViewer from "../../../Components/PDFPreview/PDFPreview";
 
 function CriteriaWeightingInconsistency() {
     let { projectId } = useParams();
@@ -12,6 +13,7 @@ function CriteriaWeightingInconsistency() {
         criteria,
         weights,
         inverted,
+        comments,
         handleWeightChange,
         handleInvertWeight,
         handleCommentsChanged,
@@ -29,7 +31,8 @@ function CriteriaWeightingInconsistency() {
                             <h2>{baseCriterion.name}</h2>
                             {criteria.filter(c => c.id !== baseCriterion.id).map(comparedCriterion => (
                                 <div key={comparedCriterion.id}>
-                                    <p>How much more important is <b>{baseCriterion.name}</b> in relation to <b>{comparedCriterion.name}</b></p>
+                                    <p>How much more important is <b>{baseCriterion.name}</b> in relation
+                                        to <b>{comparedCriterion.name}</b></p>
                                     <CriteriaScoreInput
                                         criterionId={`${baseCriterion.id}-${comparedCriterion.id}`}
                                         currentScore={weights[`${baseCriterion.id}-${comparedCriterion.id}`] || 0}
@@ -39,6 +42,7 @@ function CriteriaWeightingInconsistency() {
                                     />
                                     <div className={"criteria-comments__container"}>
                                         <textarea
+                                            value={comments[`${baseCriterion.id}-${comparedCriterion.id}`] || ""}
                                             onChange={(e) => handleCommentsChanged(`${baseCriterion.id}-${comparedCriterion.id}`, e.target.value)}
                                             placeholder={"Enter comments here"}/>
                                     </div>
@@ -54,9 +58,9 @@ function CriteriaWeightingInconsistency() {
                         </div>
                     ))) : <p>Loading criteria...</p>}
                 <button className={"button-send"} onClick={handleSubmitWeights}>Submit Comparisons</button>
-        </div>
+            </div>
             <div className={"documents__container"}>
-                test
+                <PDFViewer url={`http://localhost:8080/projects/${projectId}/pdf/test`}/>
             </div>
         </div>
     );
