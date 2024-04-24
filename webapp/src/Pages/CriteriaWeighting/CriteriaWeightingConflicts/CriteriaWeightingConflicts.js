@@ -22,7 +22,7 @@ function CriteriaWeightingConflicts() {
     return (
         <div className={"criteria-scoring__outer-container"}>
             <div className={"criteria-scoring__container"}>
-                <h1>Criteria Weighting</h1>
+                <h1>Criteria Weighting w/Conflicts</h1>
                 {criteria.length > 0 ? (
                     criteria.map((baseCriterion) => (
                         <div key={baseCriterion.id}>
