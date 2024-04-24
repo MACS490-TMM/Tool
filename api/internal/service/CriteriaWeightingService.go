@@ -11,6 +11,8 @@ import (
 
 type CriteriaWeightingService interface {
 	GetSpecificCriteriaWeights(projectID int, criterionId int) ([]domain.CriterionComparison, error)
+	GetAllCriteriaWeights(projectID int) ([]domain.CriterionComparison, error)
+	GetAllCriteriaWeightsDM(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error)
 	AddOrUpdateCriteriaWeights(projectID int, decisionMakerID int, weights []domain.CriterionComparison) error
 	CheckForConflicts(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error)
 	CheckForInconsistencies(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error)
@@ -77,6 +79,46 @@ func (s *FileCriteriaWeightsService) GetSpecificCriteriaWeights(projectID int, b
 	var specificWeights []domain.CriterionComparison
 	for _, weight := range allWeights {
 		if weight.ProjectID == projectID && weight.BaseCriterionID == baseCriterionId {
+			specificWeights = append(specificWeights, weight)
+		}
+	}
+
+	return specificWeights, nil
+}
+
+func (s *FileCriteriaWeightsService) GetAllCriteriaWeights(projectID int) ([]domain.CriterionComparison, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	allWeights, err := s.readCriteriaWeights()
+	if err != nil {
+		return nil, err
+	}
+
+	// Filter the weights for the specific criterion in the specific project
+	var specificWeights []domain.CriterionComparison
+	for _, weight := range allWeights {
+		if weight.ProjectID == projectID {
+			specificWeights = append(specificWeights, weight)
+		}
+	}
+
+	return specificWeights, nil
+}
+
+func (s *FileCriteriaWeightsService) GetAllCriteriaWeightsDM(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	allWeights, err := s.readCriteriaWeights()
+	if err != nil {
+		return nil, err
+	}
+
+	// Filter the weights for the specific criterion in the specific project
+	var specificWeights []domain.CriterionComparison
+	for _, weight := range allWeights {
+		if weight.ProjectID == projectID && weight.DecisionMakerID == decisionMakerID {
 			specificWeights = append(specificWeights, weight)
 		}
 	}

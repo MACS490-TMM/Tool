@@ -14,7 +14,7 @@ function CriteriaScoreInput({ criterionId, currentScore, onScoreChange, onInvert
                             name={`score-${criterionId}`}
                             value={effectiveScore}
                             checked={currentScore === effectiveScore}
-                            onChange={(e) => onScoreChange(criterionId, parseInt(e.target.value, 10))}
+                            onChange={(e) => onScoreChange(effectiveScore, parseInt(e.target.value, 10))}
                         />
                         <span className="checkmark"></span>
                         {isInverted ? `1/${score}` : score}

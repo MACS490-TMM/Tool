@@ -74,6 +74,8 @@ func SetupServer() *http.ServeMux {
 	mux.Handle("/user/update/password/{id}", wrapMiddleware(http.HandlerFunc(userHandler.UpdateUserPassword)))
 
 	mux.Handle("/projects/{projectId}/criteria/{criterionId}/weights", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.GetCriteriaWeights)))
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/criteria/weights", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.GetAllCriteriaWeightsDM))) // All for one project and one decision maker
+	mux.Handle("/projects/{projectId}/criteria/weights", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.GetAllCriteriaWeights)))                                   // All for one project
 	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/weights", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.AddCriteriaWeights)))
 
 	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/conflicts", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.CheckForConflicts)))

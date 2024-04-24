@@ -19,6 +19,10 @@ function AdminHome() {
         navigate(`/project/${projectId}/vendorRanking`);
     }
 
+    const handleInconsistencyButtonClick = (projectId) => {
+        navigate(`/project/${projectId}/criteriaInconsistency`);
+    }
+
     // Function to fetch data from API
     const fetchData = async (isMounted, url) => {
         try {
@@ -63,6 +67,9 @@ function AdminHome() {
                 <div>
                     <button onClick={() => handleWeightingButtonClick(project.id)}>
                         {`Go to Criteria Weighting for Project ${project.id}`}
+                    </button>
+                    <button onClick={() => handleInconsistencyButtonClick(project.id)}>
+                        {`Go to Criteria Inconsistency for Project ${project.id}`}
                     </button>
                 </div>
             ))}
