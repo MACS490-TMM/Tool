@@ -3,6 +3,8 @@ import {useEffect, useState} from "react";
 import useProjectCriteria from "../ProjectSummary/apiConnection/criteriaWeighting/useProjectCriteria";
 import submitCriteriaScoring from "../ProjectSummary/apiConnection/criteriaScoring/submitCriteriaScoring";
 import useFetchCriteriaScores from "./apiConnections/useFetchCriteriaScores";
+import useFetchInconsistencies from "../CriteriaWeighting/apiConnections/useFetchInconsistencies";
+import useFetchConflictingCriteria from "../CriteriaWeighting/apiConnections/useFetchConflictingCriteria";
 
 const useCriteriaScoringLogic = (projectId, decisionMakerId) => {
     const project = useFetchProject(projectId);
@@ -14,6 +16,12 @@ const useCriteriaScoringLogic = (projectId, decisionMakerId) => {
     const [inverted, setInverted] = useState({});
 
     const vendorComparisons = useFetchCriteriaScores(projectId, decisionMakerId);
+
+    const urlInconsistencies = `http://localhost:8080/projects/${projectId}/decisionMaker/${decisionMakerId}/scores/inconsistencies`;
+    const urlConflicts = `http://localhost:8080/projects/${projectId}/decisionMaker/${decisionMakerId}/scores/conflicts`;
+
+    const inconsistencyInCriteria = useFetchInconsistencies(projectId, decisionMakerId, urlInconsistencies); // Fetch all inconsistencies from the API
+    const conflictingCriteria = useFetchConflictingCriteria(projectId, decisionMakerId, urlConflicts); // Fetch conflicting criteria from the API
 
     useProjectCriteria(project, setProjectBaseCriteria); // Custom hook to manage project criteria
 
@@ -162,8 +170,26 @@ const useCriteriaScoringLogic = (projectId, decisionMakerId) => {
         handleTextExtractionChanged,
         handleCommentsChanged,
         handleSubmitScores,
-        //isInconsistencyDetected: (baseId, comparedId) => inconsistencies.some(inconsistency => inconsistency.baseCriterionId === baseId && inconsistency.comparedCriterionId === comparedId),
-        //isConflictDetected: (baseId, comparedId) => conflictingCriteria.some(conflict => conflict.baseCriterionId === baseId && conflict.comparedCriterionId === comparedId)
+        isInconsistencyDetected: (baseId, comparedId, criterionId) => {
+            return inconsistencyInCriteria.some(criterion =>
+                criterion.criterionId === criterionId &&
+                criterion.comparisons.some(comp =>
+                    comp.baseVendorId === baseId &&
+                    comp.comparedVendorId === comparedId &&
+                    comp.inconsistency
+                )
+            );
+        },
+        isConflictDetected: (baseId, comparedId, criterionId) => {
+            return conflictingCriteria.some(criterion =>
+                criterion.criterionId === criterionId &&
+                criterion.comparisons.some(comp =>
+                    comp.baseVendorId === baseId &&
+                    comp.comparedVendorId === comparedId &&
+                    comp.conflict
+                )
+            );
+        }
     };
 }
 

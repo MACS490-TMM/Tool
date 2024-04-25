@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 
 // Fetch conflicts for every criteria-criteria pair
-const useFetchConflictingCriteria = (projectId, decisionMakerId) => {
+const useFetchConflictingCriteria = (projectId, decisionMakerId, url) => {
     const [conflicts, setConflicts] = useState([]);
-    const url = `http://localhost:8080/projects/${projectId}/decisionMaker/${decisionMakerId}/conflicts`;
 
     useEffect(() => {
         const fetchConflicts = async () => {
             try {
+                if (!url) {
+                    throw new Error('URL is required');
+                }
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {

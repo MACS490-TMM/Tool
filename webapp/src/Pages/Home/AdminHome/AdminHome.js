@@ -19,12 +19,24 @@ function AdminHome() {
         navigate(`/project/${projectId}/vendorRanking`);
     }
 
-    const handleInconsistencyButtonClick = (projectId) => {
-        navigate(`/project/${projectId}/criteriaInconsistency`);
+    const handleWeightsInconsistencyButtonClick = (projectId) => {
+        navigate(`/project/${projectId}/criteriaWeightingInconsistency`);
     }
 
-    const handleConflictsButtonClick = (projectId) => {
-        navigate(`/project/${projectId}/criteriaConflict`);
+    const handleWeightsConflictsButtonClick = (projectId) => {
+        navigate(`/project/${projectId}/criteriaWeightingConflict`);
+    }
+
+    const handleScoringInconsistencyButtonClick = (projectId) => {
+        navigate(`/project/${projectId}/criteriaScoreInconsistency`);
+    }
+
+    const handleScoringConflictsButtonClick = (projectId) => {
+        navigate(`/project/${projectId}/criteriaScoreConflict`);
+    }
+
+    const handleCriteriaDefinitionButtonClick = (projectId) => {
+        navigate(`/project/setup/criteriaDefinition/${projectId}`);
     }
 
     // Function to fetch data from API
@@ -66,17 +78,25 @@ function AdminHome() {
     return (
         <div className={"admin-home-container"}>
             <h1>Admin Home</h1>
+            <p>Criteria Definition</p>
+            {data && data.map((project) => (
+                <div>
+                    <button onClick={() => handleCriteriaDefinitionButtonClick(project.id)}>
+                        {`Go to Criteria Definition for Project ${project.id}`}
+                    </button>
+                </div>
+            ))}
             <p>Criteria Weighting</p>
             {data && data.map((project) => (
                 <div>
                     <button onClick={() => handleWeightingButtonClick(project.id)}>
                         {`Go to Criteria Weighting for Project ${project.id}`}
                     </button>
-                    <button onClick={() => handleInconsistencyButtonClick(project.id)}>
-                        {`Go to Criteria Inconsistency for Project ${project.id}`}
+                    <button onClick={() => handleWeightsInconsistencyButtonClick(project.id)}>
+                        {`Go to Criteria Weight Inconsistency for Project ${project.id}`}
                     </button>
-                    <button onClick={() => handleConflictsButtonClick(project.id)}>
-                        {`Go to Criteria Conflict for Project ${project.id}`}
+                    <button onClick={() => handleWeightsConflictsButtonClick(project.id)}>
+                        {`Go to Criteria Weight Conflict for Project ${project.id}`}
                     </button>
                 </div>
             ))}
@@ -85,6 +105,12 @@ function AdminHome() {
                 <div>
                     <button onClick={() => handleRankingButtonClick(project.id)}>
                         {`Go to Criteria Ranking for Project ${project.id}`}
+                    </button>
+                    <button onClick={() => handleScoringInconsistencyButtonClick(project.id)}>
+                        {`Go to Criteria Score Inconsistency for Project ${project.id}`}
+                    </button>
+                    <button onClick={() => handleScoringConflictsButtonClick(project.id)}>
+                        {`Go to Criteria Score Conflict for Project ${project.id}`}
                     </button>
                 </div>
             ))}

@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 
 // Fetch inconsistencies for every criteria-criteria pair
-const useFetchInconsistencies = (projectId, decisionMakerId) => {
+const useFetchInconsistencies = (projectId, decisionMakerId, url) => {
     const [inconsistencies, setInconsistencies] = useState([]);
-    const url = `http://localhost:8080/projects/${projectId}/decisionMaker/${decisionMakerId}/inconsistencies`;
 
     useEffect(() => {
         const fetchInconsistencies = async () => {
             try {
+                if (!url) {
+                    throw new Error('URL is required');
+                }
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {

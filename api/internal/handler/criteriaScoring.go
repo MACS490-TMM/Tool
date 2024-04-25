@@ -161,3 +161,91 @@ func (h *CriteriaScoringHandler) AddCriteriaScores(w http.ResponseWriter, req *h
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 	}
 }
+
+func (h *CriteriaScoringHandler) CheckForConflicts(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	projectIDString := req.PathValue("projectId")
+
+	decisionMakerIdString := req.PathValue("decisionMakerId")
+
+	projectID, projectIDErr := strconv.Atoi(projectIDString)
+	if projectIDErr != nil {
+		http.Error(w, "Invalid project ID", http.StatusBadRequest)
+		return
+	}
+
+	decisionMakerID, decisionMakerIDErr := strconv.Atoi(decisionMakerIdString)
+	if decisionMakerIDErr != nil {
+		http.Error(w, "Invalid decision maker ID", http.StatusBadRequest)
+		return
+	}
+
+	conflicts, err := h.Service.CheckForConflicts(projectID, decisionMakerID)
+	if err != nil {
+		log.Printf("Error checking for conflicts: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	jsonBytes, err := json.Marshal(conflicts)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	// Write JSON response
+	_, err = w.Write(jsonBytes)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *CriteriaScoringHandler) CheckForInconsistencies(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	projectIDString := req.PathValue("projectId")
+
+	decisionMakerIdString := req.PathValue("decisionMakerId")
+
+	projectID, projectIDErr := strconv.Atoi(projectIDString)
+	if projectIDErr != nil {
+		http.Error(w, "Invalid project ID", http.StatusBadRequest)
+		return
+	}
+
+	decisionMakerID, decisionMakerIDErr := strconv.Atoi(decisionMakerIdString)
+	if decisionMakerIDErr != nil {
+		http.Error(w, "Invalid decision maker ID", http.StatusBadRequest)
+		return
+	}
+
+	inconsistencies, err := h.Service.CheckForInconsistencies(projectID, decisionMakerID)
+	if err != nil {
+		log.Printf("Error checking for inconsistencies: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	jsonBytes, err := json.Marshal(inconsistencies)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	// Write JSON response
+	_, err = w.Write(jsonBytes)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+}

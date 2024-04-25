@@ -13,4 +13,6 @@ type VendorComparison struct {
 	Score            int    `json:"score"`
 	TextExtracted    string `json:"textExtracted"`
 	Comments         string `json:"comments"`
+	Conflict         bool   `json:"conflict"`
+	Inconsistency    bool   `json:"inconsistency"`
 }

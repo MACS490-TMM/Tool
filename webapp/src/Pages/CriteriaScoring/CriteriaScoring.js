@@ -36,7 +36,7 @@ function CriteriaScoring() {
                             <h2>{criteria.find(c => c.id.toString() === criterionId).name}</h2>
                             {comparisons.flatMap(comp => comp.comparisons.map((vendorComparison, index) => (
                                 <div key={`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${index}`}>
-                                    <p>Compare Vendor {vendorComparison.baseVendorId} vs Vendor {vendorComparison.comparedVendorId}</p>
+                                    <p>How much better does <b>Vendor {vendorComparison.baseVendorId}</b> perform in relation to <b>Vendor {vendorComparison.comparedVendorId}</b> in terms of <b>{criteria.find(c => c.id.toString() === criterionId).name}</b>?</p>
                                     <CriteriaScoreInput
                                         criterionId={`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`}
                                         currentScore={scores[`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`] || 0}

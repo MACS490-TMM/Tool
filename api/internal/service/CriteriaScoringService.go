@@ -12,6 +12,8 @@ type CriteriaScoringService interface {
 	GetSpecificCriteriaScores(projectID int, criterionId int) ([]domain.CriterionComparisons, error)
 	AddOrUpdateCriteriaScores(projectID int, decisionMakerID int, scores []domain.CriterionComparisons) error
 	GetAllCriteriaScoresDM(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error)
+	CheckForConflicts(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error)
+	CheckForInconsistencies(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error)
 }
 
 type FileCriteriaScoringService struct {
@@ -135,48 +137,92 @@ func (s *FileCriteriaScoringService) AddOrUpdateCriteriaScores(projectID int, de
 	return s.writeCriteriaScoring(allCriteriaComparisons)
 }
 
-/*func (s *FileCriteriaScoringService) AddOrUpdateCriteriaScores(projectID int, decisionMakerID int, newComparisons []domain.CriterionComparisons) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	// Read the existing scores from the file
-	allCriteriaComparisons, err := s.readCriteriaScoring()
+func (s *FileCriteriaScoringService) CheckForConflicts(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error) {
+	criteriaScores, err := s.readCriteriaScoring()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// Create a map for easier lookup of existing scores by criterionId
-	scoreMap := make(map[int]*domain.CriterionComparisons)
-	for i := range allCriteriaComparisons {
-		// Only consider scores for the specific project and decision maker
-		if allCriteriaComparisons[i].ProjectID == projectID && allCriteriaComparisons[i].DecisionMakerID == decisionMakerID {
-			scoreMap[allCriteriaComparisons[i].CriterionID] = &allCriteriaComparisons[i]
-		}
-	}
-
-	// Iterate over the new scores and update the map accordingly
-	for _, newScore := range newComparisons {
-		if existingScore, found := scoreMap[newScore.CriterionID]; found {
-			// Update existing score
-			existingScore.Score = newScore.Score
-			existingScore.TextExtracted = newScore.TextExtracted
-			existingScore.Comments = newScore.Comments
-		} else {
-			score := domain.CriterionComparisons{
-				// Add new score
-				ProjectID:        projectID,
-				CriterionID:      newScore.CriterionID,
-				DecisionMakerID:  decisionMakerID,
-				BaseVendorID:     newScore.BaseVendorID,
-				ComparedVendorID: newScore.ComparedVendorID,
-				Score:            newScore.Score,
-				TextExtracted:    newScore.TextExtracted,
-				Comments:         newScore.Comments,
+	var conflicts []domain.CriterionComparisons
+	for _, criterion := range criteriaScores {
+		if criterion.ProjectID == projectID && criterion.DecisionMakerID == decisionMakerID {
+			conflictExists := false
+			filteredComparisons := make([]domain.VendorComparison, 0)
+			for _, comp := range criterion.Comparisons {
+				if comp.Conflict {
+					conflictExists = true
+					filteredComparisons = append(filteredComparisons, comp)
+				}
 			}
-			criteriaScores = append(criteriaScores, score)
+			if conflictExists {
+				criterion.Comparisons = filteredComparisons
+				conflicts = append(conflicts, criterion)
+			}
 		}
 	}
+	return conflicts, nil
+}
 
-	// Write the updated scores back to the file
-	return s.writeCriteriaScoring(criteriaScores)
+func (s *FileCriteriaScoringService) CheckForInconsistencies(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error) {
+	criteriaScores, err := s.readCriteriaScoring()
+	if err != nil {
+		return nil, err
+	}
+
+	var inconsistencies []domain.CriterionComparisons
+	for _, criterion := range criteriaScores {
+		if criterion.ProjectID == projectID && criterion.DecisionMakerID == decisionMakerID {
+			inconsistencyExists := false
+			filteredComparisons := make([]domain.VendorComparison, 0)
+			for _, comp := range criterion.Comparisons {
+				if comp.Inconsistency {
+					inconsistencyExists = true
+					filteredComparisons = append(filteredComparisons, comp)
+				}
+			}
+			if inconsistencyExists {
+				criterion.Comparisons = filteredComparisons
+				inconsistencies = append(inconsistencies, criterion)
+			}
+		}
+	}
+	return inconsistencies, nil
+}
+
+/*func (s *FileCriteriaScoringService) CheckForConflicts(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error) {
+	criteriaScores, err := s.readCriteriaScoring()
+	if err != nil {
+		return nil, err
+	}
+
+	var conflicts []domain.CriterionComparisons
+	for _, criterion := range criteriaScores {
+		if criterion.ProjectID == projectID && criterion.DecisionMakerID == decisionMakerID {
+			for _, comp := range criterion.Comparisons {
+				if comp.Conflict {
+					conflicts = append(conflicts, comp)
+				}
+			}
+		}
+	}
+	return conflicts, nil
+}
+
+func (s *FileCriteriaScoringService) CheckForInconsistencies(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error) {
+	criteriaScores, err := s.readCriteriaScoring()
+	if err != nil {
+		return nil, err
+	}
+
+	var inconsistencies []domain.CriterionComparisons
+	for _, criterion := range criteriaScores {
+		if criterion.ProjectID == projectID && criterion.DecisionMakerID == decisionMakerID {
+			for _, comp := range criterion.Comparisons {
+				if comp.Inconsistency {
+					inconsistencies = append(inconsistencies, comp)
+				}
+			}
+		}
+	}
+	return inconsistencies, nil
 }*/

@@ -14,9 +14,12 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
     const [comments, setComments] = useState({});
     const [inverted, setInverted] = useState({});
 
+    const urlInconsistencies = `http://localhost:8080/projects/${projectId}/decisionMaker/${decisionMakerId}/weights/inconsistencies`;
+    const urlConflicts = `http://localhost:8080/projects/${projectId}/decisionMaker/${decisionMakerId}/weights/conflicts`;
+
     const criteriaComparisons = useFetchCriteriaWeights(projectId, decisionMakerId); // Fetch criteria weights for every criteria-criteria pair from the API
-    const inconsistencies = useFetchInconsistencies(projectId, decisionMakerId); // Fetch all inconsistencies from the API
-    const conflictingCriteria = useFetchConflictingCriteria(projectId, decisionMakerId); // Fetch conflicting criteria from the API
+    const inconsistencies = useFetchInconsistencies(projectId, decisionMakerId, urlInconsistencies); // Fetch all inconsistencies from the API
+    const conflictingCriteria = useFetchConflictingCriteria(projectId, decisionMakerId, urlConflicts); // Fetch conflicting criteria from the API
 
     useProjectCriteria(project, setProjectBaseCriteria); // Custom hook to manage project criteria
 

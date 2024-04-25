@@ -79,8 +79,11 @@ func SetupServer() *http.ServeMux {
 	mux.Handle("/projects/{projectId}/criteria/weights", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.GetAllCriteriaWeights)))                                   // All for one project
 	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/weights", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.AddCriteriaWeights)))
 
-	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/conflicts", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.CheckForConflicts)))
-	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/inconsistencies", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.CheckForInconsistencies)))
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/weights/conflicts", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.CheckForConflicts)))
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/weights/inconsistencies", wrapMiddleware(http.HandlerFunc(criteriaWeightingHandler.CheckForInconsistencies)))
+
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/scores/conflicts", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.CheckForConflicts)))
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/scores/inconsistencies", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.CheckForInconsistencies)))
 
 	return mux
 }

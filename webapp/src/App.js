@@ -15,6 +15,9 @@ import UserPage from "./Pages/UserPage/UserPage";
 import CriteriaWeighting from "./Pages/CriteriaWeighting/CriteriaWeighting";
 import CriteriaWeightingInconsistency from "./Pages/CriteriaWeighting/CriteriaWeightingInconsistency/CriteriaWeightingInconsistency";
 import CriteriaWeightingConflicts from "./Pages/CriteriaWeighting/CriteriaWeightingConflicts/CriteriaWeightingConflicts";
+import CriteriaScoringConflicts from "./Pages/CriteriaScoring/CriteriaScoringConflicts/CriteriaScoringConflicts";
+import CriteriaScoringInconsistencies
+    from "./Pages/CriteriaScoring/CriteriaScoringInconsistencies/CriteriaScoringInconsistencies";
 
 function App() {
     return (
@@ -45,8 +48,10 @@ function App() {
                                         <Route path="/project/:projectId/vendorRanking" element={<VendorResult />} />
                                         <Route path="/user/:userName" element={<UserPage />} />
                                         <Route path={"/project/:projectId/criteriaWeighting"} element={<CriteriaWeighting />} />
-                                        <Route path={"/project/:projectId/criteriaInconsistency"} element={<CriteriaWeightingInconsistency />} />
-                                        <Route path={"/project/:projectId/criteriaConflict"} element={<CriteriaWeightingConflicts />} />
+                                        <Route path={"/project/:projectId/criteriaWeightingInconsistency"} element={<CriteriaWeightingInconsistency />} />
+                                        <Route path={"/project/:projectId/criteriaWeightingConflict"} element={<CriteriaWeightingConflicts />} />
+                                        <Route path="/project/:projectId/criteriaScoreConflict" element={<CriteriaScoringConflicts />} />
+                                        <Route path="/project/:projectId/criteriaScoreInconsistency" element={<CriteriaScoringInconsistencies />} />
 
                                         <Route path="*" element={<NotFoundPage />} />
                                     </Routes>
