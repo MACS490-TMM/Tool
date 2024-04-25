@@ -15,6 +15,7 @@ import {useParams} from "react-router-dom";
 function CriteriaDefinition() {
 
     let { projectId } = useParams();
+    let decisionMakerId = 1; // TODO: Get the decision maker ID from the user
 
     const project = useFetchProject(projectId);
 
@@ -129,7 +130,7 @@ function CriteriaDefinition() {
      */
     const handleSubmit = async () => {
         try {
-            await submitCriteria(project, selections)
+            await submitCriteria(project, selections, decisionMakerId)
                 .then(() => {
                 alert('Criteria submitted successfully');
             });

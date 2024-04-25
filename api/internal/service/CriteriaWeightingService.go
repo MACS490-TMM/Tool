@@ -135,22 +135,29 @@ func (s *FileCriteriaWeightsService) AddOrUpdateCriteriaWeights(projectID, decis
 		return err
 	}
 
-	weightMap := make(map[string]*domain.CriterionComparison)
+	// Create a map for the existing weights for quick lookup and update
+	existingWeightMap := make(map[string]*domain.CriterionComparison)
 	for i := range existingWeights {
-		key := fmt.Sprintf("%d-%d", existingWeights[i].BaseCriterionID, existingWeights[i].ComparedCriterionID)
-		weightMap[key] = &existingWeights[i]
+		key := fmt.Sprintf("%d-%d-%d-%d", existingWeights[i].ProjectID, existingWeights[i].DecisionMakerID, existingWeights[i].BaseCriterionID, existingWeights[i].ComparedCriterionID)
+		existingWeightMap[key] = &existingWeights[i]
 	}
 
+	// Iterate over new weights to update existing ones or add new
 	for _, newWeight := range newWeights {
-		key := fmt.Sprintf("%d-%d", newWeight.BaseCriterionID, newWeight.ComparedCriterionID)
-		if weight, exists := weightMap[key]; exists {
-			weight.ImportanceScore = newWeight.ImportanceScore
-			weight.Comments = newWeight.Comments
+		key := fmt.Sprintf("%d-%d-%d-%d", projectID, decisionMakerID, newWeight.BaseCriterionID, newWeight.ComparedCriterionID)
+		if existingWeight, found := existingWeightMap[key]; found {
+			// Update the existing weight entry
+			existingWeight.ImportanceScore = newWeight.ImportanceScore
+			existingWeight.Comments = newWeight.Comments
+			existingWeight.Inconsistency = newWeight.Inconsistency
+			existingWeight.Conflict = newWeight.Conflict
 		} else {
+			// Add new weight if it doesn't exist
 			existingWeights = append(existingWeights, newWeight)
 		}
 	}
 
+	// Write the updated weights back to the storage
 	return s.writeCriteriaWeights(existingWeights)
 }
 

@@ -146,27 +146,6 @@ func (s *FileProjectService) DeleteProject(id int) error {
 	return errors.New("unable to delete project with ID: " + string(id) + " - project not found")
 }
 
-/*
-// UpdateProject TODO: Change the implementation to use a database instead of a file
-func (s *FileProjectService) UpdateProject(project domain.Project) (domain.Project, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	projects, err := s.readProjects()
-	if err != nil {
-		return domain.Project{}, err
-	}
-
-	for i, p := range projects {
-		if p.ID == project.ID {
-			projects[i] = project
-			return project, s.writeProjects(projects)
-		}
-	}
-
-	return domain.Project{}, errors.New("project not found")
-}*/
-
 func (s *FileProjectService) UpdateProject(id int, update domain.ProjectUpdate) (domain.Project, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
