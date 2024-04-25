@@ -1,26 +1,13 @@
 /**
  * Submits criteria scores to the specified URL.
+ * @param criteriaData
  * @param projectId The ID of the project to submit criteria scores for.
  * @param decisionMakerId The ID of the decision maker assigning and submitting the scores.
- * @param {Array} criteria The criteria to assign scores to.
  * @param {String} url The URL to submit the data to.
  * @returns {Promise<void>} A promise that resolves when the submission is complete.
  */
-async function submitCriteriaScoring(projectId, decisionMakerId, criteria, url = 'http://localhost:8080/projects') {
-    url = url + `/${projectId}/decisionMaker/${decisionMakerId}/scores`;
-
-    if (criteria.length === 0) {
-        throw new Error('At least one criterion must be included before submitting.');
-    }
-
-    const data = criteria.map(({ id, score, textExtracted, comments }) => ({
-        criterionId: id,
-        decisionMakerId,
-        score,
-        textExtracted,
-        comments
-    }));
-
+async function submitCriteriaScoring(criteriaData, projectId, decisionMakerId, url = 'http://localhost:8080/projects') {
+    url = url + `/${projectId}/decisionMaker/${decisionMakerId}/criteria/scores`;
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -28,7 +15,7 @@ async function submitCriteriaScoring(projectId, decisionMakerId, criteria, url =
                 'Content-Type': 'application/json',
             },
             credentials: 'include',  // Ensures cookies are sent with the request
-            body: JSON.stringify(data),
+            body: JSON.stringify(criteriaData),
         });
 
         if (!response.ok) {

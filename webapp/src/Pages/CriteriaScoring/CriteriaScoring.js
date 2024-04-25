@@ -1,87 +1,65 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import { useParams } from "react-router-dom";
-import useFetchProject from "../ProjectSummary/apiConnection/Project/useFetchProject";
-import useProjectCriteria from "../ProjectSummary/apiConnection/criteriaScoring/useProjectCriteria";  // Import the custom hook
 import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScoreInput";
-import submitCriteriaScoring from "../ProjectSummary/apiConnection/criteriaScoring/submitCriteriaScoring";
 import "./CriteriaScoring.css";
 import PDFViewer from "../../Components/PDFPreview/PDFPreview";
+import useCriteriaScoringLogic from "./useCriteriaScoringLogic";
 
 function CriteriaScoring() {
     let { projectId } = useParams();
-    const [criteria, setCriteria] = useState([]);
-    const project = useFetchProject(projectId);
     const decisionMakerId = 1; // TODO: Get the decision maker ID from the user
-    const [activePDF, setActivePDF] = useState('RFP'); // Added state for active PDF
+    const {
+        criteria,
+        scores,
+        inverted,
+        criteriaMap,
+        textExtracted,
+        comments,
+        handleScoreChange,
+        handleInvertScore,
+        handleTextExtractionChanged,
+        handleCommentsChanged,
+        handleSubmitScores,
+    } = useCriteriaScoringLogic(projectId, decisionMakerId);
 
-    // Custom hook to manage project criteria
-    useProjectCriteria(project, setCriteria);
+    const [activePDF, setActivePDF] = useState('RFP'); // Added state for active PDF
 
     const handleChangeActivePDF = (pdfType) => {
         setActivePDF(pdfType);
     };
 
-    /**
-     * Handles the change of a criterion's score.
-     * @param criterionId The ID of the criterion to change the score for.
-     * @param newScore The new score to assign to the criterion.
-     */
-    const handleScoreChange = (criterionId, newScore) => {
-        const updatedCriteria = criteria.map(criterion =>
-            criterion.id === criterionId ? { ...criterion, score: newScore } : criterion
-        );
-        setCriteria(updatedCriteria);
-    };
-
-    const handleTextExtractionChanged = (criterionId, newText) => {
-        const updatedCriteria = criteria.map(criterion =>
-            criterion.id === criterionId ? { ...criterion, textExtracted: newText } : criterion
-        );
-        setCriteria(updatedCriteria);
-    };
-
-    const handleCommentsChanged = (criterionId, newComments) => {
-        const updatedCriteria = criteria.map(criterion =>
-            criterion.id === criterionId ? { ...criterion, comments: newComments } : criterion
-        );
-        setCriteria(updatedCriteria);
-    };
-
-    /**
-     * Handles the submission of criteria scores.
-     * @returns {Promise<void>} A promise that resolves when the submission is complete.
-     */
-    const handleSubmitScores = async () => {
-        try {
-            await submitCriteriaScoring(projectId, decisionMakerId, criteria)
-                .then(() => {
-                    alert('Criteria with scores were submitted successfully');
-                });
-        } catch (error) {
-            alert('Failed to submit criteria and their scores \n' + error.message);
-        }
-    };
-
     return (
         <div className={"criteria-scoring__outer-container"}>
             <div className={"criteria-scoring__container"}>
-                {criteria.map(criterion => (
-                    <div key={criterion.id}>
-                        <h3>{criterion.name}</h3>
-                        <p>{criterion.explanation}</p>
-                        <CriteriaScoreInput
-                            criterionId={criterion.id}
-                            currentScore={criterion.score}
-                            onScoreChange={handleScoreChange}
-                        />
-                        <div className={"text-extraction__container"}>
-                            <textarea onChange={(e) => handleTextExtractionChanged(criterion.id, e.target.value)} placeholder={"Enter text extraction here"}/>
+                    {(criteria.length > 0 && Object.entries(criteriaMap).map(([criterionId, comparisons]) => (
+                        <div key={criterionId}>
+                            <h2>{criteria.find(c => c.id.toString() === criterionId).name}</h2>
+                            {comparisons.flatMap(comp => comp.comparisons.map((vendorComparison, index) => (
+                                <div key={`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${index}`}>
+                                    <p>Compare Vendor {vendorComparison.baseVendorId} vs Vendor {vendorComparison.comparedVendorId}</p>
+                                    <CriteriaScoreInput
+                                        criterionId={`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`}
+                                        currentScore={scores[`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`] || 0}
+                                        onScoreChange={(newScore) => handleScoreChange(`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`, newScore)}
+                                        onInvertScore={() => handleInvertScore(vendorComparison.baseVendorId, vendorComparison.comparedVendorId, criterionId)}
+                                        isInverted={inverted[`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`]}
+                                    />
+                                    <div className={"text-extraction__container"}>
+                                    <textarea
+                                        value={textExtracted[`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`] || ""}
+                                        onChange={(e) => handleTextExtractionChanged(`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`, e.target.value)}
+                                        placeholder={"Enter text extraction here"}/>
+                                    </div>
+                                    <div className={"criteria-comments__container"}>
+                                    <textarea
+                                        value={comments[`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`] || ""}
+                                        onChange={(e) => handleCommentsChanged(`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`, e.target.value)}
+                                        placeholder={"Enter comments here"}/>
+                                    </div>
+                                </div>
+                            )))}
                         </div>
-                        <div className={"criteria-comments__container"}>
-                            <textarea onChange={(e) => handleCommentsChanged(criterion.id, e.target.value)} placeholder={"Enter comments here"}/>
-                        </div>
-                    </div>
-                ))}
+                    ))) || (<p>Loading criteria...</p>)}
                 <button onClick={handleSubmitScores}>Submit Scores</button>
             </div>
             <div className={"documents__container"}>

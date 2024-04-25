@@ -64,7 +64,8 @@ func SetupServer() *http.ServeMux {
 	mux.Handle("/vendors", wrapMiddleware(http.HandlerFunc(vendorHandler.GetVendors)))
 	mux.Handle("/newVendor", wrapMiddleware(http.HandlerFunc(vendorHandler.CreateVendor)))
 	mux.Handle("/projects/{projectId}/criteria/{criterionId}/scores", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.GetCriteriaScores)))
-	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/scores", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.AddCriteriaScores)))
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/criteria/getAllScores", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.GetAllCriteriaScoresDM))) // All for one project and one decision maker
+	mux.Handle("/projects/{projectId}/decisionMaker/{decisionMakerId}/criteria/scores", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.AddCriteriaScores)))
 	mux.Handle("/projects/{projectId}/pdf/{pdfId}", wrapMiddleware(http.HandlerFunc(pdfHandler.ServePDF)))
 	mux.Handle("/projects/{projectId}/vendorRanking", wrapMiddleware(http.HandlerFunc(vendorRankingHandler.GetVendorRankings)))
 	mux.Handle("/login", corsOnlyMiddleware(http.HandlerFunc(authenticationHandler.ServeHTTP)))

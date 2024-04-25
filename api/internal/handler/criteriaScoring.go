@@ -63,6 +63,56 @@ func (h *CriteriaScoringHandler) GetCriteriaScores(w http.ResponseWriter, req *h
 	}
 }
 
+// GetAllCriteriaScoresDM is an HTTP handler that returns a list of all criteria and their scores.
+func (h *CriteriaScoringHandler) GetAllCriteriaScoresDM(w http.ResponseWriter, req *http.Request) {
+	projectIDString := req.PathValue("projectId")
+
+	decisionMakerIDString := req.PathValue("decisionMakerId")
+
+	projectID, projectIDErr := strconv.Atoi(projectIDString)
+	if projectIDErr != nil {
+		http.Error(w, "Invalid project ID", http.StatusBadRequest)
+		return
+	}
+
+	decisionMakerID, decisionMakerIDErr := strconv.Atoi(decisionMakerIDString)
+	if decisionMakerIDErr != nil {
+		http.Error(w, "Invalid decision maker ID", http.StatusBadRequest)
+		return
+	}
+
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	allCriteriaScoresDM, getAllCriteriaScoresDMErr := h.Service.GetAllCriteriaScoresDM(projectID, decisionMakerID)
+	if getAllCriteriaScoresDMErr != nil {
+		// Log the error for server-side observability
+		log.Printf("Error getting decision makers: %v", getAllCriteriaScoresDMErr)
+
+		http.Error(w, getAllCriteriaScoresDMErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Convert data to JSON
+	jsonBytes, err := json.Marshal(allCriteriaScoresDM)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	// Set content type header
+	w.Header().Set("Content-Type", "application/json")
+
+	// Write JSON response
+	_, err = w.Write(jsonBytes)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+}
+
 func (h *CriteriaScoringHandler) AddCriteriaScores(w http.ResponseWriter, req *http.Request) {
 	projectIDString := req.PathValue("projectId")
 
@@ -90,7 +140,7 @@ func (h *CriteriaScoringHandler) AddCriteriaScores(w http.ResponseWriter, req *h
 		return
 	}
 
-	var criteriaScores []domain.CriterionScore // ProjectID, CriterionID, DecisionMakerID, Score, TextExtracted, Comments
+	var criteriaScores []domain.CriterionComparisons
 	if err := json.NewDecoder(req.Body).Decode(&criteriaScores); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
