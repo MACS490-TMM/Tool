@@ -14,7 +14,7 @@ type CriteriaScoringService interface {
 	GetAllCriteriaScoresDM(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error)
 	CheckForConflicts(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error)
 	CheckForInconsistencies(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error)
-	UpdateAllCriteriaInconsistencies(projectID, criterionID, decisionMakerID, baseVendor, comparedVendor int, inconsistency bool) error
+	UpdateAllCriteriaInconsistencies(projectID, criterionID, decisionMakerID, baseVendorID, comparedVendorID int, inconsistency bool) error
 	UpdateAllCriteriaConflicts(projectID, criterionID, decisionMakerID, baseVendor, comparedVendor int, conflict bool) error
 }
 
@@ -105,7 +105,8 @@ func (s *FileCriteriaScoringService) GetAllCriteriaScoresDM(projectID int, decis
 	return specificScores, nil
 }
 
-func (s *FileCriteriaScoringService) UpdateAllCriteriaInconsistencies(projectID, criterionID, decisionMakerID, baseVendor, comparedVendor int, inconsistency bool) error {
+// NOTE: Make sure to assign all the necessary fields before trying to assign inconsistencies
+func (s *FileCriteriaScoringService) UpdateAllCriteriaInconsistencies(projectID, criterionID, decisionMakerID, baseVendorID, comparedVendorID int, inconsistency bool) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -119,7 +120,7 @@ func (s *FileCriteriaScoringService) UpdateAllCriteriaInconsistencies(projectID,
 		if existingScores[i].ProjectID == projectID && existingScores[i].CriterionID == criterionID && existingScores[i].DecisionMakerID == decisionMakerID {
 			// Iterate over comparisons for the criterion to update inconsistencies
 			for j := range existingScores[i].Comparisons {
-				if existingScores[i].Comparisons[j].BaseVendorID == baseVendor && existingScores[i].Comparisons[j].ComparedVendorID == comparedVendor {
+				if existingScores[i].Comparisons[j].BaseVendorID == baseVendorID && existingScores[i].Comparisons[j].ComparedVendorID == comparedVendorID {
 					existingScores[i].Comparisons[j].Inconsistency = inconsistency
 				}
 			}
@@ -129,6 +130,7 @@ func (s *FileCriteriaScoringService) UpdateAllCriteriaInconsistencies(projectID,
 	return s.writeCriteriaScoring(existingScores)
 }
 
+// NOTE: Make sure to assign all the necessary fields before trying to assign conflicts
 func (s *FileCriteriaScoringService) UpdateAllCriteriaConflicts(projectID, criterionID, decisionMakerID, baseVendor, comparedVendor int, conflict bool) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
