@@ -80,47 +80,59 @@ function AdminHome() {
             <h1>Admin Home</h1>
             <p>Criteria Definition</p>
             {data && data.map((project) => (
-                <div>
-                    <button onClick={() => handleCriteriaDefinitionButtonClick(project.id)}>
-                        {`Go to Criteria Definition for Project ${project.id}`}
-                    </button>
-                </div>
+                <p>
+                    <div>
+                        <button onClick={() => handleCriteriaDefinitionButtonClick(project.id)}>
+                            {`Go to Criteria Definition for Project ${project.id}`}
+                        </button>
+                    </div>
+                </p>
             ))}
             <p>Criteria Weighting</p>
             {data && data.map((project) => (
-                <div>
-                    <button onClick={() => handleWeightingButtonClick(project.id)}>
-                        {`Go to Criteria Weighting for Project ${project.id}`}
-                    </button>
-                    <button onClick={() => handleWeightsInconsistencyButtonClick(project.id)}>
-                        {`Go to Criteria Weight Inconsistency for Project ${project.id}`}
-                    </button>
-                    <button onClick={() => handleWeightsConflictsButtonClick(project.id)}>
-                        {`Go to Criteria Weight Conflict for Project ${project.id}`}
-                    </button>
-                </div>
+                <p>
+                    <div>
+                        <button onClick={() => handleWeightingButtonClick(project.id)}>
+                            {`Go to Criteria Weighting for Project ${project.id}`}
+                        </button>
+                        ==>
+                        <button onClick={() => handleWeightsInconsistencyButtonClick(project.id)}>
+                            {`Go to Criteria Weight Inconsistency for Project ${project.id}`}
+                        </button>
+                        ==>
+                        <button onClick={() => handleWeightsConflictsButtonClick(project.id)}>
+                            {`Go to Criteria Weight Conflict for Project ${project.id}`}
+                        </button>
+                    </div>
+                </p>
             ))}
             <p>Criteria Ranking</p>
             {data && data.map((project) => (
-                <div>
-                    <button onClick={() => handleRankingButtonClick(project.id)}>
-                        {`Go to Criteria Ranking for Project ${project.id}`}
-                    </button>
-                    <button onClick={() => handleScoringInconsistencyButtonClick(project.id)}>
-                        {`Go to Criteria Score Inconsistency for Project ${project.id}`}
-                    </button>
-                    <button onClick={() => handleScoringConflictsButtonClick(project.id)}>
-                        {`Go to Criteria Score Conflict for Project ${project.id}`}
-                    </button>
-                </div>
+                <p>
+                    <div>
+                        <button onClick={() => handleRankingButtonClick(project.id)}>
+                            {`Go to Criteria Ranking for Project ${project.id}`}
+                        </button>
+                        ==>
+                        <button onClick={() => handleScoringInconsistencyButtonClick(project.id)}>
+                            {`Go to Criteria Score Inconsistency for Project ${project.id}`}
+                        </button>
+                        ==>
+                        <button onClick={() => handleScoringConflictsButtonClick(project.id)}>
+                            {`Go to Criteria Score Conflict for Project ${project.id}`}
+                        </button>
+                    </div>
+                </p>
             ))}
             <p>Vendor Ranking</p>
             {data && data.map((project) => (
-                <div>
-                    <button onClick={() => handleVendorButtonClick(project.id)}>
-                        {`Go to Criteria Vendor for Project ${project.id}`}
-                    </button>
-                </div>
+                <p>
+                    <div>
+                        <button onClick={() => handleVendorButtonClick(project.id)}>
+                            {`Go to Criteria Vendor for Project ${project.id}`}
+                        </button>
+                    </div>
+                </p>
             ))}
         </div>
     );

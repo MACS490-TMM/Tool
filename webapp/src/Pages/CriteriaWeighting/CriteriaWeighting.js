@@ -23,7 +23,7 @@ function CriteriaWeighting() {
         <div className={"criteria-scoring__outer-container"}>
             <div className={"criteria-scoring__container"}>
                 <h1>Criteria Weighting</h1>
-                {criteria.length > 0 ? (
+                {criteria.length > 0? (
                     criteria.map((baseCriterion) => (
                         <div key={baseCriterion.id}>
                             <h2>{baseCriterion.name}</h2>
@@ -46,7 +46,7 @@ function CriteriaWeighting() {
                                 </div>
                             ))}
                         </div>
-                    ))) : <p>Loading criteria...</p>}
+                    ))) : (criteria.criterionId <= 0 ? <p>Loading criteria...</p> : <div>No Criteria Found</div>)}
                 <button className={"button-send"} onClick={handleSubmitWeights}>Submit Comparisons</button>
             </div>
             <div className={"documents__container"}>

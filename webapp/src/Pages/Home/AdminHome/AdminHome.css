@@ -3,3 +3,17 @@
     flex-direction: column;
     margin-bottom: 20px;
 }
+
+button {
+    background-color: #2684FF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}

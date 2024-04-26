@@ -32,12 +32,15 @@ function CriteriaScoringInconsistencies() {
     return (
         <div className={"criteria-scoring__outer-container"}>
             <div className={"criteria-scoring__container"}>
+                <h1>Criteria Scoring w/Inconsistencies</h1>
                 {(criteria.length > 0 && Object.entries(criteriaMap).map(([criterionId, comparisons]) => (
                     <div key={criterionId}>
                         <h2>{criteria.find(c => c.id.toString() === criterionId).name}</h2>
                         {comparisons.flatMap(comp => comp.comparisons.map((vendorComparison, index) => (
                             <div key={`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${index}`}>
-                                <p>How much better does <b>Vendor {vendorComparison.baseVendorId}</b> perform in relation to <b>Vendor {vendorComparison.comparedVendorId}</b> in terms of <b>{criteria.find(c => c.id.toString() === criterionId).name}</b>?</p>
+                                <p>How much better does <b>Vendor {vendorComparison.baseVendorId}</b> perform in
+                                    relation to <b>Vendor {vendorComparison.comparedVendorId}</b> in terms
+                                    of <b>{criteria.find(c => c.id.toString() === criterionId).name}</b>?</p>
                                 <CriteriaScoreInput
                                     criterionId={`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`}
                                     currentScore={scores[`${vendorComparison.baseVendorId}-${vendorComparison.comparedVendorId}-${criterionId}`] || 0}
@@ -65,11 +68,11 @@ function CriteriaScoringInconsistencies() {
                             </div>
                         )))}
                     </div>
-                ))) || (<p>Loading criteria...</p>)}
+                ))) || (criteria.criterionId <= 0 ? <p>Loading criteria...</p> : <div>No Criteria Found</div>)}
                 <button onClick={handleSubmitScores}>Submit Scores</button>
             </div>
             <div className={"documents__container"}>
-                <div>
+            <div>
                     <button onClick={() => handleChangeActivePDF('RFP')}>RFP</button>
                     <button onClick={() => handleChangeActivePDF('VP')}>VP</button>
                 </div>

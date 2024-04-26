@@ -56,7 +56,7 @@ function CriteriaWeightingInconsistency() {
                                 </div>
                             ))}
                         </div>
-                    ))) : <p>Loading criteria...</p>}
+                    ))) : (criteria.criterionId <= 0 ? <p>Loading criteria...</p> : <div>No Criteria Found</div>)}
                 <button className={"button-send"} onClick={handleSubmitWeights}>Submit Comparisons</button>
             </div>
             <div className={"documents__container"}>

@@ -10,10 +10,12 @@ import (
 
 type CriteriaScoringService interface {
 	GetSpecificCriteriaScores(projectID int, criterionId int) ([]domain.CriterionComparisons, error)
-	AddOrUpdateCriteriaScores(projectID int, decisionMakerID int, scores []domain.CriterionComparisons) error
+	AddOrUpdateCriteriaScores(projectID int, scores []domain.CriterionComparisons) error
 	GetAllCriteriaScoresDM(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error)
 	CheckForConflicts(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error)
 	CheckForInconsistencies(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error)
+	UpdateAllCriteriaInconsistencies(projectID, criterionID, decisionMakerID, baseVendor, comparedVendor int, inconsistency bool) error
+	UpdateAllCriteriaConflicts(projectID, criterionID, decisionMakerID, baseVendor, comparedVendor int, conflict bool) error
 }
 
 type FileCriteriaScoringService struct {
@@ -103,38 +105,91 @@ func (s *FileCriteriaScoringService) GetAllCriteriaScoresDM(projectID int, decis
 	return specificScores, nil
 }
 
-func (s *FileCriteriaScoringService) AddOrUpdateCriteriaScores(projectID int, decisionMakerID int, newComparisons []domain.CriterionComparisons) error {
+func (s *FileCriteriaScoringService) UpdateAllCriteriaInconsistencies(projectID, criterionID, decisionMakerID, baseVendor, comparedVendor int, inconsistency bool) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	// Read the existing scores from the file
-	allCriteriaComparisons, err := s.readCriteriaScoring()
+	existingScores, err := s.readCriteriaScoring()
 	if err != nil {
 		return err
 	}
 
-	// Create a map for easier lookup of existing criteria comparisons by criterionId
-	comparisonMap := make(map[int]*domain.CriterionComparisons)
-	for i, existingComparisons := range allCriteriaComparisons {
-		if existingComparisons.ProjectID == projectID && existingComparisons.DecisionMakerID == decisionMakerID {
-			comparisonMap[existingComparisons.CriterionID] = &allCriteriaComparisons[i]
+	// Iterate over existing scores to update inconsistencies
+	for i := range existingScores {
+		if existingScores[i].ProjectID == projectID && existingScores[i].CriterionID == criterionID && existingScores[i].DecisionMakerID == decisionMakerID {
+			// Iterate over comparisons for the criterion to update inconsistencies
+			for j := range existingScores[i].Comparisons {
+				if existingScores[i].Comparisons[j].BaseVendorID == baseVendor && existingScores[i].Comparisons[j].ComparedVendorID == comparedVendor {
+					existingScores[i].Comparisons[j].Inconsistency = inconsistency
+				}
+			}
 		}
 	}
 
-	// Iterate over the new criterion comparisons
-	for _, newCriterionComparison := range newComparisons {
-		if existingComparisons, found := comparisonMap[newCriterionComparison.CriterionID]; found {
-			// Update existing comparisons
-			existingComparisons.Comparisons = newCriterionComparison.Comparisons
-		} else {
-			// Add new criterion comparisons if not found
-			comparisonMap[newCriterionComparison.CriterionID] = &newCriterionComparison
-			allCriteriaComparisons = append(allCriteriaComparisons, newCriterionComparison)
+	return s.writeCriteriaScoring(existingScores)
+}
+
+func (s *FileCriteriaScoringService) UpdateAllCriteriaConflicts(projectID, criterionID, decisionMakerID, baseVendor, comparedVendor int, conflict bool) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	existingScores, err := s.readCriteriaScoring()
+	if err != nil {
+		return err
+	}
+
+	// Iterate over existing scores to update conflicts
+	for i := range existingScores {
+		if existingScores[i].ProjectID == projectID && existingScores[i].CriterionID == criterionID && existingScores[i].DecisionMakerID == decisionMakerID {
+			// Iterate over comparisons for the criterion to update conflicts
+			for j := range existingScores[i].Comparisons {
+				if existingScores[i].Comparisons[j].BaseVendorID == baseVendor && existingScores[i].Comparisons[j].ComparedVendorID == comparedVendor {
+					existingScores[i].Comparisons[j].Conflict = conflict
+				}
+			}
 		}
 	}
 
-	// Write the updated criteria comparisons back to the file
-	return s.writeCriteriaScoring(allCriteriaComparisons)
+	return s.writeCriteriaScoring(existingScores)
+}
+
+func (s *FileCriteriaScoringService) AddOrUpdateCriteriaScores(projectID int, newComparisons []domain.CriterionComparisons) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	existingScores, err := s.readCriteriaScoring()
+	if err != nil {
+		return err
+	}
+
+	// Remove existing comparisons with the same projectID, criterionID, and decisionMakerID
+	for i := 0; i < len(existingScores); i++ {
+		if existingScores[i].ProjectID == projectID && existingScores[i].CriterionID != 0 {
+			existingScores = append(existingScores[:i], existingScores[i+1:]...)
+			i-- // decrement i as the slice length has decreased
+		}
+	}
+
+	// Iterate over the new comparisons to add them
+	for _, newComparison := range newComparisons {
+		// Exclude comparisons with criterionID = 0
+		if newComparison.CriterionID != 0 {
+			// Check if there is already an entry with the same decisionMakerID, projectID, and criterionID
+			alreadyExists := false
+			for _, existingScore := range existingScores {
+				if existingScore.ProjectID == projectID && existingScore.CriterionID == newComparison.CriterionID && existingScore.DecisionMakerID == newComparison.DecisionMakerID {
+					alreadyExists = true
+					break
+				}
+			}
+			// Append the new comparison only if it doesn't already exist
+			if !alreadyExists {
+				existingScores = append(existingScores, newComparison)
+			}
+		}
+	}
+
+	return s.writeCriteriaScoring(existingScores)
 }
 
 func (s *FileCriteriaScoringService) CheckForConflicts(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error) {

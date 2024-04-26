@@ -7,7 +7,7 @@
  * @returns {Promise<void>} A promise that resolves when the submission is complete.
  */
 async function submitCriteriaScoring(criteriaData, projectId, decisionMakerId, url = 'http://localhost:8080/projects') {
-    url = url + `/${projectId}/decisionMaker/${decisionMakerId}/criteria/scores`;
+    url = url + `/${projectId}/criteria/scores`;
     try {
         const response = await fetch(url, {
             method: 'POST',

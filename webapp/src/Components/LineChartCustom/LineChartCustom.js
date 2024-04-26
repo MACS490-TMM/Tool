@@ -69,7 +69,7 @@ function LineChartCustom({ data }) {
                             visibleLines[vendor] && ( // Only render the line if its visibility is true
                                 <Line
                                     key={vendor}
-                                    type="bump"
+                                    type="linear"
                                     dataKey={vendor}
                                     strokeWidth={2}
                                     stroke={colors[vendor]}

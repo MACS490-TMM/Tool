@@ -10,10 +10,13 @@ async function submitCriteria(project, selections, decisionMakerId, url = 'http:
     // Filter selections to only include those that are selected
     const filteredSelections = selections.filter(selection => selection.selected);
     const data2 = [];
+    const data3 = [];
 
     const url1 = url + '/' + project.id + '/update';
 
     const url2 = url + '/' + project.id + '/decisionMaker/' + decisionMakerId + '/weights';
+
+    const url3 = url + '/' + project.id + '/criteria/scores';
 
     // Validate that there is at least one selected criterion
     if (filteredSelections.length === 0) {
@@ -42,6 +45,35 @@ async function submitCriteria(project, selections, decisionMakerId, url = 'http:
                     conflict: false
                 });
             }
+        });
+    });
+
+    project.decisionMakers.forEach((decisionMaker) => {
+        // Iterate through each criterion
+        filteredSelections.forEach((criterion) => {
+                // Ensure you do not compare the same criterion to itself
+                if (criterion.id) {
+                    let comparisons = [];
+
+                    comparisons.push({
+                        baseVendorId: null,
+                        comparedVendorId: null,
+                        score: 0,
+                        textExtracted: "",
+                        comments: "",
+                        conflict: false,
+                        inconsistency: false
+                    });
+
+                    console.log("criterion ID: ", criterion.id)
+                    // Add the criterion comparison object to the data to send
+                    data3.push({
+                        projectId: project.id,
+                        criterionId: criterion.id,
+                        decisionMakerId: decisionMaker.id,
+                        comparisons: comparisons
+                    });
+                }
         });
     });
 
@@ -91,6 +123,26 @@ async function submitCriteria(project, selections, decisionMakerId, url = 'http:
         console.error('Error submitting the form:', error);
         // Optionally re-throw the error or handle it as needed
         throw error;
+    }
+
+    try {
+        const response = await fetch(url3, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data3), // Sending the array of payloads
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        } else {
+            const result = await response.json();
+            console.log('Success:', result);
+        }
+    } catch (error) {
+        console.error('Error submitting the project data:', error);
     }
 }
 

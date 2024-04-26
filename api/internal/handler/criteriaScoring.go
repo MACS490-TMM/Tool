@@ -116,17 +116,9 @@ func (h *CriteriaScoringHandler) GetAllCriteriaScoresDM(w http.ResponseWriter, r
 func (h *CriteriaScoringHandler) AddCriteriaScores(w http.ResponseWriter, req *http.Request) {
 	projectIDString := req.PathValue("projectId")
 
-	decisionMakerIDString := req.PathValue("decisionMakerId")
-
 	projectID, projectIDErr := strconv.Atoi(projectIDString)
 	if projectIDErr != nil {
 		http.Error(w, "Invalid project ID", http.StatusBadRequest)
-		return
-	}
-
-	decisionMakerID, decisionMakerIDErr := strconv.Atoi(decisionMakerIDString)
-	if decisionMakerIDErr != nil {
-		http.Error(w, "Invalid decision maker ID", http.StatusBadRequest)
 		return
 	}
 
@@ -150,7 +142,7 @@ func (h *CriteriaScoringHandler) AddCriteriaScores(w http.ResponseWriter, req *h
 		criteriaScores[i].ProjectID = projectID
 	}
 
-	err := h.Service.AddOrUpdateCriteriaScores(projectID, decisionMakerID, criteriaScores)
+	err := h.Service.AddOrUpdateCriteriaScores(projectID, criteriaScores)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -248,4 +240,93 @@ func (h *CriteriaScoringHandler) CheckForInconsistencies(w http.ResponseWriter, 
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+}
+
+func (h *CriteriaScoringHandler) UpdateAllCriteriaInconsistencies(w http.ResponseWriter, req *http.Request) {
+	projectIDString := req.PathValue("projectId")
+
+	projectID, projectIDErr := strconv.Atoi(projectIDString)
+	if projectIDErr != nil {
+		http.Error(w, "Invalid project ID", http.StatusBadRequest)
+		return
+	}
+
+	if req.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse request body into a temporary slice of structs
+	var updateRequests []struct {
+		CriterionID      int  `json:"criterionId"`
+		DecisionMakerID  int  `json:"decisionMakerId"`
+		BaseVendorID     int  `json:"baseVendorId"`
+		ComparedVendorID int  `json:"comparedVendorId"`
+		Inconsistency    bool `json:"inconsistency"`
+	}
+	if err := json.NewDecoder(req.Body).Decode(&updateRequests); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Call the service method to update inconsistencies for each request
+	for _, r := range updateRequests {
+		err := h.Service.UpdateAllCriteriaInconsistencies(projectID, r.CriterionID, r.DecisionMakerID, r.BaseVendorID, r.ComparedVendorID, r.Inconsistency)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	w.WriteHeader(http.StatusCreated)
+}
+
+func (h *CriteriaScoringHandler) UpdateAllCriteriaConflicts(w http.ResponseWriter, req *http.Request) {
+	projectIDString := req.PathValue("projectId")
+
+	projectID, projectIDErr := strconv.Atoi(projectIDString)
+	if projectIDErr != nil {
+		http.Error(w, "Invalid project ID", http.StatusBadRequest)
+		return
+	}
+
+	if req.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse request body into a temporary slice of structs
+	var updateRequests []struct {
+		CriterionID      int  `json:"criterionId"`
+		DecisionMakerID  int  `json:"decisionMakerId"`
+		BaseVendorID     int  `json:"baseVendorId"`
+		ComparedVendorID int  `json:"comparedVendorId"`
+		Conflict         bool `json:"conflict"`
+	}
+
+	if err := json.NewDecoder(req.Body).Decode(&updateRequests); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Call the service method to update conflicts for each request
+	for _, r := range updateRequests {
+		err := h.Service.UpdateAllCriteriaConflicts(projectID, r.CriterionID, r.DecisionMakerID, r.BaseVendorID, r.ComparedVendorID, r.Conflict)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }
