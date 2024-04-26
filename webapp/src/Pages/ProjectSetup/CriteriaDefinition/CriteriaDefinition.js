@@ -3,7 +3,7 @@ import "./CriteriaDefinition.css";
 import CriteriaDropdown from "../../ProjectSummary/CriteriaDropdown/CriteriaDropdown";
 import ExplanationEditor from "../../ProjectSummary/ExplanationEditor/ExplanationEditor";
 import useFetchCriteria from "../../ProjectSummary/apiConnection/Criteria/useFetchCriteria";
-import submitCriteria from "../../ProjectSummary/apiConnection/Criteria/submitCriteria";
+import {submitCriteria} from "../../ProjectSummary/apiConnection/Criteria/submitCriteria";
 import AddCriteriaButton from "../../../Components/Buttons/AddCriteriaButton/AddCriteriaButton";
 import SaveIcon from "../../../SVGs/save.svg";
 import EditIcon from "../../../SVGs/edit_pen.svg";
@@ -11,6 +11,8 @@ import DeleteIcon from "../../../SVGs/delete_trashcan.svg";
 import SendPlane from "../../../SVGs/send_plane.svg";
 import useFetchProject from "../../ProjectSummary/apiConnection/Project/useFetchProject";
 import {useParams} from "react-router-dom";
+import {updateWeights} from "../../ProjectSummary/apiConnection/Criteria/submitWeights";
+import {submitScores} from "../../ProjectSummary/apiConnection/Criteria/submitScores";
 
 function CriteriaDefinition() {
 
@@ -130,6 +132,19 @@ function CriteriaDefinition() {
      */
     const handleSubmit = async () => {
         try {
+            const url = 'http://localhost:8080/projects'; // API URL
+            await submitCriteria(project, selections, decisionMakerId, url)
+                .then(() => {
+                    updateWeights(project, selections, url);
+                    submitScores(project, selections, url);
+                })
+                .then(() => {
+                    alert('Criteria submitted successfully');
+                });
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        /*try {
             await submitCriteria(project, selections, decisionMakerId)
                 .then(() => {
                 alert('Criteria submitted successfully');
@@ -137,7 +152,7 @@ function CriteriaDefinition() {
         } catch (error) {
             // Error handling if submitCriteria throws an error
             alert('Failed to submit criteria \n' + error.message);
-        }
+        }*/
     };
 
     return (

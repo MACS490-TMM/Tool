@@ -13,7 +13,7 @@ type CriteriaWeightingService interface {
 	GetSpecificCriteriaWeights(projectID int, criterionId int) ([]domain.CriterionComparison, error)
 	GetAllCriteriaWeights(projectID int) ([]domain.CriterionComparison, error)
 	GetAllCriteriaWeightsDM(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error)
-	AddOrUpdateCriteriaWeights(projectID int, decisionMakerID int, weights []domain.CriterionComparison) error
+	AddOrUpdateCriteriaWeights(projectID int, weights []domain.CriterionComparison) error
 	CheckForConflicts(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error)
 	CheckForInconsistencies(projectID int, decisionMakerID int) ([]domain.CriterionComparison, error)
 }
@@ -126,7 +126,7 @@ func (s *FileCriteriaWeightsService) GetAllCriteriaWeightsDM(projectID int, deci
 	return specificWeights, nil
 }
 
-func (s *FileCriteriaWeightsService) AddOrUpdateCriteriaWeights(projectID, decisionMakerID int, newWeights []domain.CriterionComparison) error {
+func (s *FileCriteriaWeightsService) AddOrUpdateCriteriaWeights(projectID int, newWeights []domain.CriterionComparison) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -144,7 +144,7 @@ func (s *FileCriteriaWeightsService) AddOrUpdateCriteriaWeights(projectID, decis
 
 	// Iterate over new weights to update existing ones or add new
 	for _, newWeight := range newWeights {
-		key := fmt.Sprintf("%d-%d-%d-%d", projectID, decisionMakerID, newWeight.BaseCriterionID, newWeight.ComparedCriterionID)
+		key := fmt.Sprintf("%d-%d-%d-%d", projectID, newWeight.DecisionMakerID, newWeight.BaseCriterionID, newWeight.ComparedCriterionID)
 		if existingWeight, found := existingWeightMap[key]; found {
 			// Update the existing weight entry
 			existingWeight.ImportanceScore = newWeight.ImportanceScore
@@ -157,7 +157,6 @@ func (s *FileCriteriaWeightsService) AddOrUpdateCriteriaWeights(projectID, decis
 		}
 	}
 
-	// Write the updated weights back to the storage
 	return s.writeCriteriaWeights(existingWeights)
 }
 

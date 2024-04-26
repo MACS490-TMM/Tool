@@ -158,17 +158,9 @@ func (h *CriteriaWeightHandler) GetAllCriteriaWeightsDM(w http.ResponseWriter, r
 func (h *CriteriaWeightHandler) AddCriteriaWeights(w http.ResponseWriter, req *http.Request) {
 	projectIDString := req.PathValue("projectId")
 
-	decisionMakerIDString := req.PathValue("decisionMakerId")
-
 	projectID, projectIDErr := strconv.Atoi(projectIDString)
 	if projectIDErr != nil {
 		http.Error(w, "Invalid project ID", http.StatusBadRequest)
-		return
-	}
-
-	decisionMakerID, decisionMakerIDErr := strconv.Atoi(decisionMakerIDString)
-	if decisionMakerIDErr != nil {
-		http.Error(w, "Invalid decision maker ID", http.StatusBadRequest)
 		return
 	}
 
@@ -190,10 +182,9 @@ func (h *CriteriaWeightHandler) AddCriteriaWeights(w http.ResponseWriter, req *h
 
 	for i := range criteriaWeights {
 		criteriaWeights[i].ProjectID = projectID
-		criteriaWeights[i].DecisionMakerID = decisionMakerID
 	}
 
-	err := h.Service.AddOrUpdateCriteriaWeights(projectID, decisionMakerID, criteriaWeights)
+	err := h.Service.AddOrUpdateCriteriaWeights(projectID, criteriaWeights)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
