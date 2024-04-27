@@ -6,9 +6,7 @@ export async function submitScores(project, selections, url) {
 
 
         project.decisionMakers.forEach((decisionMaker) => {
-            // Iterate through each criterion
             filteredSelections.forEach((criterion) => {
-                // Ensure you do not compare the same criterion to itself
                 if (criterion.id) {
                     let comparisons = [];
 
@@ -22,7 +20,6 @@ export async function submitScores(project, selections, url) {
                         inconsistency: false
                     });
 
-                    // Add the criterion comparison object to the data to send
                     data.push({
                         projectId: project.id,
                         criterionId: criterion.id,
@@ -32,27 +29,6 @@ export async function submitScores(project, selections, url) {
                 }
             });
         });
-
-        /*
-        project.decisionMakers.forEach(decisionMaker => {
-            filteredSelections.forEach(baseCriterion => {
-                filteredSelections.forEach(comparedCriterion => {
-                    if (baseCriterion.id !== comparedCriterion.id) {
-                        data.push({
-                            projectId: project.id,
-                            decisionMakerId: decisionMaker.id,
-                            baseCriterionId: baseCriterion.id,
-                            comparedCriterionId: comparedCriterion.id,
-                            importanceScore: 0,
-                            comments: "",
-                            inconsistency: false,
-                            conflict: false
-                        });
-                    }
-                });
-            });
-        });
-        */
 
         const response = await fetch(`${url}/${project.id}/criteria/scores`, {
             method: 'POST',
