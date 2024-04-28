@@ -1,0 +1,19 @@
+.not-found-page--outer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.not-found-page--inner-container {
+    text-align: center;
+}
+
+.Not-Found-404 {
+    font-size: 3rem;
+    color: #333;
+}
+
+.Not-Found-404--subtitle {
+    font-size: 1.25rem;
+    color: #333;
+}

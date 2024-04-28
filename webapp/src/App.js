@@ -21,6 +21,7 @@ import VendorAssigning from "./Pages/VendorAssigning/VendorAssigning";
 import RFPUploadPage from "./Pages/FileUploadPages/RFPUploadPage/RFPUploadPage";
 import VPUploadPage from "./Pages/FileUploadPages/VPUploadPage/VPUploadPage";
 import ProjectsDashboard from "./Pages/ProjectsDashboard/ProjectsDashboard";
+import NotFoundPage from "./Pages/NotFoundPage/NotFoundPage";
 
 function App() {
     return (
@@ -149,15 +150,6 @@ function HomeWithRole() {
     }
 
     return role === 'admin' ? <AdminHome /> : <Home />;
-}
-
-function NotFoundPage() {
-    return (
-        <div>
-            <h1>404 Not Found</h1>
-            <p>The page you are looking for does not exist.</p>
-        </div>
-    );
 }
 
 export default App;
