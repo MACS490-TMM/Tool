@@ -1,18 +1,41 @@
 .project-summary__outer-container {
     display: flex;
-    margin-top: 150px;
     flex-direction: column;
-    width: 100%;
     align-items: center;
     justify-content: center;
-    padding: 2rem 0;
-    gap: 15px;
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
+}
+
+.content-container {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.vendor-group-toggles {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: start;
+    padding: 10px;
+    gap: 10px;
+    min-width: 150px;
 }
 
 .bar-chart {
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 80%;
-    height: 300px;
+    width: 100%;
+}
+
+.criteria-toggles {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding-top: 20px;
 }
