@@ -52,6 +52,30 @@ function ProjectsDashboard() {
                     "vendorRankingComplete": true
                 }
             ]
+        },
+        {
+            "id": 3,
+            "name": "Project Charlie",
+            "decisionMakers": [
+                {
+                    "id": 301,
+                    "name": "Joseph Black",
+                    "criteriaRankingComplete": true,
+                    "vendorRankingComplete": true
+                },
+                {
+                    "id": 302,
+                    "name": "Alex Green",
+                    "criteriaRankingComplete": false,
+                    "vendorRankingComplete": true
+                },
+                {
+                    "id": 303,
+                    "name": "Chuck Purple",
+                    "criteriaRankingComplete": false,
+                    "vendorRankingComplete": false
+                }
+            ]
         }
     ];
 
