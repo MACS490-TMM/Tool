@@ -1,10 +1,9 @@
-import React, {useState} from "react";
+import React from "react";
 import {useParams} from "react-router-dom";
 import "./CriteriaWeighting.css";
 import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScoreInput";
 import PDFViewer from "../../Components/PDFPreview/PDFPreview";
 import useCriteriaWeightingLogic from "./useCriteriaWeightingLogic";
-import useVendors from "../CriteriaScoring/apiConnections/useVendors";
 
 function CriteriaWeighting() {
     let { projectId } = useParams();
