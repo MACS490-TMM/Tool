@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useState} from "react";
 import {useParams} from "react-router-dom";
 import "./CriteriaWeighting.css";
 import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScoreInput";
 import PDFViewer from "../../Components/PDFPreview/PDFPreview";
 import useCriteriaWeightingLogic from "./useCriteriaWeightingLogic";
+import useVendors from "../CriteriaScoring/apiConnections/useVendors";
 
 function CriteriaWeighting() {
     let { projectId } = useParams();
@@ -18,6 +19,14 @@ function CriteriaWeighting() {
         handleCommentsChanged,
         handleSubmitWeights,
     } = useCriteriaWeightingLogic(projectId, decisionMakerId);
+
+    const getPDFUrl = () => {
+        return `http://localhost:8080/projects/${projectId}/files/RFP/RFP`;
+    };
+
+    const renderPDFView = () => {
+        return <PDFViewer url={getPDFUrl()} />;
+    };
 
     return (
         <div className={"criteria-scoring__outer-container"}>
@@ -50,7 +59,7 @@ function CriteriaWeighting() {
                 <button className={"button-send"} onClick={handleSubmitWeights}>Submit Comparisons</button>
             </div>
             <div className={"documents__container"}>
-                <PDFViewer url={`http://localhost:8080/projects/${projectId}/pdf/test`}/>
+                {renderPDFView()}
             </div>
         </div>
     );

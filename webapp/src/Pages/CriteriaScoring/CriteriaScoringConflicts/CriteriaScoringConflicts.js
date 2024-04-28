@@ -4,6 +4,7 @@ import {useParams} from "react-router-dom";
 import CriteriaScoreInput from "../../../Components/CriteriaScoreInput/CriteriaScoreInput";
 import useCriteriaScoringLogic from "../useCriteriaScoringLogic";
 import PDFViewer from "../../../Components/PDFPreview/PDFPreview";
+import useVendors from "../apiConnections/useVendors";
 
 function CriteriaScoringConflicts() {
     let { projectId } = useParams();
@@ -24,11 +25,31 @@ function CriteriaScoringConflicts() {
         isConflictDetected,
     } = useCriteriaScoringLogic(projectId, decisionMakerId);
 
-    const [activePDF, setActivePDF] = useState('RFP'); // Added state for active PDF
+    const [activeVendorId, setActiveVendorId] = useState(null);
+    const { vendors, isLoading, error } = useVendors(projectId);
 
-    const handleChangeActivePDF = (pdfType) => {
-        setActivePDF(pdfType);
+    const handleVendorChange = (vendorId) => {
+        setActiveVendorId(vendorId);
     };
+
+    const getPDFUrl = () => {
+        if (activeVendorId === null) {
+            return `http://localhost:8080/projects/${projectId}/files/RFP/RFP`;
+        } else {
+            return `http://localhost:8080/projects/${projectId}/files/VPs/vendor/${activeVendorId}/VP`;
+        }
+    };
+
+    const renderPDFView = () => {
+        if (isLoading) {
+            return <p>Loading documents...</p>;
+        } else if (error) {
+            return <p>Error loading documents: {error}</p>;
+        } else {
+            return <PDFViewer url={getPDFUrl()} />;
+        }
+    };
+
     return (
         <div className={"criteria-scoring__outer-container"}>
             <div className={"criteria-scoring__container"}>
@@ -71,16 +92,16 @@ function CriteriaScoringConflicts() {
                 ))) || (criteria.criterionId <= 0 ? <p>Loading criteria...</p> : <div>No Criteria Found</div>)}
                 <button onClick={handleSubmitScores}>Submit Scores</button>
             </div>
-            <div className={"documents__container"}>
-            <div>
-                    <button onClick={() => handleChangeActivePDF('RFP')}>RFP</button>
-                    <button onClick={() => handleChangeActivePDF('VP')}>VP</button>
+            <div className="documents__container">
+                <div>
+                    <button onClick={() => setActiveVendorId(null)}>RFP</button>
+                    {vendors.map(vendor => (
+                        <button key={vendor.id} onClick={() => handleVendorChange(vendor.id)}>
+                            {vendor.name}'s VP
+                        </button>
+                    ))}
                 </div>
-                {activePDF === 'RFP' ? (
-                    <PDFViewer url={`http://localhost:8080/projects/${projectId}/pdf/test`} />
-                ) : (
-                    <PDFViewer url={`http://localhost:8080/projects/${projectId}/pdf/test2`} />
-                )}
+                {renderPDFView()}
             </div>
         </div>
     );

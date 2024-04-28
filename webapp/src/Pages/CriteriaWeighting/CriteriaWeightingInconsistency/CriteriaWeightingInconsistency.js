@@ -21,6 +21,14 @@ function CriteriaWeightingInconsistency() {
         isInconsistencyDetected
     } = useCriteriaWeightingLogic(projectId, decisionMakerId);
 
+    const getPDFUrl = () => {
+        return `http://localhost:8080/projects/${projectId}/files/RFP/RFP`;
+    };
+
+    const renderPDFView = () => {
+        return <PDFViewer url={getPDFUrl()}/>;
+    };
+
     return (
         <div className={"criteria-scoring__outer-container"}>
             <div className={"criteria-scoring__container"}>
@@ -60,7 +68,7 @@ function CriteriaWeightingInconsistency() {
                 <button className={"button-send"} onClick={handleSubmitWeights}>Submit Comparisons</button>
             </div>
             <div className={"documents__container"}>
-                <PDFViewer url={`http://localhost:8080/projects/${projectId}/pdf/test`}/>
+                {renderPDFView()}
             </div>
         </div>
     );
