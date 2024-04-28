@@ -18,6 +18,7 @@ import CriteriaWeightingConflicts from "./Pages/CriteriaWeighting/CriteriaWeight
 import CriteriaScoringConflicts from "./Pages/CriteriaScoring/CriteriaScoringConflicts/CriteriaScoringConflicts";
 import CriteriaScoringInconsistencies
     from "./Pages/CriteriaScoring/CriteriaScoringInconsistencies/CriteriaScoringInconsistencies";
+import VendorAssigning from "./Pages/VendorAssigning/VendorAssigning";
 
 function App() {
     return (
@@ -52,6 +53,7 @@ function App() {
                                         <Route path={"/project/:projectId/criteriaWeightingConflict"} element={<CriteriaWeightingConflicts />} />
                                         <Route path="/project/:projectId/criteriaScoreConflict" element={<CriteriaScoringConflicts />} />
                                         <Route path="/project/:projectId/criteriaScoreInconsistency" element={<CriteriaScoringInconsistencies />} />
+                                        <Route path={"/project/:projectId/assignVendors"} element={<VendorAssigning />} />
 
                                         <Route path="*" element={<NotFoundPage />} />
                                     </Routes>

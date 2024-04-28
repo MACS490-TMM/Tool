@@ -16,6 +16,7 @@ type ProjectService interface {
 	GetProjects() ([]domain.Project, error)
 	DeleteProject(id int) error
 	UpdateProject(id int, update domain.ProjectUpdate) (domain.Project, error)
+	GetProjectVendors(projectID int) ([]domain.Vendor, error)
 	// Other methods as needed (UpdateProject, DeleteProject, ListProjects, etc.)
 }
 
@@ -188,4 +189,22 @@ func (s *FileProjectService) UpdateProject(id int, update domain.ProjectUpdate) 
 	}
 
 	return domain.Project{}, errors.New("project not found")
+}
+
+func (s *FileProjectService) GetProjectVendors(projectID int) ([]domain.Vendor, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	projects, err := s.readProjects()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, project := range projects {
+		if project.ID == projectID {
+			return project.Vendors, nil
+		}
+	}
+
+	return nil, errors.New("project not found")
 }

@@ -16,6 +16,7 @@ type CriteriaScoringService interface {
 	CheckForInconsistencies(projectID int, decisionMakerID int) ([]domain.CriterionComparisons, error)
 	UpdateAllCriteriaInconsistencies(projectID, criterionID, decisionMakerID, baseVendorID, comparedVendorID int, inconsistency bool) error
 	UpdateAllCriteriaConflicts(projectID, criterionID, decisionMakerID, baseVendor, comparedVendor int, conflict bool) error
+	UpdateProjectVendorList(projectID int, vendorList []domain.Vendor) error
 }
 
 type FileCriteriaScoringService struct {
@@ -153,6 +154,61 @@ func (s *FileCriteriaScoringService) UpdateAllCriteriaConflicts(projectID, crite
 	}
 
 	return s.writeCriteriaScoring(existingScores)
+}
+
+func (s *FileCriteriaScoringService) UpdateProjectVendorList(projectID int, vendorList []domain.Vendor) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	existingScores, err := s.readCriteriaScoring()
+	if err != nil {
+		return err
+	}
+
+	// Find the criterion comparison for the given project ID
+	for i := range existingScores {
+		if existingScores[i].ProjectID == projectID {
+			// Generate all possible unique pairs of vendor IDs
+			newComparisons := generateVendorPairs(vendorList)
+
+			// Replace existing comparisons with the new set
+			existingScores[i].Comparisons = newComparisons
+		}
+	}
+
+	return s.writeCriteriaScoring(existingScores)
+}
+
+// Generate all pairs of vendors, including both (i, j) and (j, i)
+func generateVendorPairs(vendors []domain.Vendor) []domain.VendorComparison {
+	var comparisons []domain.VendorComparison
+	for i := 0; i < len(vendors); i++ {
+		for j := i + 1; j < len(vendors); j++ {
+			// First pair (i, j)
+			comparisons = append(comparisons, domain.VendorComparison{
+				BaseVendorID:     vendors[i].ID,
+				ComparedVendorID: vendors[j].ID,
+				// Below is initial score, gets updated later
+				Score:         0,
+				TextExtracted: "",
+				Comments:      "",
+				Conflict:      false,
+				Inconsistency: false,
+			})
+			// Opposite pair (j, i)
+			comparisons = append(comparisons, domain.VendorComparison{
+				BaseVendorID:     vendors[j].ID,
+				ComparedVendorID: vendors[i].ID,
+				// Below is initial score, gets updated later
+				Score:         0,
+				TextExtracted: "",
+				Comments:      "",
+				Conflict:      false,
+				Inconsistency: false,
+			})
+		}
+	}
+	return comparisons
 }
 
 func (s *FileCriteriaScoringService) AddOrUpdateCriteriaScores(projectID int, newComparisons []domain.CriterionComparisons) error {

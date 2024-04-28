@@ -57,6 +57,9 @@ func SetupServer() *http.ServeMux {
 	mux.Handle("/newProject", wrapMiddleware(http.HandlerFunc(projectHandler.CreateProject)))
 	mux.Handle("/projects", wrapMiddleware(http.HandlerFunc(projectHandler.GetProjects)))
 	mux.Handle("/projects/{id}", wrapMiddleware(http.HandlerFunc(projectHandler.GetProject)))
+
+	mux.Handle("/projects/{id}/vendors", wrapMiddleware(http.HandlerFunc(projectHandler.GetProjectVendors)))
+
 	mux.Handle("/projects/{id}/delete", wrapMiddleware(http.HandlerFunc(projectHandler.DeleteProject)))
 	mux.Handle("/projects/{id}/update", wrapMiddleware(http.HandlerFunc(projectHandler.UpdateProject)))
 	mux.Handle("/decisionMakers", wrapMiddleware(http.HandlerFunc(decisionMakerHandler.GetDecisionMakers)))
@@ -69,6 +72,8 @@ func SetupServer() *http.ServeMux {
 	mux.Handle("/projects/{projectId}/criteria/scores/setInconsistencies", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.UpdateAllCriteriaInconsistencies)))
 	mux.Handle("/projects/{projectId}/criteria/scores/setConflicts", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.UpdateAllCriteriaConflicts)))
 	mux.Handle("/projects/{projectId}/pdf/{pdfId}", wrapMiddleware(http.HandlerFunc(pdfHandler.ServePDF)))
+	mux.Handle("/projects/{projectId}/addVendors", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.UpdateProjectVendorList)))
+
 	mux.Handle("/projects/{projectId}/vendorRanking", wrapMiddleware(http.HandlerFunc(vendorRankingHandler.GetVendorRankings)))
 	mux.Handle("/login", corsOnlyMiddleware(http.HandlerFunc(authenticationHandler.ServeHTTP)))
 	mux.Handle("/logout", corsOnlyMiddleware(http.HandlerFunc(authenticationHandler.Logout)))

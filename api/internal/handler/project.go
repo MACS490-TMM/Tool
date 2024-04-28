@@ -155,3 +155,31 @@ func (h *ProjectHandler) UpdateProject(w http.ResponseWriter, req *http.Request)
 		return
 	}
 }
+
+func (h *ProjectHandler) GetProjectVendors(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	idString := req.PathValue("id")
+
+	id, convertErr := strconv.Atoi(idString)
+
+	if convertErr != nil {
+		http.Error(w, "Invalid project ID", http.StatusBadRequest)
+		return
+	}
+
+	vendors, err := h.Service.GetProjectVendors(id)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	encodeErr := json.NewEncoder(w).Encode(vendors)
+	if encodeErr != nil {
+		return
+	}
+}

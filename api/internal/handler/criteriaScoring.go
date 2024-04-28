@@ -330,3 +330,36 @@ func (h *CriteriaScoringHandler) UpdateAllCriteriaConflicts(w http.ResponseWrite
 
 	w.WriteHeader(http.StatusCreated)
 }
+
+func (h *CriteriaScoringHandler) UpdateProjectVendorList(w http.ResponseWriter, req *http.Request) {
+	if req.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	if req.Method != http.MethodPut {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	projectIDStr := req.PathValue("projectId")
+	projectID, err := strconv.Atoi(projectIDStr)
+	if err != nil {
+		http.Error(w, "Invalid project ID", http.StatusBadRequest)
+		return
+	}
+
+	var vendorList []domain.Vendor
+	if err = json.NewDecoder(req.Body).Decode(&vendorList); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = h.Service.UpdateProjectVendorList(projectID, vendorList)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+}

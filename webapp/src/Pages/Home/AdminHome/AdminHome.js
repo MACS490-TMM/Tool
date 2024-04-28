@@ -39,6 +39,9 @@ function AdminHome() {
         navigate(`/project/setup/criteriaDefinition/${projectId}`);
     }
 
+    const handleAssignVendorsButtonClick = (projectId) => {
+        navigate(`/project/${projectId}/assignVendors`);
+    }
     // Function to fetch data from API
     const fetchData = async (isMounted, url) => {
         try {
@@ -102,6 +105,16 @@ function AdminHome() {
                         ==>
                         <button onClick={() => handleWeightsConflictsButtonClick(project.id)}>
                             {`Go to Criteria Weight Conflict for Project ${project.id}`}
+                        </button>
+                    </div>
+                </p>
+            ))}
+            <p>Vendor Assigning</p>
+            {data && data.map((project) => (
+                <p>
+                    <div>
+                        <button onClick={() => handleAssignVendorsButtonClick(project.id)}>
+                            {`Go to Assign Vendors for Project ${project.id}`}
                         </button>
                     </div>
                 </p>
