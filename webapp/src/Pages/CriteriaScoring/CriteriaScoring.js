@@ -5,10 +5,12 @@ import "./CriteriaScoring.css";
 import PDFViewer from "../../Components/PDFPreview/PDFPreview";
 import useCriteriaScoringLogic from "./useCriteriaScoringLogic";
 import useVendors from "./apiConnections/useVendors";
+import {useAuth} from "../../contexts/AuthContext";
 
 function CriteriaScoring() {
+    const { getUserID } = useAuth();
     let { projectId } = useParams();
-    const decisionMakerId = 1; // TODO: Get the decision maker ID from the user
+
     const {
         criteria,
         scores,
@@ -21,7 +23,7 @@ function CriteriaScoring() {
         handleTextExtractionChanged,
         handleCommentsChanged,
         handleSubmitScores,
-    } = useCriteriaScoringLogic(projectId, decisionMakerId);
+    } = useCriteriaScoringLogic(projectId, getUserID());
 
     const [activeVendorId, setActiveVendorId] = useState(null);
     const { vendors, isLoading, error } = useVendors(projectId);

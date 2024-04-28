@@ -12,7 +12,7 @@ import (
 )
 
 type AuthenticationService interface {
-	Authenticate(username, password string) (bool, string, error)
+	Authenticate(username, password string) (bool, *domain.User, error)
 }
 
 type FileAuthenticationService struct {
@@ -24,14 +24,14 @@ func NewFileAuthenticationService(filename string) *FileAuthenticationService {
 	return &FileAuthenticationService{filename: filename}
 }
 
-func (s *FileAuthenticationService) Authenticate(username, password string) (bool, string, error) {
+func (s *FileAuthenticationService) Authenticate(username, password string) (bool, *domain.User, error) {
 	users := make([]domain.User, 0)
 	data, err := ioutil.ReadFile(s.filename)
 	if err != nil {
-		return false, "", err
+		return false, nil, err
 	}
 	if err := json.Unmarshal(data, &users); err != nil {
-		return false, "", err
+		return false, nil, err
 	}
 
 	passwordBytes := []byte(password)
@@ -41,21 +41,21 @@ func (s *FileAuthenticationService) Authenticate(username, password string) (boo
 		if user.Username == username {
 			salt, err := base64.StdEncoding.DecodeString(user.Salt)
 			if err != nil {
-				return false, "", err
+				return false, nil, err
 			}
 			storedHash, err := base64.StdEncoding.DecodeString(user.Password)
 			if err != nil {
-				return false, "", err
+				return false, nil, err
 			}
 
 			if err := argon2IDHash.Compare(storedHash, salt, passwordBytes); err == nil {
 				fmt.Println("Password matches.")
-				return true, user.UserRole, nil
+				return true, &user, nil
 			} else {
 				fmt.Println("Password does not match.")
 			}
 		}
 	}
 
-	return false, "", errors.New("invalid credentials")
+	return false, nil, errors.New("invalid credentials")
 }

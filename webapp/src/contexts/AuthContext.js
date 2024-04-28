@@ -35,6 +35,16 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const getUserID = () => {
+        if (!token) return null;
+        try {
+            const decoded = jwtDecode(token);
+            return decoded.id; // Assuming 'id' (userID) is a part of the JWT claims
+        } catch (e) {
+            return null;
+        }
+    }
+
     const getUserRole = () => {
         if (!token) return null;
         try {
@@ -68,7 +78,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout, getUserRole, getUserName }}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout, getUserID, getUserRole, getUserName }}>
             {children}
         </AuthContext.Provider>
     );

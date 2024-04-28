@@ -57,41 +57,39 @@ const ProjectSetup = () => {
     };
 
     const handleSecondSubmit = async (projectId) => {
-        const payloads = selectedDecisionMakers.map(option => ({
+        for (const payload of selectedDecisionMakers.map(option => ({
             projectId: projectId,
             criterionId: null,
             decisionMakerId: option.value,
-            comparisons: [
-                {
-                    baseVendorId: null,
-                    comparedVendorId: null,
-                    score: 0,
-                    textExtracted: "",
-                    comments: "",
-                    conflict: false,
-                    inconsistency: false
+            comparisons: [{
+                baseVendorId: null,
+                comparedVendorId: null,
+                score: 0,
+                textExtracted: "",
+                comments: "",
+                conflict: false,
+                inconsistency: false
+            }]
+        }))) {
+            try {
+                const response = await fetch(`http://localhost:8080/projects/${projectId}/criteria/scores`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload), // Sending one payload at a time
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                } else {
+                    const result = await response.json();
+                    console.log('Success:', result);
                 }
-            ]
-        }));
-
-        try {
-            const response = await fetch(`http://localhost:8080/projects/${projectId}/criteria/scores`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payloads), // Sending the array of payloads
-                credentials: 'include'
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                const result = await response.json();
-                console.log('Success:', result);
+            } catch (error) {
+                console.error('Error submitting the project data:', error);
             }
-        } catch (error) {
-            console.error('Error submitting the project data:', error);
         }
     };
 

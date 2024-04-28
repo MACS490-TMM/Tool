@@ -5,10 +5,11 @@ import CriteriaScoreInput from "../../../Components/CriteriaScoreInput/CriteriaS
 import useCriteriaScoringLogic from "../useCriteriaScoringLogic";
 import PDFViewer from "../../../Components/PDFPreview/PDFPreview";
 import useVendors from "../apiConnections/useVendors";
+import {useAuth} from "../../../contexts/AuthContext";
 
 function CriteriaScoringConflicts() {
+    const { getUserID } = useAuth();
     let { projectId } = useParams();
-    let decisionMakerId = 1; // TODO: Get the decision maker ID from the user
 
     const {
         criteria,
@@ -23,7 +24,7 @@ function CriteriaScoringConflicts() {
         handleCommentsChanged,
         handleSubmitScores,
         isConflictDetected,
-    } = useCriteriaScoringLogic(projectId, decisionMakerId);
+    } = useCriteriaScoringLogic(projectId, getUserID());
 
     const [activeVendorId, setActiveVendorId] = useState(null);
     const { vendors, isLoading, error } = useVendors(projectId);

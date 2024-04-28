@@ -4,10 +4,11 @@ import "./CriteriaWeighting.css";
 import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScoreInput";
 import PDFViewer from "../../Components/PDFPreview/PDFPreview";
 import useCriteriaWeightingLogic from "./useCriteriaWeightingLogic";
+import {useAuth} from "../../contexts/AuthContext";
 
 function CriteriaWeighting() {
+    const { getUserID } = useAuth();
     let { projectId } = useParams();
-    let decisionMakerId = 1; // TODO: Get the decision maker ID from the user
     const {
         criteria,
         weights,
@@ -17,7 +18,7 @@ function CriteriaWeighting() {
         handleInvertWeight,
         handleCommentsChanged,
         handleSubmitWeights,
-    } = useCriteriaWeightingLogic(projectId, decisionMakerId);
+    } = useCriteriaWeightingLogic(projectId, getUserID());
 
     const getPDFUrl = () => {
         return `http://localhost:8080/projects/${projectId}/files/RFP/RFP`;

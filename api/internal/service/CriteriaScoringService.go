@@ -222,9 +222,11 @@ func (s *FileCriteriaScoringService) AddOrUpdateCriteriaScores(projectID int, ne
 
 	// Remove existing comparisons with the same projectID, criterionID, and decisionMakerID
 	for i := 0; i < len(existingScores); i++ {
-		if existingScores[i].ProjectID == projectID && existingScores[i].CriterionID != 0 {
-			existingScores = append(existingScores[:i], existingScores[i+1:]...)
-			i-- // decrement i as the slice length has decreased
+		for _, newComparison := range newComparisons {
+			if existingScores[i].ProjectID == projectID && existingScores[i].CriterionID != 0 && existingScores[i].DecisionMakerID == newComparison.DecisionMakerID {
+				existingScores = append(existingScores[:i], existingScores[i+1:]...)
+				i-- // decrement i as the slice length has decreased
+			}
 		}
 	}
 

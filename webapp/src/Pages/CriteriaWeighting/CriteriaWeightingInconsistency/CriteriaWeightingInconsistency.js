@@ -4,10 +4,11 @@ import {useParams} from "react-router-dom";
 import CriteriaScoreInput from "../../../Components/CriteriaScoreInput/CriteriaScoreInput";
 import useCriteriaWeightingLogic from "../useCriteriaWeightingLogic";
 import PDFViewer from "../../../Components/PDFPreview/PDFPreview";
+import {useAuth} from "../../../contexts/AuthContext";
 
 function CriteriaWeightingInconsistency() {
+    const { getUserID } = useAuth();
     let { projectId } = useParams();
-    let decisionMakerId = 1; // TODO: Get the decision maker ID from the user
 
     const {
         criteria,
@@ -19,7 +20,7 @@ function CriteriaWeightingInconsistency() {
         handleCommentsChanged,
         handleSubmitWeights,
         isInconsistencyDetected
-    } = useCriteriaWeightingLogic(projectId, decisionMakerId);
+    } = useCriteriaWeightingLogic(projectId, getUserID());
 
     const getPDFUrl = () => {
         return `http://localhost:8080/projects/${projectId}/files/RFP/RFP`;

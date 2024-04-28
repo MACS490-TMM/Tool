@@ -47,6 +47,7 @@ type Credentials struct {
 type Claims struct {
 	Username string `json:"username"`
 	UserRole string `json:"userRole"`
+	UserID   int    `json:"id"`
 	jwt.StandardClaims
 }
 
@@ -102,7 +103,7 @@ func (handler *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Cookie 'x-jwt-token' not found:", err)
 	}
 
-	authSuccess, userRole, err := handler.AuthService.Authenticate(credentials.Username, credentials.Password)
+	authSuccess, user, err := handler.AuthService.Authenticate(credentials.Username, credentials.Password)
 	if err != nil || !authSuccess {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
@@ -112,7 +113,8 @@ func (handler *LoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	expirationTime := time.Now().Add(1 * time.Hour) // Token is valid for 1 hour
 	claims := &Claims{
 		Username: credentials.Username,
-		UserRole: userRole,
+		UserRole: user.UserRole,
+		UserID:   user.ID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

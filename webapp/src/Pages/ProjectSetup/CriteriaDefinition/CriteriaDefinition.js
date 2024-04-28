@@ -13,12 +13,12 @@ import useFetchProject from "../../ProjectSummary/apiConnection/Project/useFetch
 import {useParams} from "react-router-dom";
 import {updateWeights} from "../../ProjectSummary/apiConnection/Criteria/submitWeights";
 import {submitScores} from "../../ProjectSummary/apiConnection/Criteria/submitScores";
+import {useAuth} from "../../../contexts/AuthContext";
 
 function CriteriaDefinition() {
-
+    const { getUserID } = useAuth();
     let { projectId } = useParams();
-    let decisionMakerId = 1; // TODO: Get the decision maker ID from the user
-
+    const decisionMakerId = getUserID();
     const project = useFetchProject(projectId);
 
     // State to track the index of the criteria being edited
