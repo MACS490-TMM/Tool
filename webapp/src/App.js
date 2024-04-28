@@ -43,7 +43,7 @@ function App() {
                             } />
                             <Route path="*" element={
                                 <Routes>
-                                    <Route path="/project/summary" element={
+                                    <Route path="/project/:projectId/summary" element={
                                         <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
                                             <ProjectSummary />
                                         </ProtectedRoute>

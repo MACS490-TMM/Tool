@@ -1,99 +1,100 @@
-import React from 'react';
-import LineChartCustom from "../../Components/LineChartCustom/LineChartCustom";
-import "./ProjectSummary.css";
-import Grid from "../../Components/DetailedSelectionCriteria/Grid/Grid";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import './ProjectSummary.css';
+import useFetchCriteriaScores from "../CriteriaScoring/apiConnections/useFetchCriteriaScores";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import useFetchProject from "./apiConnection/Project/useFetchProject";
 
 function ProjectSummary() {
-    const data = [
-        {
-            name: 'SC 1',
-            Vendor_1: 4,
-            Vendor_2: 5,
-            Vendor_3: 6,
-            Vendor_4: 7,
-            Vendor_5: 5,
-        },
-        {
-            name: 'SC 2',
-            Vendor_1: 7,
-            Vendor_2: 6,
-            Vendor_3: 5,
-            Vendor_4: 7,
-            Vendor_5: 7
-        },
-        {
-            name: 'SC 3',
-            Vendor_1: 2,
-            Vendor_2: 3,
-            Vendor_3: 4,
-            Vendor_4: 3,
-            Vendor_5: 4
-        },
-        {
-            name: 'SC 4',
-            Vendor_1: 7,
-            Vendor_2: 9,
-            Vendor_3: 7,
-            Vendor_4: 8,
-            Vendor_5: 9
-        },
-        {
-            name: 'SC 5',
-            Vendor_1: 7,
-            Vendor_2: 7,
-            Vendor_3: 8,
-            Vendor_4: 9,
-            Vendor_5: 8
-        },
-        {
-            name: 'SC 6',
-            Vendor_1: 4,
-            Vendor_2: 5,
-            Vendor_3: 6,
-            Vendor_4: 5,
-            Vendor_5: 6
-        },
-        {
-            name: 'SC 7',
-            Vendor_1: 9,
-            Vendor_2: 7,
-            Vendor_3: 8,
-            Vendor_4: 7,
-            Vendor_5: 8
-        },
-        {
-            name: 'SC 8',
-            Vendor_1: 8,
-            Vendor_2: 3,
-            Vendor_3: 4,
-            Vendor_4: 5,
-            Vendor_5: 6
-        },
-        {
-            name: 'SC 9',
-            Vendor_1: 7,
-            Vendor_2: 8,
-            Vendor_3: 9,
-            Vendor_4: 8,
-            Vendor_5: 7
-        },
-        {
-            name: 'SC 10',
-            Vendor_1: 6,
-            Vendor_2: 7,
-            Vendor_3: 6,
-            Vendor_4: 5,
-            Vendor_5: 5
+    let { projectId } = useParams();
+    let { getUserID } = useAuth();
+    const [transformedData, setTransformedData] = useState([]);
+    const [criteriaNames, setCriteriaNames] = useState({});
+    const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042'];
+
+    const fetchedProject = useFetchProject(projectId);
+
+    useEffect(() => {
+        if (fetchedProject && fetchedProject.criteria) {
+            const namesMap = fetchedProject.criteria.reduce((map, criterion) => {
+                map[criterion.id] = criterion.name;
+                return map;
+            }, {});
+            setCriteriaNames(namesMap);
         }
-    ];
+    }, [fetchedProject]);
+
+    const fetchedData = useFetchCriteriaScores(projectId, getUserID());
+
+    useEffect(() => {
+        if (fetchedData && Object.keys(criteriaNames).length) {
+            let dataByCriteria = {};
+
+            fetchedData.forEach(item => {
+                // Use the criteria name instead of 'Criterion X'
+                const criteriaName = criteriaNames[item.criterionId] || `Unknown Criterion ${item.criterionId}`;
+                if (!dataByCriteria[criteriaName]) {
+                    dataByCriteria[criteriaName] = [];
+                }
+                item.comparisons.forEach(comp => {
+                    dataByCriteria[criteriaName].push({
+                        name: `Vendor ${comp.baseVendorId}-${comp.comparedVendorId}`,
+                        score: comp.score,
+                        criterionId: item.criterionId
+                    });
+                });
+            });
+
+            // Convert object into array format required by Recharts
+            let chartData = [];
+            Object.keys(dataByCriteria).forEach(criteriaName => {
+                let groupData = { criteriaKey: criteriaName };
+                dataByCriteria[criteriaName].forEach(vendorComparison => {
+                    groupData[vendorComparison.name] = vendorComparison.score;
+                });
+                chartData.push(groupData);
+            });
+
+            setTransformedData(chartData);
+        }
+    }, [fetchedData, criteriaNames]);
+
+    if (!transformedData.length) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className={"project-summary__outer-container"}>
-            <h1>Project Summary</h1>
-
-            <LineChartCustom data={data}/>
-
-            <Grid data={data} />
+            <div className={"bar-chart"}>
+                <ResponsiveContainer width="100%" height={600}>
+                    <BarChart
+                        data={transformedData}
+                        margin={{
+                            top: 20,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        }}
+                    >
+                        <CartesianGrid strokeDasharray="5 5" />
+                        <XAxis dataKey="criteriaKey" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        {transformedData.length > 0 && Object.keys(transformedData[0])
+                            .filter(key => key !== 'criteriaKey')
+                            .map((key, index) => (
+                                <Bar
+                                    key={`bar-${key}`}
+                                    dataKey={key}
+                                    fill={colors[index % colors.length]}
+                                    name={key}
+                                />
+                            ))}
+                    </BarChart>
+                </ResponsiveContainer>
+            </div>
         </div>
     );
 }
