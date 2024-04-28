@@ -16,8 +16,7 @@ import CriteriaWeighting from "./Pages/CriteriaWeighting/CriteriaWeighting";
 import CriteriaWeightingInconsistency from "./Pages/CriteriaWeighting/CriteriaWeightingInconsistency/CriteriaWeightingInconsistency";
 import CriteriaWeightingConflicts from "./Pages/CriteriaWeighting/CriteriaWeightingConflicts/CriteriaWeightingConflicts";
 import CriteriaScoringConflicts from "./Pages/CriteriaScoring/CriteriaScoringConflicts/CriteriaScoringConflicts";
-import CriteriaScoringInconsistencies
-    from "./Pages/CriteriaScoring/CriteriaScoringInconsistencies/CriteriaScoringInconsistencies";
+import CriteriaScoringInconsistencies from "./Pages/CriteriaScoring/CriteriaScoringInconsistencies/CriteriaScoringInconsistencies";
 import VendorAssigning from "./Pages/VendorAssigning/VendorAssigning";
 import RFPUploadPage from "./Pages/FileUploadPages/RFPUploadPage/RFPUploadPage";
 import VPUploadPage from "./Pages/FileUploadPages/VPUploadPage/VPUploadPage";
@@ -37,35 +36,89 @@ function App() {
                         <Routes>
                             <Route path="/login" element={<Login />} />
                             <Route path="/" element={
-                                <ProtectedRoute>
+                                <ProtectedRoute allowedRoles={['admin', 'stakeholder', 'decision-maker']}>
                                     <HomeWithRole />
                                 </ProtectedRoute>
                             } />
                             <Route path="*" element={
-                                <ProtectedRoute>
-                                    <Routes>
-                                        <Route path="/project/summary" element={<ProjectSummary />} />
-                                        <Route path="/project/setup" element={<ProjectSetup />} />
-                                        <Route path="/project/setup/criteriaDefinition/:projectId" element={<CriteriaDefinition />} />
-                                        <Route path="/project/projectDashboard" element={<ProjectsDashboard />} />
-                                        <Route path="/project/:projectId/criteriaRanking" element={<CriteriaScoring />} />
-                                        <Route path="/project/:projectId/vendorRanking" element={<VendorResult />} />
-                                        <Route path="/user/:userName" element={<UserPage />} />
-                                        <Route path={"/project/:projectId/criteriaWeighting"} element={<CriteriaWeighting />} />
-                                        <Route path={"/project/:projectId/criteriaWeightingInconsistency"} element={<CriteriaWeightingInconsistency />} />
-                                        <Route path={"/project/:projectId/criteriaWeightingConflict"} element={<CriteriaWeightingConflicts />} />
-                                        <Route path="/project/:projectId/criteriaScoreConflict" element={<CriteriaScoringConflicts />} />
-                                        <Route path="/project/:projectId/criteriaScoreInconsistency" element={<CriteriaScoringInconsistencies />} />
-                                        <Route path={"/project/:projectId/assignVendors"} element={<VendorAssigning />} />
-
-                                        <Route path={"/project/:projectId/RFPUpload"} element={<RFPUploadPage />} />
-                                        <Route path={"/project/:projectId/vendor/:vendorId/VPUpload"} element={<VPUploadPage />} />
-
-                                        <Route path={"/dashboard"} element={<ProjectsDashboard />} />
-
-                                        <Route path="*" element={<NotFoundPage />} />
-                                    </Routes>
-                                </ProtectedRoute>
+                                <Routes>
+                                    <Route path="/project/summary" element={
+                                        <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
+                                            <ProjectSummary />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/setup" element={
+                                        <ProtectedRoute allowedRoles={['admin', 'stakeholder']}>
+                                            <ProjectSetup />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/setup/criteriaDefinition/:projectId" element={
+                                        <ProtectedRoute allowedRoles={['admin', 'stakeholder']}>
+                                            <CriteriaDefinition />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/:projectId/criteriaRanking" element={
+                                        <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
+                                            <CriteriaScoring />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/:projectId/vendorRanking" element={
+                                        <ProtectedRoute allowedRoles={['admin', 'stakeholder']}>
+                                            <VendorResult />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/user/:userName" element={
+                                        <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
+                                            <UserPage />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/:projectId/criteriaWeighting" element={
+                                        <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
+                                            <CriteriaWeighting />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/:projectId/criteriaWeightingInconsistency" element={
+                                        <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
+                                            <CriteriaWeightingInconsistency />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/:projectId/criteriaWeightingConflict" element={
+                                        <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
+                                            <CriteriaWeightingConflicts />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/:projectId/criteriaScoreConflict" element={
+                                        <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
+                                            <CriteriaScoringConflicts />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/:projectId/criteriaScoreInconsistency" element={
+                                        <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
+                                            <CriteriaScoringInconsistencies />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/:projectId/assignVendors" element={
+                                        <ProtectedRoute allowedRoles={['admin', 'stakeholder']}>
+                                            <VendorAssigning />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/:projectId/RFPUpload" element={
+                                        <ProtectedRoute allowedRoles={['admin', 'stakeholder']}>
+                                            <RFPUploadPage />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/:projectId/vendor/:vendorId/VPUpload" element={
+                                        <ProtectedRoute allowedRoles={['admin', 'stakeholder']}>
+                                            <VPUploadPage />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/project/dashboard" element={
+                                        <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
+                                            <ProjectsDashboard />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="*" element={<NotFoundPage />} />
+                                </Routes>
                             } />
                         </Routes>
                     </Suspense>
