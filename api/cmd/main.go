@@ -52,6 +52,12 @@ func SetupServer() *http.ServeMux {
 	// TODO: Add different authentication middleware for different user roles
 	mux.Handle("/items/{id}", wrapMiddleware(http.HandlerFunc(handler.ItemHandler)))
 	mux.Handle("/files/{path}", wrapMiddleware(http.HandlerFunc(handler.FilesHandler)))
+
+	mux.Handle("/projects/{projectId}/files/RFP/upload", wrapMiddleware(http.HandlerFunc(pdfHandler.UploadRFPHandler)))
+	mux.Handle("/projects/{projectId}/files/RFP/{fileName}", wrapMiddleware(http.HandlerFunc(pdfHandler.ServeRFPHandler)))
+	mux.Handle("/projects/{projectId}/files/VPs/vendor/{vendorId}/upload", wrapMiddleware(http.HandlerFunc(pdfHandler.UploadVendorProposalHandler)))
+	mux.Handle("/projects/{projectId}/files/VPs/vendor/{vendorId}/{fileName}", wrapMiddleware(http.HandlerFunc(pdfHandler.ServeVendorProposalHandler)))
+
 	mux.Handle("/criteria", wrapMiddleware(http.HandlerFunc(handler.CriteriaHandler)))
 	mux.Handle("/api/criteria", wrapMiddleware(http.HandlerFunc(handler.GetCriteriaHandler)))
 	mux.Handle("/newProject", wrapMiddleware(http.HandlerFunc(projectHandler.CreateProject)))
@@ -71,7 +77,6 @@ func SetupServer() *http.ServeMux {
 	mux.Handle("/projects/{projectId}/criteria/scores", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.AddCriteriaScores)))
 	mux.Handle("/projects/{projectId}/criteria/scores/setInconsistencies", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.UpdateAllCriteriaInconsistencies)))
 	mux.Handle("/projects/{projectId}/criteria/scores/setConflicts", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.UpdateAllCriteriaConflicts)))
-	mux.Handle("/projects/{projectId}/pdf/{pdfId}", wrapMiddleware(http.HandlerFunc(pdfHandler.ServePDF)))
 	mux.Handle("/projects/{projectId}/addVendors", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.UpdateProjectVendorList)))
 
 	mux.Handle("/projects/{projectId}/vendorRanking", wrapMiddleware(http.HandlerFunc(vendorRankingHandler.GetVendorRankings)))

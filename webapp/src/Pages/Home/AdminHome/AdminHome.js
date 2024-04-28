@@ -42,6 +42,15 @@ function AdminHome() {
     const handleAssignVendorsButtonClick = (projectId) => {
         navigate(`/project/${projectId}/assignVendors`);
     }
+
+    const handleRFPUploadButtonClick = (projectId) => {
+        navigate(`/project/${projectId}/RFPUpload`);
+    }
+
+    const handleVPUploadButtonClick = (projectId, vendorId) => {
+        navigate(`/project/${projectId}/vendor/${vendorId}/VPUpload`);
+    }
+
     // Function to fetch data from API
     const fetchData = async (isMounted, url) => {
         try {
@@ -118,6 +127,29 @@ function AdminHome() {
                         </button>
                     </div>
                 </p>
+            ))}
+            <p>RFP Upload</p>
+            {data && data.map((project) => (
+                <p>
+                    <div>
+                        <button onClick={() => handleRFPUploadButtonClick(project.id)}>
+                            {`Go to RFP upload for Project ${project.id}`}
+                        </button>
+                    </div>
+                </p>
+            ))}
+            <p>Vendor Proposal upload</p>
+            {data && data.map((project) => (
+                <div key={project.id}> {/* Use key for each top-level item in list */}
+                    <p>{`Project ${project.id}`}</p>
+                    {project.vendors.map((vendor) => (
+                        <button
+                            key={vendor.id} // Each button also needs a unique key
+                            onClick={() => handleVPUploadButtonClick(project.id, vendor.id)}>
+                            {`Go to VP upload for Project ${project.id}, Vendor ${vendor.id}`}
+                        </button>
+                    ))}
+                </div>
             ))}
             <p>Criteria Ranking</p>
             {data && data.map((project) => (

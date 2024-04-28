@@ -9,9 +9,6 @@ const PDFViewer = ({ url }) => {
             try {
                 const response = await fetch(url, {
                     method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
                     credentials: 'include',  // Ensures cookies are sent with the request
                 });
                 const blob = await response.blob();

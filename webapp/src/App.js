@@ -19,6 +19,8 @@ import CriteriaScoringConflicts from "./Pages/CriteriaScoring/CriteriaScoringCon
 import CriteriaScoringInconsistencies
     from "./Pages/CriteriaScoring/CriteriaScoringInconsistencies/CriteriaScoringInconsistencies";
 import VendorAssigning from "./Pages/VendorAssigning/VendorAssigning";
+import RFPUploadPage from "./Pages/FileUploadPages/RFPUploadPage/RFPUploadPage";
+import VPUploadPage from "./Pages/FileUploadPages/VPUploadPage/VPUploadPage";
 
 function App() {
     return (
@@ -55,6 +57,8 @@ function App() {
                                         <Route path="/project/:projectId/criteriaScoreInconsistency" element={<CriteriaScoringInconsistencies />} />
                                         <Route path={"/project/:projectId/assignVendors"} element={<VendorAssigning />} />
 
+                                        <Route path={"/project/:projectId/RFPUpload"} element={<RFPUploadPage />} />
+                                        <Route path={"/project/:projectId/vendor/:vendorId/VPUpload"} element={<VPUploadPage />} />
                                         <Route path="*" element={<NotFoundPage />} />
                                     </Routes>
                                 </ProtectedRoute>
