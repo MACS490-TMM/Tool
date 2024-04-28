@@ -21,6 +21,7 @@ import CriteriaScoringInconsistencies
 import VendorAssigning from "./Pages/VendorAssigning/VendorAssigning";
 import RFPUploadPage from "./Pages/FileUploadPages/RFPUploadPage/RFPUploadPage";
 import VPUploadPage from "./Pages/FileUploadPages/VPUploadPage/VPUploadPage";
+import ProjectsDashboard from "./Pages/ProjectsDashboard/ProjectsDashboard";
 
 function App() {
     return (
@@ -46,7 +47,7 @@ function App() {
                                         <Route path="/project/summary" element={<ProjectSummary />} />
                                         <Route path="/project/setup" element={<ProjectSetup />} />
                                         <Route path="/project/setup/criteriaDefinition/:projectId" element={<CriteriaDefinition />} />
-                                        <Route path="/project/decision making" element={<div>Decision Making</div>} />
+                                        <Route path="/project/projectDashboard" element={<ProjectsDashboard />} />
                                         <Route path="/project/:projectId/criteriaRanking" element={<CriteriaScoring />} />
                                         <Route path="/project/:projectId/vendorRanking" element={<VendorResult />} />
                                         <Route path="/user/:userName" element={<UserPage />} />
@@ -59,6 +60,9 @@ function App() {
 
                                         <Route path={"/project/:projectId/RFPUpload"} element={<RFPUploadPage />} />
                                         <Route path={"/project/:projectId/vendor/:vendorId/VPUpload"} element={<VPUploadPage />} />
+
+                                        <Route path={"/dashboard"} element={<ProjectsDashboard />} />
+
                                         <Route path="*" element={<NotFoundPage />} />
                                     </Routes>
                                 </ProtectedRoute>

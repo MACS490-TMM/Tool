@@ -23,7 +23,7 @@ function NavBar() {
   let pathFolder = "project"
   let pathSubFolderCategoryOne = "setup"
   let pathSubFolderCategoryTwo = "summary"
-  let pathSubFolderCategoryThree = "decision making"
+  let pathSubFolderCategoryThree = "projectDashboard"
 
   const [, setSelectedCategory] = useState(null)
 

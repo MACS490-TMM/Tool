@@ -1,0 +1,53 @@
+.projects-dashboard {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.project-section {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f4f4f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.project-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.project-table td {
+    cursor: pointer;
+}
+.project-table td:hover {
+    background-color: #ccc;
+}
+
+.project-table th, .project-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.project-table th {
+    background-color: #161617;
+    color: rgb(232, 232, 237);
+}
+
+h2 {
+    color: #333;
+}
+
+.complete {
+    color: #228B22;
+    font-weight: 600;
+}
+
+.incomplete {
+    color: #DAA520;
+    font-weight: 550;
+}
+
+.decision-maker__name {
+    color: #333;
+}
