@@ -87,6 +87,7 @@ function ProjectSummary() {
 
     return (
         <div className="project-summary__outer-container">
+            <h1>Ranking Summary for Project {projectId}</h1>
             <div className="content-container">
                 <div className="vendor-group-toggles">
                     {transformedData.length > 0 && Object.keys(transformedData[0])
