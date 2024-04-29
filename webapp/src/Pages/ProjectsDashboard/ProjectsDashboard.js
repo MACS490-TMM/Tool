@@ -101,9 +101,9 @@ function ProjectsDashboard() {
                         <thead>
                         <tr>
                             <th>Decision Maker</th>
-                            <th>Criteria Ranking Complete</th>
-                            <th>Vendor Ranking Complete</th>
-                            <th>Vendor Selection Ready</th>
+                            <th>Criteria Ranking Status</th>
+                            <th>Vendor Ranking Status</th>
+                            <th>Vendor Selection Status</th>
                         </tr>
                         </thead>
                         <tbody>

@@ -1,0 +1,28 @@
+
+.No {
+    color: #228B22;
+    font-weight: 600;
+}
+
+.Yes {
+    color: red;
+    font-weight: 600;
+}
+
+.decision-maker__name {
+    color: #333;
+}
+
+.pending {
+    color: orange;
+    font-weight: 600;
+}
+
+.not-current-user-row {
+    background-color: #d9d9d9;
+}
+
+.project-table .not-current-user-row td:hover {
+    background-color: inherit;
+    cursor: default;
+}

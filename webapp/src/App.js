@@ -22,6 +22,7 @@ import RFPUploadPage from "./Pages/FileUploadPages/RFPUploadPage/RFPUploadPage";
 import VPUploadPage from "./Pages/FileUploadPages/VPUploadPage/VPUploadPage";
 import ProjectsDashboard from "./Pages/ProjectsDashboard/ProjectsDashboard";
 import NotFoundPage from "./Pages/NotFoundPage/NotFoundPage";
+import ProjectsDashboardDM from "./Pages/ProjectsDashboardDM/ProjectsDashboardDM";
 
 function App() {
     return (
@@ -116,6 +117,11 @@ function App() {
                                     <Route path="/project/dashboard" element={
                                         <ProtectedRoute allowedRoles={['decision-maker', 'admin', 'stakeholder']}>
                                             <ProjectsDashboard />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path={"/project/dashboardDM"} element={
+                                        <ProtectedRoute allowedRoles={['admin', 'decision-maker']}>
+                                            <ProjectsDashboardDM />
                                         </ProtectedRoute>
                                     } />
                                     <Route path="*" element={<NotFoundPage />} />
