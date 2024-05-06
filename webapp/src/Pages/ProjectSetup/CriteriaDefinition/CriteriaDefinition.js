@@ -132,7 +132,7 @@ function CriteriaDefinition() {
      */
     const handleSubmit = async () => {
         try {
-            const url = 'http://localhost:8080/projects'; // API URL
+            const url = 'http://localhost:8080/projects';
             await submitCriteria(project, selections, decisionMakerId, url)
                 .then(() => {
                     updateWeights(project, selections, url);
@@ -144,20 +144,14 @@ function CriteriaDefinition() {
         } catch (error) {
             console.error('Error:', error);
         }
-        /*try {
-            await submitCriteria(project, selections, decisionMakerId)
-                .then(() => {
-                alert('Criteria submitted successfully');
-            });
-        } catch (error) {
-            // Error handling if submitCriteria throws an error
-            alert('Failed to submit criteria \n' + error.message);
-        }*/
     };
 
     return (
         <div className="criteria-page">
-            <h1>Project name - Selection Criteria definition</h1>
+            <div className={"criteria-page-header"}>
+                <h1 className={"header"}>{project.name}</h1>
+                <h2 className={"sub-header"}>Selection Criteria Definition</h2>
+            </div>
             <div className="criteria-selection">
                 {selections.map((selection, index) => (
                     <div className={"criteria-container"} key={index}>
@@ -195,7 +189,7 @@ function CriteriaDefinition() {
             <button
                 className={"button-send"}
                 onClick={handleSubmit}
-                disabled={selections.length === 0} // This disables the button if selections is empty
+                disabled={selections.length === 0}
             >
                 Submit <img src={SendPlane} alt="Submit"/>
             </button>

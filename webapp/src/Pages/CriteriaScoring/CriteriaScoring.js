@@ -86,13 +86,13 @@ function CriteriaScoring() {
                         )))}
                     </div>
                 ))) || (criteria.criterionId <= 0 ? <p>Loading criteria...</p> : <div>No Criteria Found</div>)}
-                <button onClick={handleSubmitScores}>Submit Scores</button>
+                <button className={"button-send"} onClick={handleSubmitScores}>Submit Scores</button>
             </div>
             <div className="documents__container">
                 <div>
-                    <button onClick={() => setActiveVendorId(null)}>RFP</button>
+                    <button className={"button-paper-selection"} onClick={() => setActiveVendorId(null)}>RFP</button>
                     {vendors.map(vendor => (
-                        <button key={vendor.id} onClick={() => handleVendorChange(vendor.id)}>
+                        <button className={"button-paper-selection"} key={vendor.id} onClick={() => handleVendorChange(vendor.id)}>
                             {vendor.name}'s VP
                         </button>
                     ))}

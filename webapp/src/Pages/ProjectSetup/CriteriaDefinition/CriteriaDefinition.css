@@ -5,6 +5,25 @@
     gap: 30px;
 }
 
+.criteria-page-header {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    align-items: flex-start;
+
+    .header {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #151515;
+    }
+
+    .sub-header {
+        color: #505050;
+        font-weight: 600;
+    }
+}
+
 .criteria-container {
     display: flex;
     align-items: center;
