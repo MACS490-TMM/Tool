@@ -6,9 +6,12 @@ import submitProject from '../ProjectSummary/apiConnection/Project/submitProject
 import useFetchDecisionMakers from '../ProjectSummary/apiConnection/decisionMakers/useFetchDecisionMakers';
 import useFetchStakeholders from '../ProjectSummary/apiConnection/stakeholders/useFetchStakeholders';
 import SendPlane from "../../SVGs/send_plane.svg";
+import {useNavigate} from "react-router-dom";
 
 const animatedComponents = makeAnimated();
+
 const ProjectSetup = () => {
+    const navigate = useNavigate();
     const [createdProject, setCreatedProject] = useState({});
     const [projectName, setProjectName] = useState('');
     const [selectedStakeholders, setSelectedStakeholders] = useState([]);
@@ -50,6 +53,7 @@ const ProjectSetup = () => {
             setCreatedProject(response)
             await handleSecondSubmit(response.id);
             alert('Project submitted successfully');
+            navigate(`/project/setup/criteriaDefinition/${response.id}`);
         } catch (error) {
             // Error handling if submitProject throws an error
             alert('Failed to submit project \n' + error.message);
@@ -144,11 +148,6 @@ const ProjectSetup = () => {
                 >
                     Submit <img src={SendPlane} alt="Submit"/>
                 </button>
-
-                <div className={"project__response"}>
-                    <p>Response from the API</p>
-                    {createdProject && createdProject.name ? <p>{createdProject.name}</p> : null}
-                </div>
             </div>
         </div>
     );
