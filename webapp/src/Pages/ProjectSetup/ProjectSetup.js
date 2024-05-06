@@ -100,10 +100,18 @@ const ProjectSetup = () => {
     return (
         <div className={"project__setup-outer__container"}>
             <div className={"project__setup-inner__container"}>
-                <h2>Project Setup</h2>
-                <p>
-                    Project Name
-                </p>
+                <div className={"project__setup-header"}>
+                    <div className={"project__setup-header__inner"}>
+                        <h1>Project Setup</h1>
+                    </div>
+                </div>
+                <div className={"project__setup-sub__header"}>
+                    <div className={"project__setup-sub__header__inner"}>
+                        <h2>
+                            Project Name
+                        </h2>
+                    </div>
+                </div>
                 <div className={"project-name__group"}>
                     <input
                         type="text"
@@ -112,9 +120,13 @@ const ProjectSetup = () => {
                         placeholder="Project Name"
                     />
                 </div>
-                <p>
-                    Select Stakeholders
-                </p>
+                <div className={"project__setup-sub__header"}>
+                    <div className={"project__setup-sub__header__inner"}>
+                        <h2>
+                            Stakeholders
+                        </h2>
+                    </div>
+                </div>
                 <div className={"project-stakeholder__group"}>
                     <Select
                         className={"select__stakeholders"}
@@ -126,9 +138,13 @@ const ProjectSetup = () => {
                         placeholder="Select Stakeholders"
                     />
                 </div>
-                <p>
-                    Select Decision Makers
-                </p>
+                <div className={"project__setup-sub__header"}>
+                    <div className={"project__setup-sub__header__inner"}>
+                        <h2>
+                            Decision Makers
+                        </h2>
+                    </div>
+                </div>
                 <div className={"project-decision-maker__group"}>
                     <Select
                         className={"select__decision-makers"}
