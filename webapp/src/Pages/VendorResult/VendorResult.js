@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./VendorResult.css";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import fetchData from "./apiConnections";
 import useFetchProject from "../ProjectSummary/apiConnection/Project/useFetchProject";
 
@@ -8,6 +8,8 @@ function VendorResult() {
     let { projectId } = useParams();
 
     const project = useFetchProject(projectId);
+
+    const navigate = useNavigate();
 
     const [data, setData] = useState(null);
     const [selectedVendorId, setSelectedVendorId] = useState(null);
@@ -48,6 +50,7 @@ function VendorResult() {
 
     const handleVendorDetails = (vendorId) => {
         // TODO: Implement logic to show vendor details
+        navigate(`/project/${projectId}/summary`)
         console.log(`Show details for vendor with ID: ${vendorId}`);
     }
 
