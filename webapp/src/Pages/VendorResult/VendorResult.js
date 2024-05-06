@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./VendorResult.css";
 import { useParams } from "react-router-dom";
 import fetchData from "./apiConnections";
+import useFetchProject from "../ProjectSummary/apiConnection/Project/useFetchProject";
 
 function VendorResult() {
     let { projectId } = useParams();
+
+    const project = useFetchProject(projectId);
 
     const [data, setData] = useState(null);
     const [selectedVendorId, setSelectedVendorId] = useState(null);
@@ -16,11 +19,11 @@ function VendorResult() {
 
         fetchData(isMounted, url)
             .then(r => {
-                console.log("Response: ", r); // Log the response
+                console.log("Response: ", r);
                 return r; // Return the response to pass it down the promise chain
             })
             .then(data => {
-                setData(data); // Set the data
+                setData(data);
             })
             .catch(error => { console.log("Error here: " + error) });
 
@@ -50,8 +53,15 @@ function VendorResult() {
 
     return (
         <div className="vendor-result">
-            <h1>Vendor Result for Project {projectId}</h1>
+            <div className={"vendor-result-header"}>
+                <h1 className={"header"}>{project.name}</h1>
+                <h2 className={"sub-header"}>Vendor Ranking</h2>
+            </div>
             <div className="vendor-list">
+                <div className="vendor-list-header">
+                    <div className="vendor-name-header">Vendor</div>
+                    <div className="vendor-points-header">Points</div>
+                </div>
                 {data && data.map((vendor) => (
                     <div key={vendor.vendorId} className="vendor-item">
                         <div className="rank">{vendor.ranking}.</div>
@@ -61,6 +71,7 @@ function VendorResult() {
                         </div>
                         <div className="actions">
                             <input
+                                className={"vendor-radio"}
                                 type="radio"
                                 name="vendorSelection"
                                 id={`select-${vendor.vendorId}`}
@@ -69,7 +80,9 @@ function VendorResult() {
                             />
                             <button
                                 className="details-button"
-                                onClick={() => {handleVendorDetails(vendor.vendorId)}}>
+                                onClick={() => {
+                                    handleVendorDetails(vendor.vendorId)
+                                }}>
                                 Vendor details
                             </button>
                         </div>
