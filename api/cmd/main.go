@@ -17,7 +17,6 @@ func wrapMiddleware(next http.Handler) http.Handler {
 }
 
 func corsOnlyMiddleware(next http.Handler) http.Handler {
-	allowedOrigins := []string{"http://localhost:3000"}
 	allowedOrigins := []string{"http://localhost:3000", "http://localhost:5000"}
 	return handler.EnableCORS(allowedOrigins)(next)
 }
@@ -81,6 +80,8 @@ func SetupServer() *http.ServeMux {
 	mux.Handle("/projects/{projectId}/addVendors", wrapMiddleware(http.HandlerFunc(criteriaScoringHandler.UpdateProjectVendorList)))
 
 	mux.Handle("/projects/{projectId}/vendorRanking", wrapMiddleware(http.HandlerFunc(vendorRankingHandler.GetVendorRankings)))
+	mux.Handle("/projects/{projectId}/vendorRanking/update", corsOnlyMiddleware(http.HandlerFunc(vendorRankingHandler.UpdateVendorRankings))) // Only middleware as we assume the framework and API will run on the same authenticated servers
+
 	mux.Handle("/login", corsOnlyMiddleware(http.HandlerFunc(authenticationHandler.ServeHTTP)))
 	mux.Handle("/logout", corsOnlyMiddleware(http.HandlerFunc(authenticationHandler.Logout)))
 	mux.Handle("/register", corsOnlyMiddleware(http.HandlerFunc(userHandler.RegisterUser)))
