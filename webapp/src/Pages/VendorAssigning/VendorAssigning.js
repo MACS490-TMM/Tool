@@ -3,12 +3,14 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import {submitVendors} from "./submitVendors";
 import useFetchVendors from "./useFetchVendors";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 const animatedComponents = makeAnimated();
 
 function VendorAssigning() {
     const [selectedVendors, setSelectedVendors] = useState([]);
+
+    const navigate = useNavigate();
 
     let { projectId } = useParams();
 
@@ -29,8 +31,12 @@ function VendorAssigning() {
         try {
             // Submitting the vendors to both the file of projects and the project scoring comparison file
             const response = await submitVendors(projectId, vendorData, `http://localhost:8080/projects/${projectId}/addVendors`)
-                .then(await submitVendors(projectId, {vendors: vendorData}, `http://localhost:8080/projects/${projectId}/update`));
-            alert('Vendors submitted successfully, ' + response.status);
+                .then(await submitVendors(projectId, {vendors: vendorData}, `http://localhost:8080/projects/${projectId}/update`))
+
+            if (response) {
+                alert('Vendors submitted successfully');
+                navigate(`/project/dashboard`);
+            }
         } catch (error) {
             alert('Failed to submit vendors \n' + error.message);
         }

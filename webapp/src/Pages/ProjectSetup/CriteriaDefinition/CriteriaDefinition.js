@@ -10,7 +10,7 @@ import EditIcon from "../../../SVGs/edit_pen.svg";
 import DeleteIcon from "../../../SVGs/delete_trashcan.svg";
 import SendPlane from "../../../SVGs/send_plane.svg";
 import useFetchProject from "../../ProjectSummary/apiConnection/Project/useFetchProject";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {updateWeights} from "../../ProjectSummary/apiConnection/Criteria/submitWeights";
 import {submitScores} from "../../ProjectSummary/apiConnection/Criteria/submitScores";
 import {useAuth} from "../../../contexts/AuthContext";
@@ -20,6 +20,7 @@ function CriteriaDefinition() {
     let { projectId } = useParams();
     const decisionMakerId = getUserID();
     const project = useFetchProject(projectId);
+    const navigate = useNavigate();
 
     // State to track the index of the criteria being edited
     const [editingIndex, setEditingIndex] = useState(null);
@@ -140,6 +141,7 @@ function CriteriaDefinition() {
                 })
                 .then(() => {
                     alert('Criteria submitted successfully');
+                    navigate(`/project/dashboard`)
                 });
         } catch (error) {
             console.error('Error:', error);

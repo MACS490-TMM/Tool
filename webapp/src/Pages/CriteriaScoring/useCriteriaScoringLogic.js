@@ -5,6 +5,7 @@ import submitCriteriaScoring from "../ProjectSummary/apiConnection/criteriaScori
 import useFetchCriteriaScores from "./apiConnections/useFetchCriteriaScores";
 import useFetchInconsistencies from "../CriteriaWeighting/apiConnections/useFetchInconsistencies";
 import useFetchConflictingCriteria from "../CriteriaWeighting/apiConnections/useFetchConflictingCriteria";
+import {useNavigate} from "react-router-dom";
 
 const useCriteriaScoringLogic = (projectId, decisionMakerId) => {
     const project = useFetchProject(projectId);
@@ -14,6 +15,8 @@ const useCriteriaScoringLogic = (projectId, decisionMakerId) => {
     const [comments, setComments] = useState({});
     const [textExtracted, setTextExtracted] = useState({});
     const [inverted, setInverted] = useState({});
+
+    const navigate = useNavigate();
 
     const vendorComparisons = useFetchCriteriaScores(projectId, decisionMakerId);
 
@@ -124,6 +127,7 @@ const useCriteriaScoringLogic = (projectId, decisionMakerId) => {
                 await submitCriteriaScoring(data, projectId, decisionMakerId)
                     .then(() => {
                         alert('Criteria with scores were submitted successfully');
+                        navigate(`/project/dashboard`)
                     });
             } catch (error) {
                 alert('Failed to submit criteria and their scores \n' + error.message);

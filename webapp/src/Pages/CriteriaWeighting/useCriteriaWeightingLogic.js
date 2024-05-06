@@ -5,6 +5,7 @@ import submitCriteriaWeights from "../ProjectSummary/apiConnection/criteriaWeigh
 import useFetchCriteriaWeights from "./apiConnections/useFetchCriteriaWeights";
 import useFetchInconsistencies from "./apiConnections/useFetchInconsistencies";
 import useFetchConflictingCriteria from "./apiConnections/useFetchConflictingCriteria";
+import {useNavigate} from "react-router-dom";
 
 const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
     const project = useFetchProject(projectId); // Fetch the project
@@ -13,6 +14,8 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
     const [weights, setWeights] = useState({});
     const [comments, setComments] = useState({});
     const [inverted, setInverted] = useState({});
+
+    const navigate = useNavigate();
 
     const urlInconsistencies = `http://localhost:8080/projects/${projectId}/decisionMaker/${decisionMakerId}/weights/inconsistencies`;
     const urlConflicts = `http://localhost:8080/projects/${projectId}/decisionMaker/${decisionMakerId}/weights/conflicts`;
@@ -72,6 +75,7 @@ const useCriteriaWeightingLogic = (projectId, decisionMakerId) => {
             try {
                 await submitCriteriaWeights(data, projectId, decisionMakerId);
                 alert('Criteria comparisons submitted successfully');
+                navigate(`/project/dashboard`);
             } catch (error) {
                 alert('Failed to submit comparisons: ' + error.message);
             }
