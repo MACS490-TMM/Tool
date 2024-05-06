@@ -18,6 +18,7 @@ func wrapMiddleware(next http.Handler) http.Handler {
 
 func corsOnlyMiddleware(next http.Handler) http.Handler {
 	allowedOrigins := []string{"http://localhost:3000"}
+	allowedOrigins := []string{"http://localhost:3000", "http://localhost:5000"}
 	return handler.EnableCORS(allowedOrigins)(next)
 }
 
