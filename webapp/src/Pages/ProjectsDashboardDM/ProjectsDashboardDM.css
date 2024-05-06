@@ -9,13 +9,25 @@
     font-weight: 600;
 }
 
-.decision-maker__name {
-    color: #333;
+.Pending {
+    color: #DAA520;
+    font-weight: 600;
 }
 
 .pending {
-    color: orange;
+    color: #DAA520;
     font-weight: 600;
+}
+
+.unavailable {
+    color: #808080;
+    pointer-events: none;
+    background-color: #f0f0f0;
+    font-weight: 600;
+}
+
+.decision-maker__name {
+    color: #333;
 }
 
 .not-current-user-row {

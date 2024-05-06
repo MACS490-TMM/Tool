@@ -23,7 +23,7 @@ function ProjectsDashboardDM() {
 
     const getStatusYesNo = (status) => {
         if (status === null) {
-            return "pending";
+            return "Pending";
         }
         return status ? "Yes" : "No";
     };
@@ -31,7 +31,9 @@ function ProjectsDashboardDM() {
     const isTaskComplete = (task) => {
         return task.criteriaRankingComplete && task.vendorRankingComplete &&
             !task.criteriaRankingConflicts && !task.criteriaRankingInconsistencies &&
-            !task.vendorRankingConflicts && !task.vendorRankingInconsistencies;
+            !task.vendorRankingConflicts && !task.vendorRankingInconsistencies &&
+            task.criteriaRankingConflicts !== null && task.criteriaRankingInconsistencies !== null &&
+            task.vendorRankingConflicts !== null && task.vendorRankingInconsistencies !== null;
     }
 
     const handleCriteriaWeightingButtonClick = (projectId) => {
@@ -82,7 +84,7 @@ function ProjectsDashboardDM() {
                 {
                     "decisionMakerName": "admin",
                     "criteriaRankingComplete": true,
-                    "criteriaRankingInconsistencies": true,
+                    "criteriaRankingInconsistencies": false,
                     "criteriaRankingConflicts": false,
                     "vendorRankingComplete": true,
                     "vendorRankingInconsistencies": null,
@@ -134,6 +136,19 @@ function ProjectsDashboardDM() {
         }
     ];
 
+    const canAccessVendorRanking = (task) => {
+        return task.criteriaRankingComplete;
+    };
+
+    const canAccessInconsistenciesAndConflicts = (task) => {
+        return task.criteriaRankingComplete;
+    };
+
+    const canAccessVendorTasks = (task) => {
+        return task.criteriaRankingComplete && task.vendorRankingComplete;
+    };
+
+
     return (
         <div className="projects-dashboard">
             <h1>Projects Dashboard</h1>
@@ -165,11 +180,11 @@ function ProjectsDashboardDM() {
                                     {isCurrentUser ? (
                                         <>
                                             <td className={getStatusClass(task.criteriaRankingComplete)} onClick={() => handleCriteriaWeightingButtonClick(project.id)}>{getStatusText(task.criteriaRankingComplete)}</td>
-                                            <td className={getStatusYesNo(task.criteriaRankingInconsistencies)} onClick={() => handleCriteriaWeightingInconsistencyButtonClick(project.id)}>{getStatusYesNo(task.criteriaRankingInconsistencies)}</td>
-                                            <td className={getStatusYesNo(task.criteriaRankingConflicts)} onClick={() => handleCriteriaWeightingConflictButtonClick(project.id)}>{getStatusYesNo(task.criteriaRankingConflicts)}</td>
-                                            <td className={getStatusClass(task.vendorRankingComplete)} onClick={() => handleVendorRankingButtonClick(project.id)}>{getStatusText(task.vendorRankingComplete)}</td>
-                                            <td className={getStatusYesNo(task.vendorRankingInconsistencies)} onClick={() => handleVendorRankingInconsistencyButtonClick(project.id)}>{getStatusYesNo(task.vendorRankingInconsistencies)}</td>
-                                            <td className={getStatusYesNo(task.vendorRankingConflicts)} onClick={() => handleVendorRankingConflictButtonClick(project.id)}>{getStatusYesNo(task.vendorRankingConflicts)}</td>
+                                            <td className={canAccessInconsistenciesAndConflicts(task) ? getStatusYesNo(task.criteriaRankingInconsistencies) : "unavailable"} onClick={() => canAccessInconsistenciesAndConflicts(task) && handleCriteriaWeightingInconsistencyButtonClick(project.id)}>{canAccessInconsistenciesAndConflicts(task) ? getStatusYesNo(task.criteriaRankingInconsistencies) : "Unavailable"}</td>
+                                            <td className={canAccessInconsistenciesAndConflicts(task) ? getStatusYesNo(task.criteriaRankingConflicts) : "unavailable"} onClick={() => canAccessInconsistenciesAndConflicts(task) && handleCriteriaWeightingConflictButtonClick(project.id)}>{canAccessInconsistenciesAndConflicts(task) ? getStatusYesNo(task.criteriaRankingConflicts) : "Unavailable"}</td>
+                                            <td className={canAccessVendorRanking(task) ? getStatusClass(task.vendorRankingComplete) : "unavailable"} onClick={() => canAccessVendorRanking(task) && handleVendorRankingButtonClick(project.id)}>{canAccessVendorRanking(task) ? getStatusText(task.vendorRankingComplete) : "Unavailable"}</td>
+                                            <td className={canAccessVendorTasks(task) ? getStatusYesNo(task.vendorRankingInconsistencies) : "unavailable"} onClick={() => canAccessVendorTasks(task) && handleVendorRankingInconsistencyButtonClick(project.id)}>{canAccessVendorTasks(task) ? getStatusYesNo(task.vendorRankingInconsistencies) : "Unavailable"}</td>
+                                            <td className={canAccessVendorTasks(task) ? getStatusYesNo(task.vendorRankingConflicts) : "unavailable"} onClick={() => canAccessVendorTasks(task) && handleVendorRankingConflictButtonClick(project.id)}>{canAccessVendorTasks(task) ? getStatusYesNo(task.vendorRankingConflicts) : "Unavailable"}</td>
                                         </>
                                     ) : (
                                         <>
