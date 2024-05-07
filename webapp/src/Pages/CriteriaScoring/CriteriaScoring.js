@@ -6,6 +6,7 @@ import PDFViewer from "../../Components/PDFPreview/PDFPreview";
 import useCriteriaScoringLogic from "./useCriteriaScoringLogic";
 import useVendors from "./apiConnections/useVendors";
 import {useAuth} from "../../contexts/AuthContext";
+import useFetchProject from "../ProjectSummary/apiConnection/Project/useFetchProject";
 
 function CriteriaScoring() {
     const { getUserID } = useAuth();
@@ -24,6 +25,8 @@ function CriteriaScoring() {
         handleCommentsChanged,
         handleSubmitScores,
     } = useCriteriaScoringLogic(projectId, getUserID());
+
+    const project = useFetchProject(projectId);
 
     const [activeVendorId, setActiveVendorId] = useState(null);
     const { vendors, isLoading, error } = useVendors(projectId);
@@ -53,7 +56,10 @@ function CriteriaScoring() {
     return (
         <div className={"criteria-scoring__outer-container"}>
             <div className={"criteria-scoring__container"}>
-                <h1>Criteria Scoring</h1>
+                <div className={"criteria__scoring__header"}>
+                    <h1 className={"header"}>{project.name}</h1>
+                    <h2 className={"sub-header"}>Criteria Scoring</h2>
+                </div>
                 {(criteria.length > 0 && Object.entries(criteriaMap).map(([criterionId, comparisons]) => (
                     <div key={criterionId}>
                         <h2>{criteria.find(c => c.id.toString() === criterionId) ? criteria.find(c => c.id.toString() === criterionId).name : "Criterion not found"}</h2>

@@ -5,6 +5,7 @@ import CriteriaScoreInput from "../../Components/CriteriaScoreInput/CriteriaScor
 import PDFViewer from "../../Components/PDFPreview/PDFPreview";
 import useCriteriaWeightingLogic from "./useCriteriaWeightingLogic";
 import {useAuth} from "../../contexts/AuthContext";
+import useFetchProject from "../ProjectSummary/apiConnection/Project/useFetchProject";
 
 function CriteriaWeighting() {
     const { getUserID } = useAuth();
@@ -20,6 +21,8 @@ function CriteriaWeighting() {
         handleSubmitWeights,
     } = useCriteriaWeightingLogic(projectId, getUserID());
 
+    const project = useFetchProject(projectId)
+
     const getPDFUrl = () => {
         return `http://localhost:8080/projects/${projectId}/files/RFP/RFP`;
     };
@@ -31,8 +34,11 @@ function CriteriaWeighting() {
     return (
         <div className={"criteria-scoring__outer-container"}>
             <div className={"criteria-scoring__container"}>
-                <h1>Criteria Weighting</h1>
-                {criteria.length > 0? (
+                <div className={"criteria__weighting__header"}>
+                    <h1 className={"header"}>{project.name}</h1>
+                    <h2 className={"sub-header"}>Criteria Weighting</h2>
+                </div>
+                {criteria.length > 0 ? (
                     criteria.map((baseCriterion) => (
                         <div key={baseCriterion.id}>
                             <h2>{baseCriterion.name}</h2>

@@ -5,6 +5,7 @@ import CriteriaScoreInput from "../../../Components/CriteriaScoreInput/CriteriaS
 import useCriteriaWeightingLogic from "../useCriteriaWeightingLogic";
 import PDFViewer from "../../../Components/PDFPreview/PDFPreview";
 import {useAuth} from "../../../contexts/AuthContext";
+import useFetchProject from "../../ProjectSummary/apiConnection/Project/useFetchProject";
 
 function CriteriaWeightingConflicts() {
     const { getUserID } = useAuth();
@@ -22,6 +23,8 @@ function CriteriaWeightingConflicts() {
         isConflictDetected
     } = useCriteriaWeightingLogic(projectId, getUserID());
 
+    const project = useFetchProject(projectId)
+
     const getPDFUrl = () => {
         return `http://localhost:8080/projects/${projectId}/files/RFP/RFP`;
     };
@@ -33,7 +36,10 @@ function CriteriaWeightingConflicts() {
     return (
         <div className={"criteria-scoring__outer-container"}>
             <div className={"criteria-scoring__container"}>
-                <h1>Criteria Weighting w/Conflicts</h1>
+                <div className={"criteria__weighting__header"}>
+                    <h1 className={"header"}>{project.name}</h1>
+                    <h2 className={"sub-header"}>Criteria Weighting w/Conflicts</h2>
+                </div>
                 {criteria.length > 0 ? (
                     criteria.map((baseCriterion) => (
                         <div key={baseCriterion.id}>
@@ -41,7 +47,8 @@ function CriteriaWeightingConflicts() {
                             {criteria.filter(c => c.id !== baseCriterion.id).map(comparedCriterion => (
                                 <div key={comparedCriterion.id}>
                                     <p>
-                                        How much more important is <b>{baseCriterion.name}</b> in relation to <b>{comparedCriterion.name}</b>
+                                        How much more important is <b>{baseCriterion.name}</b> in relation
+                                        to <b>{comparedCriterion.name}</b>
                                     </p>
                                     <CriteriaScoreInput
                                         criterionId={`${baseCriterion.id}-${comparedCriterion.id}`}

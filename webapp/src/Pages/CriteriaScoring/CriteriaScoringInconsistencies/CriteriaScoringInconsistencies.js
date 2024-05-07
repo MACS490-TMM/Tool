@@ -6,6 +6,7 @@ import useCriteriaScoringLogic from "../useCriteriaScoringLogic";
 import PDFViewer from "../../../Components/PDFPreview/PDFPreview";
 import useVendors from "../apiConnections/useVendors";
 import {useAuth} from "../../../contexts/AuthContext";
+import useFetchProject from "../../ProjectSummary/apiConnection/Project/useFetchProject";
 
 function CriteriaScoringInconsistencies() {
     const { getUserID } = useAuth();
@@ -25,6 +26,8 @@ function CriteriaScoringInconsistencies() {
         handleSubmitScores,
         isInconsistencyDetected,
     } = useCriteriaScoringLogic(projectId, getUserID());
+
+    const project = useFetchProject(projectId);
 
     const [activeVendorId, setActiveVendorId] = useState(null);
     const { vendors, isLoading, error } = useVendors(projectId);
@@ -54,7 +57,10 @@ function CriteriaScoringInconsistencies() {
     return (
         <div className={"criteria-scoring__outer-container"}>
             <div className={"criteria-scoring__container"}>
-                <h1>Criteria Scoring w/Inconsistencies</h1>
+                <div className={"criteria__scoring__header"}>
+                    <h1 className={"header"}>{project.name}</h1>
+                    <h2 className={"sub-header"}>Criteria Scoring w/Inconsistencies</h2>
+                </div>
                 {(criteria.length > 0 && Object.entries(criteriaMap).map(([criterionId, comparisons]) => (
                     <div key={criterionId}>
                         <h2>{criteria.find(c => c.id.toString() === criterionId).name}</h2>

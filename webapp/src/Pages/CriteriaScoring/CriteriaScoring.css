@@ -13,6 +13,24 @@
     margin-bottom: 20px;
 }
 
+.criteria__scoring__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    .header {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0;
+        color: #151515;
+    }
+
+    .sub-header {
+        color: #404040;
+        font-weight: 600;
+    }
+}
+
 .documents__container {
     flex: 1;
     gap: 20px;
