@@ -4,6 +4,7 @@ import makeAnimated from "react-select/animated";
 import {submitVendors} from "./submitVendors";
 import useFetchVendors from "./useFetchVendors";
 import {useNavigate, useParams} from "react-router-dom";
+import SendPlane from "../../SVGs/send_plane.svg";
 
 const animatedComponents = makeAnimated();
 
@@ -57,7 +58,11 @@ function VendorAssigning() {
                         placeholder="Select Vendors"
                     />
                 </div>
-                <button onClick={handleSubmit}>Submit</button>
+                <div className={"submit-button-container"}>
+                    <button className={"button-send"} onClick={handleSubmit}>
+                        Submit <img src={SendPlane} alt="Submit"/>
+                    </button>
+                </div>
             </div>
 
         </div>

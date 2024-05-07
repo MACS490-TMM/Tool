@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import {useParams} from "react-router-dom";
 import handleSubmitRFP from "./handleSubmitRFP";
+import './RFPUploadPage.css';
+import useFetchProject from "../../ProjectSummary/apiConnection/Project/useFetchProject";
 
 function RFPUploadPage() {
     let { projectId } = useParams();
 
     const [file, setFile] = useState(null);
+    const project = useFetchProject(projectId);
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]); // Set the file to the one selected
@@ -23,11 +26,17 @@ function RFPUploadPage() {
     };
 
     return (
-        <div>
-            <h1>File Upload</h1>
-            <form onSubmit={handleSubmit}>
-                <input type="file" onChange={handleFileChange} />
-                <button type="submit">Upload File</button>
+        <div className="upload-container">
+            <div className={"upload-inner-container"}>
+                <h1>Request for Proposal Upload</h1>
+                <p>Upload RFP for project <b className={"bold"}>{project.name}</b></p>
+            </div>
+            <form onSubmit={handleSubmit} className="form-upload">
+                <label htmlFor="file-upload" className="input-file">
+                    Choose file to upload
+                </label>
+                <input className={"input"} id="file-upload" type="file" onChange={handleFileChange}/>
+                <button type="submit" className="submit-button">Upload File</button>
             </form>
         </div>
     );
