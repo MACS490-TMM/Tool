@@ -1,7 +1,8 @@
 import React from "react";
 import "./CriteriaScoreInput.css";
 
-function CriteriaScoreInput({ criterionId, currentScore, onScoreChange, onInvertScore, isInverted }) {
+
+function CriteriaScoreInput({ criterionId, currentScore, onScoreChange, isInverted }) {  // Removed onInvertScore
     const fuzzyTexts = {
         1: 'Equally Important',
         3: 'Weakly Important',
@@ -55,9 +56,6 @@ function CriteriaScoreInput({ criterionId, currentScore, onScoreChange, onInvert
                     </label>
                 );
             })}
-            <button className="invert-button" onClick={onInvertScore}>
-                Invert
-            </button>
         </div>
     );
 }

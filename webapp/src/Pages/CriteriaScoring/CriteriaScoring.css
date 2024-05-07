@@ -47,6 +47,11 @@ h3 {
 .text-extraction__container,
 .criteria-comments__container {
     margin-top: 10px;
+    padding-left: 35px;
+
+    .criteria-comments__input {
+        min-height: 40px;
+    }
 }
 
 textarea {
@@ -76,4 +81,10 @@ textarea:focus {
 
 .button-paper-selection:hover {
     background-color: #0056b3;
+}
+
+.submit-button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 }
