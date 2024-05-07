@@ -70,7 +70,7 @@ function Login() {
                         />
                     </label>
                     {error && <p className="error-message">{error}</p>}
-                    <input type="submit" value="Submit" />
+                    <input type="submit" value="Login" />
                 </form>
             </div>
         </div>
