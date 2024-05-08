@@ -43,7 +43,10 @@ function CriteriaWeighting() {
                 {criteria.length > 0 ? (
                     criteria.map((baseCriterion) => (
                         <div key={baseCriterion.id}>
-                            <h2 className={"criteria-name"}>{baseCriterion.name}</h2>
+                            <div className={"criteria-explanations-group"}>
+                                <h2 className={"criteria-name"}>{baseCriterion.name}</h2>
+                                <p className={"criteria-explanation"}>{baseCriterion.explanation}</p>
+                            </div>
                             <div className={"criteria-criteria-group"}>
                                 {criteria.filter(c => c.id !== baseCriterion.id).map(comparedCriterion => (
                                     <div className={"criteria-criteria-section"} key={comparedCriterion.id}>

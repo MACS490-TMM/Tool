@@ -155,7 +155,13 @@ function HomeWithRole() {
         return <div>Loading...</div>;
     }
 
-    return role === 'admin' ? <AdminHome /> : <Home />;
+    if (role === 'decision-maker') {
+        return <ProjectsDashboardDM />;
+    } else if (role === 'admin') {
+        return <AdminHome />;
+    } else {
+        return <ProjectsDashboard />;
+    }
 }
 
 export default App;

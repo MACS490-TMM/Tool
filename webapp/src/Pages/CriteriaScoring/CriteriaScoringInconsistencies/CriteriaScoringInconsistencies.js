@@ -66,7 +66,10 @@ function CriteriaScoringInconsistencies() {
                 </div>
                 {(criteria.length > 0 && Object.entries(criteriaMap).map(([criterionId, comparisons]) => (
                     <div key={criterionId}>
-                        <h2 className={"criteria-name"}>{criteria.find(c => c.id.toString() === criterionId) ? criteria.find(c => c.id.toString() === criterionId).name : "Criterion not found"}</h2>
+                        <div className={"criteria-explanations-group"}>
+                            <h2 className={"criteria-name"}>{criteria.find(c => c.id.toString() === criterionId) ? criteria.find(c => c.id.toString() === criterionId).name : "Criterion not found"}</h2>
+                            <p className={"criteria-explanation"}>{criteria.find(c => c.id.toString() === criterionId) ? criteria.find(c => c.id.toString() === criterionId).explanation : ""}</p>
+                        </div>
                         <div className={"criteria-criteria-group"}>
                             {comparisons.flatMap(comp => comp.comparisons.map((vendorComparison, index) => (
                                 <div

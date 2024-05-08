@@ -16,8 +16,22 @@
     }
 }
 
-.criteria-name {
-    margin-left: 20px;
+.criteria-explanations-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+
+    .criteria-name {
+        margin-left: 20px;
+        margin-bottom: 0;
+    }
+
+    .criteria-explanation {
+        display: flex;
+        margin-left: 40px;
+        margin-top: 5px;
+        color: #404040;
+    }
 }
 
 .criteria-criteria-group {

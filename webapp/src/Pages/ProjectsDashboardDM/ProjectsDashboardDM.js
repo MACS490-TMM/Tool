@@ -67,6 +67,15 @@ function ProjectsDashboardDM() {
             "name": "Project Alpha",
             "tasks": [
                 {
+                    "decisionMakerName": "Decision Maker 1",
+                    "criteriaRankingComplete": true,
+                    "criteriaRankingInconsistencies": false,
+                    "criteriaRankingConflicts": false,
+                    "vendorRankingComplete": null,
+                    "vendorRankingInconsistencies": null,
+                    "vendorRankingConflicts": null,
+                },
+                {
                     "decisionMakerName": "admin",
                     "criteriaRankingComplete": false,
                     "criteriaRankingInconsistencies": false,
@@ -81,6 +90,15 @@ function ProjectsDashboardDM() {
             "id": 2,
             "name": "Project Beta",
             "tasks": [
+                {
+                    "decisionMakerName": "Decision Maker 1",
+                    "criteriaRankingComplete": true,
+                    "criteriaRankingInconsistencies": false,
+                    "criteriaRankingConflicts": false,
+                    "vendorRankingComplete": true,
+                    "vendorRankingInconsistencies": false,
+                    "vendorRankingConflicts": false,
+                },
                 {
                     "decisionMakerName": "admin",
                     "criteriaRankingComplete": true,
@@ -114,6 +132,15 @@ function ProjectsDashboardDM() {
             "id": 3,
             "name": "Project Charlie",
             "tasks": [
+                {
+                    "decisionMakerName": "Decision Maker 1",
+                    "criteriaRankingComplete": true,
+                    "criteriaRankingInconsistencies": false,
+                    "criteriaRankingConflicts": false,
+                    "vendorRankingComplete": true,
+                    "vendorRankingInconsistencies": false,
+                    "vendorRankingConflicts": false,
+                },
                 {
                     "decisionMakerName": "admin",
                     "criteriaRankingComplete": true,

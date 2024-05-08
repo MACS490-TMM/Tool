@@ -16,14 +16,25 @@ export function useGetName() {
   return userName;
 }
 
+export function useRole() {
+  const { getUserRole } = useAuth();
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    setRole(getUserRole());
+  }, [getUserRole]);
+
+  return role;
+}
+
 function NavBar() {
   const navBarHeight = 44
   let userFolder = "user"
   let userDisplayName = useGetName() || "Guest" // Provide a fallback username if none is set
   let pathFolder = "project"
-  let pathSubFolderCategoryOne = "setup"
-  let pathSubFolderCategoryTwo = "summary"
-  let pathSubFolderCategoryThree = "dashboard"
+  let pathSubFolderCategoryOne = useRole() === ("stakeholder" || "admin") ? "setup" : null
+  let pathSubFolderCategoryTwo = null
+  let pathSubFolderCategoryThree = null
 
   const [, setSelectedCategory] = useState(null)
 

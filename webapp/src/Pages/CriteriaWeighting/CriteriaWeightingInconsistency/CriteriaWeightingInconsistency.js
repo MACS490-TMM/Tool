@@ -46,12 +46,17 @@ function CriteriaWeightingInconsistency() {
                 {criteria.length > 0 ? (
                     criteria.map((baseCriterion) => (
                         <div key={baseCriterion.id}>
-                            <h2 className={"criteria-name"}>{baseCriterion.name}</h2>
+                            <div className={"criteria-explanations-group"}>
+                                <h2 className={"criteria-name"}>{baseCriterion.name}</h2>
+                                <p className={"criteria-explanation"}>{baseCriterion.explanation}</p>
+                            </div>
                             <div className={"criteria-criteria-group"}>
                                 {criteria.filter(c => c.id !== baseCriterion.id).map(comparedCriterion => (
                                     <div className={"criteria-criteria-section"} key={comparedCriterion.id}>
                                         <div className={"query-container"}>
-                                            <p className={"text"}>How much more important is <b className={"bold"}>{baseCriterion.name}</b> in relation to <b className={"bold"}>{comparedCriterion.name}</b> ?</p>
+                                            <p className={"text"}>How much more important is <b
+                                                className={"bold"}>{baseCriterion.name}</b> in relation to <b
+                                                className={"bold"}>{comparedCriterion.name}</b> ?</p>
                                             <button
                                                 className={"invert-button"}
                                                 onClick={() => handleInvertWeight(baseCriterion.id, comparedCriterion.id, weights[`${baseCriterion.id}-${comparedCriterion.id}`])}>
@@ -89,7 +94,7 @@ function CriteriaWeightingInconsistency() {
                     ))) : (criteria.criterionId <= 0 ? <p>Loading criteria...</p> : <div>No Criteria Found</div>)}
                 <div className={"submit-button-container"}>
                     <button className={"button-send"} onClick={handleSubmitWeights}>
-                        Submit <img src={SendPlane} alt="Submit"/>
+                    Submit <img src={SendPlane} alt="Submit"/>
                     </button>
                 </div>
             </div>

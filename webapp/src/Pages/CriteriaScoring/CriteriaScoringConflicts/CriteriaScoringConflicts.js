@@ -66,7 +66,10 @@ function CriteriaScoringConflicts() {
                 </div>
                 {(criteria.length > 0 && Object.entries(criteriaMap).map(([criterionId, comparisons]) => (
                     <div key={criterionId}>
-                        <h2 className={"criteria-name"}>{criteria.find(c => c.id.toString() === criterionId) ? criteria.find(c => c.id.toString() === criterionId).name : "Criterion not found"}</h2>
+                        <div className={"criteria-explanations-group"}>
+                            <h2 className={"criteria-name"}>{criteria.find(c => c.id.toString() === criterionId) ? criteria.find(c => c.id.toString() === criterionId).name : "Criterion not found"}</h2>
+                            <p className={"criteria-explanation"}>{criteria.find(c => c.id.toString() === criterionId) ? criteria.find(c => c.id.toString() === criterionId).explanation : ""}</p>
+                        </div>
                         <div className={"criteria-criteria-group"}>
                             {comparisons.flatMap(comp => comp.comparisons.map((vendorComparison, index) => (
                                 <div
@@ -119,7 +122,7 @@ function CriteriaScoringConflicts() {
                 ))) || (criteria.criterionId <= 0 ? <p>Loading criteria...</p> : <div>No Criteria Found</div>)}
                 <div className={"submit-button-container"}>
                     <button className={"button-send"} onClick={handleSubmitScores}>
-                        Submit <img src={SendPlane} alt="Submit"/>
+                    Submit <img src={SendPlane} alt="Submit"/>
                     </button>
                 </div>
             </div>

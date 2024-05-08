@@ -9,11 +9,29 @@
     background-color: #f4f4f8;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+    .h3 {
+        color: #333;
+    }
+
+    .h3-second {
+        color: #333;
+        margin-top: 40px;
+    }
+}
+
+.project-section:not(:first-child) {
+    margin-top: 50px;
 }
 
 .project-table {
     width: 100%;
     border-collapse: collapse;
+
+    .unhoverable:hover {
+        cursor: default;
+        background-color: #f4f4f8;
+    }
 }
 
 .project-table td {
@@ -50,4 +68,30 @@ h2 {
 
 .decision-maker__name {
     color: #333;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-header--inner {
+    display: flex;
+    align-items: center;
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .disabled-button {
+        background-color: #ccc;
+        color: #fff;
+        cursor: not-allowed;
+
+        &:hover {
+            background-color: #ccc;
+        }
+    }
 }
